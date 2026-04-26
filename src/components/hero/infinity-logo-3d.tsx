@@ -24,17 +24,22 @@ const PATH_SEGMENTS = 320;
 const RADIAL_SEGMENTS = 32;
 const TUBE_RADIUS = 0.16;
 
-// Three pure brand colors at the corners of the curve's bounding box. Using fewer,
-// more saturated stops (instead of intermediate "muddy" interpolations) makes the
-// hue separation visible: cyan on the left, purple in the center, blue on the right.
-const BRAND_CYAN = new THREE.Color('#5dc7ff');
-const BRAND_PURPLE = new THREE.Color('#a35dff');
+// Match the text's CSS gradient EXACTLY: blue at 0% → purple at 50% → cyan at 100%
+// (linear-gradient(135deg, var(--color-brand-blue), var(--color-brand-purple), var(--color-brand-cyan)))
 const BRAND_BLUE = new THREE.Color('#5d6fff');
+const BRAND_PURPLE = new THREE.Color('#a35dff');
+const BRAND_CYAN = new THREE.Color('#5dc7ff');
 
-// Curve bounds; used to normalize vertex.x for position-based color mapping.
+// Curve bounds; used to normalize vertex position for color mapping.
 const CURVE_X_HALF = 1.4;
+const CURVE_Y_HALF = 0.65;
 
-const HDR_BOOST = 1.05;
+// Higher HDR boost so the brand colors dominate and survive the lighting/clearcoat passes.
+const HDR_BOOST = 1.55;
+
+// 135-degree diagonal direction (matches the CSS gradient angle on the headline text).
+// 135deg in CSS means "from top-left to bottom-right", so the gradient axis is normalized (1,1)/sqrt(2).
+const SQRT2_INV = 1 / Math.SQRT2;
 
 class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
   public constructor() {
@@ -52,22 +57,24 @@ class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
   }
 }
 
-// Spatial color mapping: the gradient is anchored to where the vertex is in 3D space,
-// not where it is along the path. Result: at the crossing both tubes share the same
-// local color, so the X disappears and reads as a continuous infinity.
+// Spatial color mapping along the 135-degree diagonal (matches the CSS text gradient).
+// Color is anchored to vertex position in 3D space, not curve parameter, so at the
+// crossing the front and back tubes share the same local color and read as one
+// continuous infinity instead of a hard X.
 function colorAtPosition(x: number, y: number, out: THREE.Color): void {
-  // Normalize x from [-CURVE_X_HALF, +CURVE_X_HALF] to [0, 1].
-  const tx = Math.max(0, Math.min(1, (x + CURVE_X_HALF) / (2 * CURVE_X_HALF)));
-  // Three-stop mapping: cyan at left edge, purple at center, blue at right edge.
-  if (tx < 0.5) {
-    out.copy(BRAND_CYAN).lerp(BRAND_PURPLE, tx * 2);
+  // Project (x, y) onto the diagonal axis (1, 1) / sqrt(2). Top-left is the high end.
+  // CSS 135deg goes from top-left (start) toward bottom-right (end), but in our 3D
+  // coordinate system y increases upward, so we project (-x + y) for the same visual.
+  const projected = (-x + y) * SQRT2_INV;
+  const projectedMax = (CURVE_X_HALF + CURVE_Y_HALF) * SQRT2_INV;
+  // Normalize to [0, 1]. t=0 corresponds to top-left of the curve (where blue starts).
+  const t = Math.max(0, Math.min(1, (projected + projectedMax) / (2 * projectedMax)));
+  // Three-stop interpolation: blue at 0, purple at 0.5, cyan at 1 (CSS gradient stops).
+  if (t < 0.5) {
+    out.copy(BRAND_BLUE).lerp(BRAND_PURPLE, t * 2);
   } else {
-    out.copy(BRAND_PURPLE).lerp(BRAND_BLUE, (tx - 0.5) * 2);
+    out.copy(BRAND_PURPLE).lerp(BRAND_CYAN, (t - 0.5) * 2);
   }
-  // Lift saturation slightly toward the top of the loop, deepen toward the bottom.
-  // y ranges roughly [-0.65, +0.65]. Brighten by up to 12% at the top.
-  const lift = 1 + (y / 0.65) * 0.12;
-  out.multiplyScalar(Math.max(0.85, Math.min(1.15, lift)));
 }
 
 function InfinityMesh() {
@@ -116,18 +123,24 @@ function InfinityMesh() {
             rotates, clearcoat adds a wet glossy top layer, lights contribute the
             highlights and shading that previously made the tube look like a flat
             colored ribbon. The combination reads as glass-glow rather than as solid. */}
+        {/* Iridescence and metalness are dialed WAY down compared to the previous attempt
+            because they were desaturating the brand colors into uniform lavender. The
+            current goal is to look like the text gradient pulled into 3D, not like a
+            soap-bubble shimmer. Vertex colors carry the saturated brand gradient,
+            modest clearcoat and a touch of iridescence add 3D specular interest, and
+            white emissive at low intensity gives the bloom something to grab onto. */}
         <meshPhysicalMaterial
           vertexColors
           toneMapped={false}
-          metalness={0.4}
-          roughness={0.18}
-          iridescence={1.0}
-          iridescenceIOR={1.45}
-          iridescenceThicknessRange={[200, 720]}
-          clearcoat={1.0}
-          clearcoatRoughness={0.05}
+          metalness={0.0}
+          roughness={0.28}
+          iridescence={0.35}
+          iridescenceIOR={1.3}
+          iridescenceThicknessRange={[300, 600]}
+          clearcoat={0.6}
+          clearcoatRoughness={0.18}
           emissive={'#ffffff'}
-          emissiveIntensity={0.06}
+          emissiveIntensity={0.08}
         />
       </mesh>
     </Float>
@@ -149,14 +162,14 @@ export function InfinityLogo3D() {
         }}
       >
         <Suspense fallback={null}>
-          {/* Lighting rig: ambient softens shadows, three colored point lights
-              create the iridescent shimmer effect from different angles, one
-              white directional light keeps the gradient readable. */}
-          <ambientLight intensity={0.35} />
-          <pointLight position={[3, 2.5, 4]} intensity={3.2} color="#5d6fff" />
-          <pointLight position={[-3, -2, 4]} intensity={2.8} color="#a35dff" />
-          <pointLight position={[0, 3.5, 2.5]} intensity={2.2} color="#5dc7ff" />
-          <directionalLight position={[2, 3, 5]} intensity={0.9} color="#ffffff" />
+          {/* Calmer lighting: previous rig had four bright lights that were washing the
+              vertex colors into pale lavender. Now: soft white ambient for base
+              readability, plus two gentle white directional lights for shading depth.
+              The brand colors come ENTIRELY from the vertex colors, not from tinted
+              lights. */}
+          <ambientLight intensity={0.55} />
+          <directionalLight position={[2, 3, 4]} intensity={0.9} color="#ffffff" />
+          <directionalLight position={[-2, -1, 3]} intensity={0.4} color="#ffffff" />
           <InfinityMesh />
           <EffectComposer>
             <Bloom intensity={1.6} luminanceThreshold={0.5} luminanceSmoothing={0.7} mipmapBlur />
