@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production / build
+.next/
+out/
+build/
+dist/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# Test
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+# Internal artifacts (NEVER commit to public repo)
+.claude/
+CLAUDE.md
+.superpowers/
+docs/superpowers/
+
+# Generated content
+public/lighthouse.json.tmp
+.contentlayer/

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Full design tokens, themes, and grain land in Phase 1 */
+:root {
+  color-scheme: dark;
+  background: #07060d;
+}
+
+html, body {
+  background: #07060d;
+  color: #f4f5fa;
+  font-family: system-ui, sans-serif;
+}
