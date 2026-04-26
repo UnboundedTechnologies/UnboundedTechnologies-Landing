@@ -24,18 +24,17 @@ const PATH_SEGMENTS = 320;
 const RADIAL_SEGMENTS = 32;
 const TUBE_RADIUS = 0.16;
 
-// Five color stops for a smoother brand gradient than three.
-const STOPS: [number, THREE.Color][] = [
-  [0.0, new THREE.Color('#5d6fff')],
-  [0.25, new THREE.Color('#7a72ff')],
-  [0.5, new THREE.Color('#a35dff')],
-  [0.75, new THREE.Color('#7e95ff')],
-  [1.0, new THREE.Color('#5dc7ff')],
-];
+// Three pure brand colors at the corners of the curve's bounding box. Using fewer,
+// more saturated stops (instead of intermediate "muddy" interpolations) makes the
+// hue separation visible: cyan on the left, purple in the center, blue on the right.
+const BRAND_CYAN = new THREE.Color('#5dc7ff');
+const BRAND_PURPLE = new THREE.Color('#a35dff');
+const BRAND_BLUE = new THREE.Color('#5d6fff');
 
-// Lower HDR boost than before because lighting now contributes to brightness;
-// pushing too high blows out the iridescent highlights.
-const HDR_BOOST = 0.95;
+// Curve bounds; used to normalize vertex.x for position-based color mapping.
+const CURVE_X_HALF = 1.4;
+
+const HDR_BOOST = 1.05;
 
 class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
   public constructor() {
@@ -43,23 +42,32 @@ class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
   }
   override getPoint(t: number): THREE.Vector3 {
     const angle = t * Math.PI * 2;
-    const x = 1.4 * Math.sin(angle);
+    const x = CURVE_X_HALF * Math.sin(angle);
     const y = 0.65 * Math.sin(angle * 2);
-    return new THREE.Vector3(x, y, 0);
+    // Subtle Z undulation so the front and back of the crossing have real depth.
+    // Without this, both halves of the loop sit on z=0 and the crossing reads
+    // as a flat X instead of one tube passing in front of the other.
+    const z = 0.2 * Math.sin(angle);
+    return new THREE.Vector3(x, y, z);
   }
 }
 
-function colorAt(t: number, out: THREE.Color): void {
-  for (let i = 0; i < STOPS.length - 1; i++) {
-    const [t0, c0] = STOPS[i];
-    const [t1, c1] = STOPS[i + 1];
-    if (t >= t0 && t <= t1) {
-      const local = (t - t0) / (t1 - t0);
-      out.copy(c0).lerp(c1, local);
-      return;
-    }
+// Spatial color mapping: the gradient is anchored to where the vertex is in 3D space,
+// not where it is along the path. Result: at the crossing both tubes share the same
+// local color, so the X disappears and reads as a continuous infinity.
+function colorAtPosition(x: number, y: number, out: THREE.Color): void {
+  // Normalize x from [-CURVE_X_HALF, +CURVE_X_HALF] to [0, 1].
+  const tx = Math.max(0, Math.min(1, (x + CURVE_X_HALF) / (2 * CURVE_X_HALF)));
+  // Three-stop mapping: cyan at left edge, purple at center, blue at right edge.
+  if (tx < 0.5) {
+    out.copy(BRAND_CYAN).lerp(BRAND_PURPLE, tx * 2);
+  } else {
+    out.copy(BRAND_PURPLE).lerp(BRAND_BLUE, (tx - 0.5) * 2);
   }
-  out.copy(STOPS[STOPS.length - 1][1]);
+  // Lift saturation slightly toward the top of the loop, deepen toward the bottom.
+  // y ranges roughly [-0.65, +0.65]. Brighten by up to 12% at the top.
+  const lift = 1 + (y / 0.65) * 0.12;
+  out.multiplyScalar(Math.max(0.85, Math.min(1.15, lift)));
 }
 
 function InfinityMesh() {
@@ -78,19 +86,21 @@ function InfinityMesh() {
     const curve = new InfinityCurveClass();
     const geo = new THREE.TubeGeometry(curve, PATH_SEGMENTS, TUBE_RADIUS, RADIAL_SEGMENTS, true);
 
-    const positionCount = geo.attributes.position.count;
+    const positions = geo.attributes.position;
+    const positionCount = positions.count;
     const colors = new Float32Array(positionCount * 3);
     const tmp = new THREE.Color();
 
-    for (let i = 0; i <= PATH_SEGMENTS; i++) {
-      const t = i / PATH_SEGMENTS;
-      colorAt(t, tmp);
-      for (let j = 0; j <= RADIAL_SEGMENTS; j++) {
-        const idx = (i * (RADIAL_SEGMENTS + 1) + j) * 3;
-        colors[idx] = tmp.r * HDR_BOOST;
-        colors[idx + 1] = tmp.g * HDR_BOOST;
-        colors[idx + 2] = tmp.b * HDR_BOOST;
-      }
+    // Iterate every vertex (not just the rings) and color by 3D position.
+    // This is what removes the visible X at the crossing.
+    for (let i = 0; i < positionCount; i++) {
+      const x = positions.getX(i);
+      const y = positions.getY(i);
+      colorAtPosition(x, y, tmp);
+      const idx = i * 3;
+      colors[idx] = tmp.r * HDR_BOOST;
+      colors[idx + 1] = tmp.g * HDR_BOOST;
+      colors[idx + 2] = tmp.b * HDR_BOOST;
     }
 
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
@@ -109,15 +119,15 @@ function InfinityMesh() {
         <meshPhysicalMaterial
           vertexColors
           toneMapped={false}
-          metalness={0.55}
-          roughness={0.2}
+          metalness={0.4}
+          roughness={0.18}
           iridescence={1.0}
-          iridescenceIOR={1.5}
-          iridescenceThicknessRange={[120, 580]}
+          iridescenceIOR={1.45}
+          iridescenceThicknessRange={[200, 720]}
           clearcoat={1.0}
-          clearcoatRoughness={0.06}
-          emissive={'#a35dff'}
-          emissiveIntensity={0.18}
+          clearcoatRoughness={0.05}
+          emissive={'#ffffff'}
+          emissiveIntensity={0.06}
         />
       </mesh>
     </Float>
