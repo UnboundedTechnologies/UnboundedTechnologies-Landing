@@ -31,7 +31,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-bg text-text font-sans antialiased">{children}</body>
+      {/* suppressHydrationWarning on body tolerates attributes injected by browser
+          extensions (e.g. ColorZilla's `cz-shortcut-listen`, Grammarly's `data-gramm`,
+          translation extensions, etc.) which would otherwise produce hydration mismatch
+          warnings in DevTools. The attributes are not in our control. */}
+      <body className="bg-bg text-text font-sans antialiased" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
