@@ -84,7 +84,6 @@ export function InfinityLogo3D() {
         gl={{ antialias: true, alpha: true }}
       >
         <Suspense fallback={null}>
-          <color attach="background" args={[0, 0, 0]} />
           <InfinityMesh />
           <EffectComposer>
             <Bloom intensity={1.4} luminanceThreshold={0.55} luminanceSmoothing={0.6} mipmapBlur />
