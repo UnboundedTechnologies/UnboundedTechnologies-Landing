@@ -115,8 +115,10 @@ function InfinityMesh() {
   }, []);
 
   return (
-    // Calmer Float so the mesh does not drift outside the canvas viewport.
-    <Float speed={1.2} rotationIntensity={0.12} floatIntensity={0.18}>
+    // floatIntensity at 0 with explicit floatingRange of [0, 0] disables Float's
+    // positional drift entirely, leaving only the rotation tweens it adds. If the
+    // logo had been visibly off-center, this rules out Float as the cause.
+    <Float speed={1.2} rotationIntensity={0.12} floatIntensity={0} floatingRange={[0, 0]}>
       <mesh ref={ref} geometry={geometry}>
         {/* Iridescent physical material: vertex colors carry the brand gradient base,
             iridescence shifts hue at glancing angles so the surface shimmers as it
