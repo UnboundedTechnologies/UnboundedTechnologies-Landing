@@ -1,18 +1,20 @@
 'use client';
-import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
-const InfinityLogo3D = dynamic(() => import('./infinity-logo-3d').then((m) => m.InfinityLogo3D), {
-  ssr: false,
-  loading: () => (
-    <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-  ),
-});
+// Use React.lazy directly instead of next/dynamic. In Next 16 with cacheComponents
+// the dynamic+Suspense interaction had a remount quirk where the loading fallback
+// would stick on back-navigation. React.lazy behaves more predictably and the
+// chunk is still split out of the initial bundle. ssr=false equivalent is achieved
+// by the parent being a 'use client' component with the InfinityLogo3D file also
+// being a client module (it imports R3F which is browser-only).
+const InfinityLogo3D = lazy(() =>
+  import('./infinity-logo-3d').then((m) => ({ default: m.InfinityLogo3D })),
+);
 
 export function Hero() {
   const t = useTranslations('hero');
