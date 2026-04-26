@@ -156,11 +156,17 @@ export function InfinityLogo3D() {
         // Camera moved further back so rotation never clips the mesh edges.
         camera={{ position: [0, 0, 5], fov: 45 }}
         dpr={[1, 2]}
+        // frameloop=always guarantees the render loop runs every frame even after
+        // back-navigation or bfcache restoration. Without this, the Canvas can
+        // remount but the loop stays paused and the mesh appears frozen.
+        frameloop="always"
         gl={{ antialias: true, alpha: true, premultipliedAlpha: false }}
         // Force the WebGL clear color to be fully transparent so the page background
-        // (aurora orbs, glow halo, etc.) shows through behind the mesh.
-        onCreated={({ gl }) => {
+        // (aurora orbs, glow halo, etc.) shows through behind the mesh. Also kicks
+        // an immediate frame request to bootstrap the loop on first paint.
+        onCreated={({ gl, invalidate }) => {
           gl.setClearColor(0x000000, 0);
+          invalidate();
         }}
       >
         <Suspense fallback={null}>

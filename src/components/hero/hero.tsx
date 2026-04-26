@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
@@ -16,6 +16,22 @@ const InfinityLogo3D = dynamic(() => import('./infinity-logo-3d').then((m) => m.
 
 export function Hero() {
   const t = useTranslations('hero');
+
+  // Force a clean remount of the 3D canvas when the browser restores this page
+  // from bfcache (back/forward navigation). Without this, the Canvas instance is
+  // restored from the snapshot but the WebGL render loop stays paused and the
+  // logo appears stuck on a single frame.
+  const [canvasKey, setCanvasKey] = useState(0);
+  useEffect(() => {
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        setCanvasKey((k) => k + 1);
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       <AuroraOrbs />
@@ -52,7 +68,7 @@ export function Hero() {
               filter: 'blur(36px)',
             }}
           />
-          <div className="relative w-full h-full motion-reduce:hidden">
+          <div className="relative w-full h-full motion-reduce:hidden" key={canvasKey}>
             <Suspense
               fallback={
                 <div className="flex items-center justify-center h-full">
