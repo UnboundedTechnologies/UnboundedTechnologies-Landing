@@ -42,19 +42,21 @@ export function Hero() {
             </ButtonLink>
           </div>
         </div>
-        <div className="h-[400px] md:h-[500px] motion-reduce:hidden">
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center h-full">
-                <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-              </div>
-            }
-          >
-            <InfinityLogo3D />
-          </Suspense>
-        </div>
-        <div className="hidden motion-reduce:flex items-center justify-center h-[400px]">
-          <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+        <div className="h-[400px] md:h-[500px] flex items-center justify-center">
+          <div className="w-full h-full motion-reduce:hidden">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-full">
+                  <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+                </div>
+              }
+            >
+              <InfinityLogo3D />
+            </Suspense>
+          </div>
+          <div className="hidden motion-reduce:block">
+            <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+          </div>
         </div>
       </div>
       <div className="absolute bottom-6 left-6 right-6 flex justify-between font-mono text-[10px] text-text-faint">
