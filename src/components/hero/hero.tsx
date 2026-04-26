@@ -1,21 +1,40 @@
 'use client';
-import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { Suspense } from 'react';
+import { type ComponentType, useEffect, useState } from 'react';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
-const InfinityLogo3D = dynamic(() => import('./infinity-logo-3d').then((m) => m.InfinityLogo3D), {
-  ssr: false,
-  loading: () => (
-    <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-  ),
-});
+// Manual lazy loading via local state. Replaces both next/dynamic and React.lazy:
+// - next/dynamic with `loading` plus an outer Suspense had a documented stuck-loading
+//   bug after back-navigation; the chunk module was cached but the dynamic Suspense
+//   state never reset on the second mount.
+// - React.lazy broke initial paint entirely in this Cache-Components configuration.
+//
+// Pure useState + useEffect is the most predictable: state is local to this Hero
+// instance, so unmount/remount (back-nav, bfcache) always resets to null and the
+// useEffect re-imports. The browser's module cache makes the second import resolve
+// in microseconds. No Suspense, no chunk-cache state machine that can get stuck.
+function use3DLogo(): ComponentType | null {
+  const [Component, setComponent] = useState<ComponentType | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    import('./infinity-logo-3d').then((mod) => {
+      if (!cancelled) {
+        setComponent(() => mod.InfinityLogo3D);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return Component;
+}
 
 export function Hero() {
   const t = useTranslations('hero');
+  const InfinityLogo3D = use3DLogo();
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -54,15 +73,13 @@ export function Hero() {
             }}
           />
           <div className="relative w-full h-full motion-reduce:hidden">
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center h-full">
-                  <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-                </div>
-              }
-            >
+            {InfinityLogo3D ? (
               <InfinityLogo3D />
-            </Suspense>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+              </div>
+            )}
           </div>
           <div className="hidden motion-reduce:block relative">
             <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
