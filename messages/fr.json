@@ -1,0 +1,13 @@
+{
+  "nav": { "work": "Travaux", "services": "Services", "about": "À propos", "contact": "Contact", "startProject": "Démarrer un projet" },
+  "hero": {
+    "eyebrow": "— Architecture cloud · Toronto",
+    "headlineLead": "Le cloud à",
+    "headlineAccent": "l'échelle de la confiance.",
+    "subhead": "Architecture cloud et CPaaS pour les entreprises qui ne peuvent pas se permettre d'échouer.",
+    "ctaPrimary": "Démarrer un projet",
+    "ctaSecondary": "Voir nos projets",
+    "scrollCue": "Faites défiler"
+  },
+  "presence": { "available": "Disponible", "offline": "Hors ligne" }
+}

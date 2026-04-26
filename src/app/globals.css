@@ -1,13 +1,59 @@
 @import "tailwindcss";
 
-/* Full design tokens, themes, and grain land in Phase 1 */
-:root {
-  color-scheme: dark;
-  background: #07060d;
+@theme {
+  --color-bg: #07060d;
+  --color-bg-elevated: #0d0c16;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.16);
+  --color-text: #f4f5fa;
+  --color-text-muted: #bcbed0;
+  --color-text-faint: #666b80;
+  --color-brand-blue: #5d6fff;
+  --color-brand-purple: #a35dff;
+  --color-brand-cyan: #5dc7ff;
+  --color-success: #4ade80;
+  --color-warn: #fbbf24;
+  --color-error: #f87171;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-micro: 120ms;
+  --duration-short: 240ms;
+  --duration-medium: 480ms;
+  --duration-long: 720ms;
+  --duration-cinematic: 1200ms;
+  --stagger: 60ms;
 }
 
-html, body {
-  background: #07060d;
-  color: #f4f5fa;
-  font-family: system-ui, sans-serif;
+:root { color-scheme: dark; }
+
+* { transition-timing-function: var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
+
+[data-theme="cinematic"] { --color-bg: #040308; }
+
+.aurora-text {
+  background: linear-gradient(135deg, var(--color-brand-blue) 0%, var(--color-brand-purple) 50%, var(--color-brand-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grain::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 100;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+}
+[data-theme="cinematic"] .grain::before { opacity: 0.05; }

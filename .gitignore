@@ -39,3 +39,4 @@ docs/superpowers/
 # Generated content
 public/lighthouse.json.tmp
 .contentlayer/
+tsconfig.tsbuildinfo

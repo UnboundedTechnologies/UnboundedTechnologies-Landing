@@ -1,0 +1,13 @@
+{
+  "nav": { "work": "Work", "services": "Services", "about": "About", "contact": "Contact", "startProject": "Start a project" },
+  "hero": {
+    "eyebrow": "— Cloud architecture · Toronto",
+    "headlineLead": "Cloud at the",
+    "headlineAccent": "scale of trust.",
+    "subhead": "Senior cloud and CPaaS engineering for enterprises that can't afford to fail.",
+    "ctaPrimary": "Start a project",
+    "ctaSecondary": "View work",
+    "scrollCue": "Scroll to explore"
+  },
+  "presence": { "available": "Available", "offline": "Offline" }
+}
