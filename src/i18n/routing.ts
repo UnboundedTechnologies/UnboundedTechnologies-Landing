@@ -8,6 +8,9 @@ export const routing = defineRouting({
   locales,
   defaultLocale,
   localePrefix: 'always',
+  // English is the default and the bare URL (any path that gets to the locale middleware
+  // without an /en or /fr prefix) MUST resolve to English. Browser Accept-Language is ignored.
+  localeDetection: false,
   pathnames: {
     '/': '/',
     '/work': { en: '/work', fr: '/travaux' },
