@@ -1,20 +1,36 @@
 'use client';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogo3D } from './infinity-logo-3d';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
-// Static import of the 3D logo. Lazy loading via next/dynamic, React.lazy, and
-// manual useState/useEffect have all proven unreliable across navigation in this
-// Next 16 + Cache Components setup. The 3D logo is the brand centerpiece on the
-// homepage so the bundle-size cost (R3F + three.js, around 500KB) is acceptable
-// for the reliability win: the Canvas mounts on every visit, fresh WebGL context
-// every time, no broken state across back-navigation.
+// Static import + client-only mount gate. The 3D Canvas component is imported
+// at module top so the chunk is ready immediately, but it is only RENDERED
+// after the Hero has mounted on the client (mounted=true). This avoids:
+//
+// - Lazy-loading state machines (next/dynamic, React.lazy, manual setState)
+//   that have proven unreliable across navigation in this Next 16 setup.
+// - SSR hydration mismatches between an empty placeholder on the server and
+//   the WebGL canvas on the client.
+//
+// Trade-off: R3F + three (around 500KB) is in the initial JS bundle for the
+// homepage. Acceptable cost for a brand centerpiece that has to render every
+// time, including back-navigation.
 
 export function Hero() {
   const t = useTranslations('hero');
+
+  // mounted starts false; the static SVG fallback renders during SSR and the
+  // initial client paint. After the first useEffect tick, mounted flips to
+  // true and the 3D Canvas takes over. This pattern ensures the Canvas is
+  // only ever instantiated on the client where WebGL is available.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -40,9 +56,7 @@ export function Hero() {
           </div>
         </div>
         <div className="relative h-[400px] md:h-[500px] flex items-center justify-center">
-          {/* Glow halo behind the canvas. The WebGL scene cannot illuminate the DOM,
-              so this radial gradient fakes the illusion that the logo casts brand-colored
-              light onto the surrounding hero area, removing the visible canvas boundary. */}
+          {/* Glow halo behind the canvas. */}
           <div
             className="absolute inset-0 pointer-events-none"
             aria-hidden
@@ -53,7 +67,13 @@ export function Hero() {
             }}
           />
           <div className="relative w-full h-full motion-reduce:hidden">
-            <InfinityLogo3D />
+            {mounted ? (
+              <InfinityLogo3D />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+              </div>
+            )}
           </div>
           <div className="hidden motion-reduce:block relative">
             <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
