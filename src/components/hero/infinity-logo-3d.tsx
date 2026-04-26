@@ -1,10 +1,24 @@
 'use client';
-import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Bloom, ChromaticAberration, EffectComposer } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import { Suspense, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+
+// Silence the THREE.Clock deprecation warning emitted by react-three-fiber's
+// internal frame loop. R3F still uses Clock; the deprecation is upstream noise
+// the owner does not want surfacing in DevTools. Runs once when this module is
+// first evaluated on the client, before any Canvas instantiates the warning.
+if (typeof window !== 'undefined') {
+  const originalWarn = console.warn.bind(console);
+  console.warn = (...args: unknown[]) => {
+    if (typeof args[0] === 'string' && /THREE\.Clock.*deprecated/i.test(args[0])) {
+      return;
+    }
+    originalWarn(...args);
+  };
+}
 
 const PATH_SEGMENTS = 320;
 const RADIAL_SEGMENTS = 32;
@@ -19,7 +33,9 @@ const STOPS: [number, THREE.Color][] = [
   [1.0, new THREE.Color('#5dc7ff')],
 ];
 
-const HDR_BOOST = 1.45;
+// Lower HDR boost than before because lighting now contributes to brightness;
+// pushing too high blows out the iridescent highlights.
+const HDR_BOOST = 0.95;
 
 class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
   public constructor() {
@@ -85,7 +101,24 @@ function InfinityMesh() {
     // Calmer Float so the mesh does not drift outside the canvas viewport.
     <Float speed={1.2} rotationIntensity={0.12} floatIntensity={0.18}>
       <mesh ref={ref} geometry={geometry}>
-        <meshBasicMaterial vertexColors toneMapped={false} />
+        {/* Iridescent physical material: vertex colors carry the brand gradient base,
+            iridescence shifts hue at glancing angles so the surface shimmers as it
+            rotates, clearcoat adds a wet glossy top layer, lights contribute the
+            highlights and shading that previously made the tube look like a flat
+            colored ribbon. The combination reads as glass-glow rather than as solid. */}
+        <meshPhysicalMaterial
+          vertexColors
+          toneMapped={false}
+          metalness={0.55}
+          roughness={0.2}
+          iridescence={1.0}
+          iridescenceIOR={1.5}
+          iridescenceThicknessRange={[120, 580]}
+          clearcoat={1.0}
+          clearcoatRoughness={0.06}
+          emissive={'#a35dff'}
+          emissiveIntensity={0.18}
+        />
       </mesh>
     </Float>
   );
@@ -106,6 +139,14 @@ export function InfinityLogo3D() {
         }}
       >
         <Suspense fallback={null}>
+          {/* Lighting rig: ambient softens shadows, three colored point lights
+              create the iridescent shimmer effect from different angles, one
+              white directional light keeps the gradient readable. */}
+          <ambientLight intensity={0.35} />
+          <pointLight position={[3, 2.5, 4]} intensity={3.2} color="#5d6fff" />
+          <pointLight position={[-3, -2, 4]} intensity={2.8} color="#a35dff" />
+          <pointLight position={[0, 3.5, 2.5]} intensity={2.2} color="#5dc7ff" />
+          <directionalLight position={[2, 3, 5]} intensity={0.9} color="#ffffff" />
           <InfinityMesh />
           <EffectComposer>
             <Bloom intensity={1.6} luminanceThreshold={0.5} luminanceSmoothing={0.7} mipmapBlur />

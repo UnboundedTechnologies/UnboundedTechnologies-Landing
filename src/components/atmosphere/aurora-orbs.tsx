@@ -2,7 +2,10 @@ import { cn } from '@/lib/utils';
 
 export function AuroraOrbs({ className }: { className?: string }) {
   return (
-    <div className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)} aria-hidden>
+    <div
+      className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}
+      aria-hidden
+    >
       <div
         className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full opacity-60"
         style={{

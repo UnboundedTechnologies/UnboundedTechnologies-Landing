@@ -1,6 +1,6 @@
-import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
-import { locales, defaultLocale } from './config';
+import { defineRouting } from 'next-intl/routing';
+import { defaultLocale, locales } from './config';
 
 export type { Locale } from './config';
 

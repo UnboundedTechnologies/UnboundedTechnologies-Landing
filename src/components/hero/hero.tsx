@@ -1,21 +1,18 @@
 'use client';
-import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
-import { Eyebrow } from '@/components/primitives/eyebrow';
-import { ButtonLink } from '@/components/primitives/button';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
+import { ButtonLink } from '@/components/primitives/button';
+import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
-const InfinityLogo3D = dynamic(
-  () => import('./infinity-logo-3d').then((m) => m.InfinityLogo3D),
-  {
-    ssr: false,
-    loading: () => (
-      <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-    ),
-  },
-);
+const InfinityLogo3D = dynamic(() => import('./infinity-logo-3d').then((m) => m.InfinityLogo3D), {
+  ssr: false,
+  loading: () => (
+    <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+  ),
+});
 
 export function Hero() {
   const t = useTranslations('hero');

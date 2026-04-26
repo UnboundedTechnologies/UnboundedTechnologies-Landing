@@ -1,9 +1,9 @@
+import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing, type Locale } from '@/i18n/routing';
-import { TopNav } from '@/components/nav/top-nav';
 import { Footer } from '@/components/nav/footer';
+import { TopNav } from '@/components/nav/top-nav';
+import { type Locale, routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

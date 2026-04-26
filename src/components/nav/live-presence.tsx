@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { torontoTimeString, isWorkingHours } from '@/lib/time';
+import { useEffect, useState } from 'react';
+import { isWorkingHours, torontoTimeString } from '@/lib/time';
 
 export function LivePresence() {
   const t = useTranslations('presence');
@@ -18,7 +18,9 @@ export function LivePresence() {
 
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono backdrop-blur-md">
-      <span className={`h-1.5 w-1.5 rounded-full ${working ? 'bg-success animate-pulse' : 'bg-text-faint'}`} />
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${working ? 'bg-success animate-pulse' : 'bg-text-faint'}`}
+      />
       <span className="uppercase tracking-widest text-text-muted">
         {working ? t('available') : t('offline')} · Toronto · {time} EDT
       </span>

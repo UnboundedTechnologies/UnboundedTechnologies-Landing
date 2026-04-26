@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils';
 import { type AnchorHTMLAttributes, forwardRef } from 'react';
 import { Link } from '@/i18n/routing';
+import { cn } from '@/lib/utils';
 
 type Variant = 'gradient' | 'ghost' | 'mono';
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: Variant; href: string };
