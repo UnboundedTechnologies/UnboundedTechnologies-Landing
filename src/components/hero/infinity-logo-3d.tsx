@@ -1,9 +1,9 @@
 'use client';
 import { Float } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Bloom, ChromaticAberration, EffectComposer } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { Suspense, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 // Silence the THREE.Clock deprecation warning emitted by react-three-fiber's
@@ -75,6 +75,30 @@ function colorAtPosition(x: number, y: number, out: THREE.Color): void {
   } else {
     out.copy(BRAND_PURPLE).lerp(BRAND_CYAN, (t - 0.5) * 2);
   }
+}
+
+// Frame-kicker: listens for browser events that commonly leave the WebGL render
+// loop in a paused state (page visibility flips, bfcache restoration, focus
+// regaining) and explicitly calls invalidate() so the next frame request is
+// queued. Belt-and-suspenders alongside the Hero's pageshow/popstate remount key.
+function CanvasFrameKicker() {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    function kick() {
+      invalidate();
+    }
+    document.addEventListener('visibilitychange', kick);
+    window.addEventListener('pageshow', kick);
+    window.addEventListener('focus', kick);
+    // Kick once on mount to bootstrap.
+    invalidate();
+    return () => {
+      document.removeEventListener('visibilitychange', kick);
+      window.removeEventListener('pageshow', kick);
+      window.removeEventListener('focus', kick);
+    };
+  }, [invalidate]);
+  return null;
 }
 
 function InfinityMesh() {
@@ -170,6 +194,7 @@ export function InfinityLogo3D() {
         }}
       >
         <Suspense fallback={null}>
+          <CanvasFrameKicker />
           {/* Calmer lighting: previous rig had four bright lights that were washing the
               vertex colors into pale lavender. Now: soft white ambient for base
               readability, plus two gentle white directional lights for shading depth.

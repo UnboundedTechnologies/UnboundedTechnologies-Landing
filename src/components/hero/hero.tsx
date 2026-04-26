@@ -7,29 +7,35 @@ import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
+// No `loading` fallback on dynamic; the Suspense boundary handles loading state.
+// This avoids two competing fallback paths confusing each other on remount.
 const InfinityLogo3D = dynamic(() => import('./infinity-logo-3d').then((m) => m.InfinityLogo3D), {
   ssr: false,
-  loading: () => (
-    <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-  ),
 });
 
 export function Hero() {
   const t = useTranslations('hero');
 
-  // Force a clean remount of the 3D canvas when the browser restores this page
-  // from bfcache (back/forward navigation). Without this, the Canvas instance is
-  // restored from the snapshot but the WebGL render loop stays paused and the
-  // logo appears stuck on a single frame.
+  // canvasKey starts at 0 (deterministic for prerender; cacheComponents forbids
+  // Date.now() during render). On every browser navigation event (back/forward,
+  // bfcache restore, pageshow) the key bumps and the Suspense subtree fully
+  // remounts, forcing a fresh WebGL context.
   const [canvasKey, setCanvasKey] = useState(0);
+
   useEffect(() => {
+    function bump() {
+      setCanvasKey((k) => k + 1);
+    }
     function handlePageShow(event: PageTransitionEvent) {
-      if (event.persisted) {
-        setCanvasKey((k) => k + 1);
-      }
+      // Catches bfcache restoration AND ordinary back-navigation page shows.
+      bump();
     }
     window.addEventListener('pageshow', handlePageShow);
-    return () => window.removeEventListener('pageshow', handlePageShow);
+    window.addEventListener('popstate', bump);
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+      window.removeEventListener('popstate', bump);
+    };
   }, []);
 
   return (
@@ -68,8 +74,9 @@ export function Hero() {
               filter: 'blur(36px)',
             }}
           />
-          <div className="relative w-full h-full motion-reduce:hidden" key={canvasKey}>
+          <div className="relative w-full h-full motion-reduce:hidden">
             <Suspense
+              key={canvasKey}
               fallback={
                 <div className="flex items-center justify-center h-full">
                   <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
