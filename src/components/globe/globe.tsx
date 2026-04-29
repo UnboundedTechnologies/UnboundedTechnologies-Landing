@@ -5,17 +5,14 @@ import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-// WebGL globe with continent outlines (from topojson world-atlas) drawn on
-// the surface, city markers, and great-circle routes from a Toronto hub
-// drawn flush against the surface. Loaded only when the section enters the
-// viewport (see globe-section.tsx); the topojson data is pulled in via a
-// dynamic import inside the Continents component, so it never lands in the
-// initial bundle.
+// WebGL globe with continent outlines, surface-level routes from a Toronto
+// hub, and city markers. Loaded only when the section enters the viewport
+// (see globe-section.tsx).
 //
-// Cities are deliberately a small set of recognisable hubs spanning the
-// hemispheres so the globe never reads as Toronto-only. Routes all
-// originate from Toronto to communicate "delivered from here, deployed
-// everywhere" without saying it in copy.
+// The continents are streamed as topojson from /public/data, then converted
+// into a single LineSegments BufferGeometry on the client. Routes are great-
+// circle interpolations along the sphere surface (the "flight tracker"
+// silhouette).
 
 type City = {
   name: string;
@@ -35,11 +32,11 @@ const SPOKES: ReadonlyArray<City> = [
 ];
 
 const SPHERE_RADIUS = 1;
-const CONTINENTS_LIFT = 1.001;
-const ROUTES_LIFT = 1.004;
-const MARKER_LIFT = 1.012;
+const CONTINENTS_LIFT = 1.005;
+const ROUTES_LIFT = 1.012;
+const MARKER_LIFT = 1.018;
+const HUB_PIN_HEIGHT = 0.16;
 const ARC_POINTS = 96;
-const GROUP_SCALE = 0.85;
 
 function latLngToVec3(lat: number, lng: number, r: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -51,9 +48,6 @@ function latLngToVec3(lat: number, lng: number, r: number): THREE.Vector3 {
   );
 }
 
-// Great-circle interpolation between two points on the sphere. Standard slerp
-// formula: any point along the arc is a weighted sum of the endpoints, where
-// the weights are sin of complementary fractions of the central angle.
 function greatCirclePoints(a: THREE.Vector3, b: THREE.Vector3, n: number): THREE.Vector3[] {
   const angle = a.angleTo(b);
   const sinAngle = Math.sin(angle);
@@ -72,12 +66,38 @@ function CityMarker({ city }: { city: City }) {
   return (
     <group position={pos}>
       <mesh>
-        <sphereGeometry args={[0.018, 16, 16]} />
+        <sphereGeometry args={[0.022, 16, 16]} />
         <meshBasicMaterial color={city.color} toneMapped={false} />
       </mesh>
       <mesh>
-        <sphereGeometry args={[0.038, 16, 16]} />
-        <meshBasicMaterial color={city.color} transparent opacity={0.18} toneMapped={false} />
+        <sphereGeometry args={[0.05, 16, 16]} />
+        <meshBasicMaterial color={city.color} transparent opacity={0.22} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+// Toronto pin: a vertical line above the surface plus a glowing tip so the
+// hub is unambiguously identifiable on the globe even at small sizes.
+function HubPin({ city }: { city: City }) {
+  const surface = useMemo(
+    () => latLngToVec3(city.lat, city.lng, SPHERE_RADIUS),
+    [city.lat, city.lng],
+  );
+  const tip = useMemo(
+    () => latLngToVec3(city.lat, city.lng, SPHERE_RADIUS + HUB_PIN_HEIGHT),
+    [city.lat, city.lng],
+  );
+  return (
+    <group>
+      <Line points={[surface, tip]} color={city.color} lineWidth={2} />
+      <mesh position={tip}>
+        <sphereGeometry args={[0.038, 20, 20]} />
+        <meshBasicMaterial color={city.color} toneMapped={false} />
+      </mesh>
+      <mesh position={tip}>
+        <sphereGeometry args={[0.08, 20, 20]} />
+        <meshBasicMaterial color={city.color} transparent opacity={0.25} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -89,60 +109,64 @@ function Route({ from, to, color }: { from: THREE.Vector3; to: THREE.Vector3; co
     for (const p of lifted) p.normalize().multiplyScalar(ROUTES_LIFT);
     return lifted;
   }, [from, to]);
-  return <Line points={points} color={color} lineWidth={1.4} transparent opacity={0.85} />;
+  return <Line points={points} color={color} lineWidth={1.6} transparent opacity={0.9} />;
 }
 
-// Continent outlines from world-atlas land-110m.json. Loaded lazily so the
-// 55 KB topojson never lands in the initial JS bundle. Once loaded, the
-// MultiPolygon rings are flattened into a single LineSegments BufferGeometry
-// for the GPU to render in one draw call.
+// biome-ignore lint/suspicious/noExplicitAny: topojson schema typing not worth a generic dance
+type RingArray = any[][];
+
 function Continents() {
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const [{ feature }, topology] = await Promise.all([
-        import('topojson-client'),
-        import('world-atlas/land-110m.json'),
-      ]);
-      if (cancelled) return;
-      // biome-ignore lint/suspicious/noExplicitAny: topojson schema typing not worth a generic dance
-      const topo = topology.default as any;
-      // biome-ignore lint/suspicious/noExplicitAny: same as above
-      const land = feature(topo, topo.objects.land) as any;
-      const positions: number[] = [];
+      try {
+        const [{ feature }, res] = await Promise.all([
+          import('topojson-client'),
+          fetch('/data/world-land-110m.json'),
+        ]);
+        if (!res.ok) throw new Error(`world-land fetch ${res.status}`);
+        const topology = await res.json();
+        if (cancelled) return;
 
-      // biome-ignore lint/suspicious/noExplicitAny: GeoJSON nested arrays
-      const pushSegments = (rings: any[][]) => {
-        for (const ring of rings) {
-          for (let i = 0; i < ring.length - 1; i++) {
-            const [lng1, lat1] = ring[i];
-            const [lng2, lat2] = ring[i + 1];
-            const v1 = latLngToVec3(lat1, lng1, CONTINENTS_LIFT);
-            const v2 = latLngToVec3(lat2, lng2, CONTINENTS_LIFT);
-            positions.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+        // biome-ignore lint/suspicious/noExplicitAny: same as above
+        const land = feature(topology, topology.objects.land) as any;
+        const positions: number[] = [];
+
+        const pushSegments = (rings: RingArray) => {
+          for (const ring of rings) {
+            for (let i = 0; i < ring.length - 1; i++) {
+              const [lng1, lat1] = ring[i];
+              const [lng2, lat2] = ring[i + 1];
+              const v1 = latLngToVec3(lat1, lng1, CONTINENTS_LIFT);
+              const v2 = latLngToVec3(lat2, lng2, CONTINENTS_LIFT);
+              positions.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+            }
+          }
+        };
+
+        if (land.geometry?.type === 'MultiPolygon') {
+          for (const polygon of land.geometry.coordinates) pushSegments(polygon);
+        } else if (land.geometry?.type === 'Polygon') {
+          pushSegments(land.geometry.coordinates);
+        } else if (land.type === 'FeatureCollection') {
+          for (const f of land.features) {
+            if (f.geometry?.type === 'MultiPolygon') {
+              for (const p of f.geometry.coordinates) pushSegments(p);
+            } else if (f.geometry?.type === 'Polygon') {
+              pushSegments(f.geometry.coordinates);
+            }
           }
         }
-      };
 
-      if (land.geometry.type === 'MultiPolygon') {
-        for (const polygon of land.geometry.coordinates) pushSegments(polygon);
-      } else if (land.geometry.type === 'Polygon') {
-        pushSegments(land.geometry.coordinates);
-      } else if (land.type === 'FeatureCollection') {
-        for (const f of land.features) {
-          if (f.geometry.type === 'MultiPolygon') {
-            for (const p of f.geometry.coordinates) pushSegments(p);
-          } else if (f.geometry.type === 'Polygon') {
-            pushSegments(f.geometry.coordinates);
-          }
-        }
+        if (cancelled) return;
+        const geom = new THREE.BufferGeometry();
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        setGeometry(geom);
+      } catch (err) {
+        console.warn('[Globe] continents load failed:', err);
       }
-
-      const geom = new THREE.BufferGeometry();
-      geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-      setGeometry(geom);
     })();
     return () => {
       cancelled = true;
@@ -154,7 +178,7 @@ function Continents() {
   return (
     <lineSegments>
       <primitive object={geometry} attach="geometry" />
-      <lineBasicMaterial color="#7c8eff" transparent opacity={0.85} toneMapped={false} />
+      <lineBasicMaterial color="#9aacff" transparent opacity={0.95} toneMapped={false} />
     </lineSegments>
   );
 }
@@ -163,42 +187,31 @@ function Scene() {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.08;
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.06;
   });
 
-  const hubPos = useMemo(() => latLngToVec3(HUB.lat, HUB.lng, ROUTES_LIFT), []);
-  const spokePositions = useMemo(
+  const hubRoutePos = useMemo(() => latLngToVec3(HUB.lat, HUB.lng, ROUTES_LIFT), []);
+  const spokeRoutePositions = useMemo(
     () => SPOKES.map((c) => latLngToVec3(c.lat, c.lng, ROUTES_LIFT)),
     [],
   );
 
   return (
-    <group ref={groupRef} rotation={[0.18, 0, 0]} scale={GROUP_SCALE}>
+    <group ref={groupRef} rotation={[0.18, 0, 0]}>
       <mesh>
         <sphereGeometry args={[SPHERE_RADIUS, 64, 48]} />
-        <meshBasicMaterial color="#0a0915" transparent opacity={0.96} toneMapped={false} />
-      </mesh>
-
-      <mesh>
-        <sphereGeometry args={[SPHERE_RADIUS, 48, 36]} />
-        <meshBasicMaterial
-          color="#1a1530"
-          wireframe
-          transparent
-          opacity={0.18}
-          toneMapped={false}
-        />
+        <meshBasicMaterial color="#0a0915" transparent opacity={0.95} toneMapped={false} />
       </mesh>
 
       <Continents />
 
-      <CityMarker city={HUB} />
+      <HubPin city={HUB} />
       {SPOKES.map((c) => (
         <CityMarker key={c.name} city={c} />
       ))}
 
-      {spokePositions.map((to, i) => (
-        <Route key={SPOKES[i].name} from={hubPos} to={to} color={SPOKES[i].color} />
+      {spokeRoutePositions.map((to, i) => (
+        <Route key={SPOKES[i].name} from={hubRoutePos} to={to} color={SPOKES[i].color} />
       ))}
     </group>
   );
@@ -207,7 +220,7 @@ function Scene() {
 export function Globe() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 4.5], fov: 45 }}
+      camera={{ position: [0, 0, 3.2], fov: 45 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       onCreated={({ gl }) => {
