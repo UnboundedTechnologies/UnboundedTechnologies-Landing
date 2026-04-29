@@ -45,5 +45,10 @@
     "p3Num": "03 / SCALE",
     "p3Title": "Serverless & Event-Driven",
     "p3Body": "Lambda (Node, Python, Java), SNS/SQS, API Gateway, DynamoDB. Microservices découplés qui passent à l'échelle du milliard."
+  },
+  "impactGraph": {
+    "eyebrow": "- Le graphe d'impact",
+    "headlineLead": "Chaque capacité,",
+    "headlineAccent": "reliée à un impact mesurable."
   }
 }
