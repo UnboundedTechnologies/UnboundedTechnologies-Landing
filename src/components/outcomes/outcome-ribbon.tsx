@@ -42,7 +42,7 @@ export function OutcomeRibbon() {
   const t = useTranslations('outcomes');
 
   return (
-    <section className="py-20">
+    <section aria-label="Client outcomes" className="py-20">
       <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-3 gap-6">
         {OUTCOMES.map((o) => (
           <div
