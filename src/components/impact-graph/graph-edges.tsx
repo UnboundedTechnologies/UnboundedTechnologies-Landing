@@ -61,15 +61,17 @@ export function GraphEdges({ rects, width, height }: Props) {
         })}
       </svg>
 
-      {routed.map(({ edge, midX, midY }, i) => {
+      {routed.map(({ edge, midX, midY, orientation }, i) => {
         const stroke = COLOR_HEX[edge.color];
+        const offsetX = orientation === 'vertical' ? 64 : 0;
+        const offsetY = orientation === 'horizontal' ? -36 : 0;
         return (
           <motion.div
             key={`pill-${edge.from}-${edge.to}`}
             className="graph-pill absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{
-              left: midX,
-              top: midY - 36,
+              left: midX + offsetX,
+              top: midY + offsetY,
               ['--pill-glow' as string]: `${stroke}55`,
             }}
             initial={{ opacity: 0, scale: 0.85, y: 6 }}

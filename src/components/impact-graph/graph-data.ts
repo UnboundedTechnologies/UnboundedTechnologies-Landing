@@ -30,7 +30,7 @@ export const NODES: ReadonlyArray<Node> = [
   {
     id: 'gateway',
     label: 'API Gateway · SNS · SQS',
-    sub: 'integration layer',
+    sub: 'Integration Layer',
     href: '/work/aws-connect-ivr',
     color: 'purple',
     category: 'capability',
@@ -54,7 +54,7 @@ export const NODES: ReadonlyArray<Node> = [
   {
     id: 'forex',
     label: 'Forex Referential',
-    sub: 'Java · geocoding',
+    sub: 'Java · Geocoding',
     href: '/work/renault-forex',
     color: 'purple',
     category: 'capability',
@@ -62,7 +62,7 @@ export const NODES: ReadonlyArray<Node> = [
   {
     id: 'hybrid',
     label: 'Hybrid GCP + AWS',
-    sub: 'DataLake · #1 ranked',
+    sub: 'DataLake · #1 Ranked',
     href: '/work/renault-forex',
     color: 'cyan',
     category: 'outcome',
@@ -82,6 +82,13 @@ export const EDGES: ReadonlyArray<Edge> = [
     to: 'connect',
     primary: 'Real-time',
     secondary: 'IVR · Pinpoint',
+    color: 'purple',
+  },
+  {
+    from: 'gateway',
+    to: 'forex',
+    primary: 'p95 < 100ms',
+    secondary: 'production latency',
     color: 'purple',
   },
   { from: 'clients', to: 'forex', primary: '4B calls', secondary: 'per month', color: 'blue' },
