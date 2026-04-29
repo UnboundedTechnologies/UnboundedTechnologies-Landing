@@ -1,0 +1,3 @@
+Source: three.js examples (mrdoob/three.js), MIT licensed.
+Originals: NASA Visible Earth (public domain).
+Files retrieved from raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/.
