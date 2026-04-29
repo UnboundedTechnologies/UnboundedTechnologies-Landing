@@ -1,5 +1,5 @@
 'use client';
-import { Line } from '@react-three/drei';
+import { Line, OrbitControls } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { useTranslations } from 'next-intl';
@@ -204,6 +204,21 @@ export function Globe() {
         <directionalLight position={[3, 2, 4]} intensity={1.25} color="#ffffff" />
         <directionalLight position={[-2, -1, -3]} intensity={0.18} color="#7c8eff" />
         <Scene />
+        <OrbitControls
+          enablePan={false}
+          enableZoom
+          enableRotate
+          enableDamping
+          dampingFactor={0.08}
+          rotateSpeed={0.55}
+          zoomSpeed={0.6}
+          minDistance={1.6}
+          maxDistance={6}
+          minPolarAngle={0.4}
+          maxPolarAngle={Math.PI - 0.4}
+          autoRotate={false}
+          makeDefault
+        />
         <EffectComposer>
           <Bloom intensity={0.6} luminanceThreshold={0.62} luminanceSmoothing={0.6} mipmapBlur />
         </EffectComposer>
