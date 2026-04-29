@@ -1,89 +1,13 @@
 'use client';
 import { motion } from 'motion/react';
 import { useMemo } from 'react';
-import { COLOR_HEX, EDGES, type Edge } from './graph-data';
-import type { CardRect } from './use-card-positions';
+import { type CardRect, COLOR_HEX, EDGES, type RoutedEdge, routeEdge } from './graph-data';
 
 type Props = {
   rects: Record<string, CardRect>;
   width: number;
   height: number;
 };
-
-type RoutedEdge = {
-  edge: Edge;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  midX: number;
-  midY: number;
-  orientation: 'horizontal' | 'vertical' | 'diagonal';
-};
-
-function routeEdge(edge: Edge, rects: Record<string, CardRect>): RoutedEdge | null {
-  const a = rects[edge.from];
-  const b = rects[edge.to];
-  if (!a || !b) return null;
-  const aCx = a.x + a.width / 2;
-  const aCy = a.y + a.height / 2;
-  const bCx = b.x + b.width / 2;
-  const bCy = b.y + b.height / 2;
-
-  const sameRow = Math.abs(aCy - bCy) < a.height * 0.5;
-  const sameCol = Math.abs(aCx - bCx) < a.width * 0.5;
-
-  let x1: number;
-  let y1: number;
-  let x2: number;
-  let y2: number;
-  let orientation: RoutedEdge['orientation'];
-
-  if (sameRow) {
-    if (aCx < bCx) {
-      x1 = a.x + a.width;
-      y1 = aCy;
-      x2 = b.x;
-      y2 = bCy;
-    } else {
-      x1 = a.x;
-      y1 = aCy;
-      x2 = b.x + b.width;
-      y2 = bCy;
-    }
-    orientation = 'horizontal';
-  } else if (sameCol) {
-    if (aCy < bCy) {
-      x1 = aCx;
-      y1 = a.y + a.height;
-      x2 = bCx;
-      y2 = b.y;
-    } else {
-      x1 = aCx;
-      y1 = a.y;
-      x2 = bCx;
-      y2 = b.y + b.height;
-    }
-    orientation = 'vertical';
-  } else {
-    x1 = aCx;
-    y1 = aCy;
-    x2 = bCx;
-    y2 = bCy;
-    orientation = 'diagonal';
-  }
-
-  return {
-    edge,
-    x1,
-    y1,
-    x2,
-    y2,
-    midX: (x1 + x2) / 2,
-    midY: (y1 + y2) / 2,
-    orientation,
-  };
-}
 
 export function GraphEdges({ rects, width, height }: Props) {
   const routed = useMemo(
@@ -94,69 +18,77 @@ export function GraphEdges({ rects, width, height }: Props) {
   if (routed.length === 0 || width === 0 || height === 0) return null;
 
   return (
-    <svg
-      className="absolute inset-0 pointer-events-none"
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      aria-hidden
-      role="presentation"
-      focusable="false"
-    >
-      {routed.map(({ edge, x1, y1, x2, y2, midX, midY, orientation }, i) => {
+    <div className="absolute inset-0 pointer-events-none" aria-hidden>
+      <svg
+        className="absolute inset-0"
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        role="presentation"
+        aria-hidden
+        focusable="false"
+      >
+        {routed.map(({ edge, x1, y1, x2, y2 }, i) => {
+          const stroke = COLOR_HEX[edge.color];
+          return (
+            <g key={`line-${edge.from}-${edge.to}`}>
+              <motion.line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={stroke}
+                strokeWidth={1.25}
+                strokeOpacity={0.35}
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 1.0, delay: 0.4 + i * 0.18, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={stroke}
+                strokeWidth={1.5}
+                strokeOpacity={0.95}
+                strokeLinecap="round"
+                className="graph-energy-line"
+              />
+            </g>
+          );
+        })}
+      </svg>
+
+      {routed.map(({ edge, midX, midY }, i) => {
         const stroke = COLOR_HEX[edge.color];
-        const labelOffset = orientation === 'horizontal' ? -16 : 8;
-        const textAnchor = orientation === 'vertical' ? 'start' : 'middle';
-        const labelX = orientation === 'vertical' ? midX + 18 : midX;
-        const labelY = midY + labelOffset;
         return (
-          <g key={`${edge.from}-${edge.to}`}>
-            <motion.line
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={stroke}
-              strokeWidth={1.25}
-              strokeOpacity={0.35}
-              initial={{ pathLength: 0, opacity: 0 }}
-              whileInView={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.0, delay: 0.4 + i * 0.18, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: true, margin: '-80px' }}
-            />
-            <line
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={stroke}
-              strokeWidth={1.5}
-              strokeOpacity={0.95}
-              strokeLinecap="round"
-              className="graph-energy-line"
-            />
-            <motion.text
-              x={labelX}
-              y={labelY}
-              fill={stroke}
-              fontSize={12}
-              fontWeight={500}
-              fontFamily="ui-monospace, monospace"
-              textAnchor={textAnchor}
-              stroke="#07060d"
-              strokeWidth={4}
-              paintOrder="stroke"
-              strokeLinejoin="round"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 0.95 }}
-              transition={{ duration: 0.4, delay: 1.0 + i * 0.18 }}
-              viewport={{ once: true, margin: '-80px' }}
+          <motion.div
+            key={`pill-${edge.from}-${edge.to}`}
+            className="graph-pill absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{
+              left: midX,
+              top: midY,
+              ['--pill-glow' as string]: `${stroke}55`,
+            }}
+            initial={{ opacity: 0, scale: 0.85, y: 6 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 1.0 + i * 0.18, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, margin: '-80px' }}
+          >
+            <div
+              className="px-3 py-1.5 rounded-full border bg-bg-elevated/70 backdrop-blur-md font-mono text-[11px] flex items-baseline gap-1.5 whitespace-nowrap shadow-lg"
+              style={{ borderColor: stroke }}
             >
-              {edge.impact}
-            </motion.text>
-          </g>
+              <span className="font-semibold text-text">{edge.primary}</span>
+              {edge.secondary && (
+                <span className="text-text-muted font-normal">{edge.secondary}</span>
+              )}
+            </div>
+          </motion.div>
         );
       })}
-    </svg>
+    </div>
   );
 }

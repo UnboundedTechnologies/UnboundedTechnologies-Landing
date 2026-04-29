@@ -131,3 +131,20 @@ main > section {
     scroll-snap-align: none;
   }
 }
+
+@keyframes graph-pill-pulse {
+  0%, 100% {
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.25),
+      0 0 0 0 var(--pill-glow, transparent);
+  }
+  50% {
+    box-shadow:
+      0 4px 18px rgba(0, 0, 0, 0.3),
+      0 0 18px 2px var(--pill-glow, transparent);
+  }
+}
+
+.graph-pill > div {
+  animation: graph-pill-pulse 3.6s ease-in-out infinite;
+}

@@ -13,13 +13,38 @@ export type Node = {
 export type Edge = {
   from: string;
   to: string;
-  impact: string;
+  primary: string;
+  secondary?: string;
   color: GraphColor;
 };
 
 export const NODES: ReadonlyArray<Node> = [
   {
-    id: 'user',
+    id: 'lambda',
+    label: 'AWS Lambda',
+    sub: 'Node · Python · Java',
+    href: '/work/aws-connect-ivr',
+    color: 'blue',
+    category: 'origin',
+  },
+  {
+    id: 'gateway',
+    label: 'API Gateway · SNS · SQS',
+    sub: 'integration layer',
+    href: '/work/aws-connect-ivr',
+    color: 'purple',
+    category: 'capability',
+  },
+  {
+    id: 'connect',
+    label: 'Amazon Connect · Pinpoint',
+    sub: 'CPaaS · CCaaS',
+    href: '/work/aws-connect-ivr',
+    color: 'cyan',
+    category: 'outcome',
+  },
+  {
+    id: 'clients',
     label: '2,500 internal clients',
     sub: 'Renault Group',
     href: '/work/renault-forex',
@@ -27,53 +52,46 @@ export const NODES: ReadonlyArray<Node> = [
     category: 'origin',
   },
   {
-    id: 'apigw',
-    label: 'API Gateway · Lambda',
-    sub: 'Forex Referential',
+    id: 'forex',
+    label: 'Forex Referential',
+    sub: 'Java · geocoding',
     href: '/work/renault-forex',
     color: 'purple',
     category: 'capability',
   },
   {
-    id: 'connect',
-    label: 'Amazon Connect',
-    sub: 'AWS · Toronto',
-    href: '/work/aws-connect-ivr',
+    id: 'hybrid',
+    label: 'Hybrid GCP + AWS',
+    sub: 'DataLake · #1 ranked',
+    href: '/work/renault-forex',
     color: 'cyan',
-    category: 'outcome',
-  },
-  {
-    id: 'java',
-    label: 'Java geocoding',
-    sub: 'Renault city repo',
-    href: '/work/renault-forex',
-    color: 'blue',
-    category: 'origin',
-  },
-  {
-    id: 'sns',
-    label: 'SNS · DynamoDB',
-    sub: 'decoupled events',
-    href: '/work/etba-erp',
-    color: 'purple',
-    category: 'capability',
-  },
-  {
-    id: 'erp',
-    label: 'React + Spring Boot',
-    sub: 'ETBA Construction',
-    href: '/work/etba-erp',
-    color: 'purple',
     category: 'outcome',
   },
 ];
 
 export const EDGES: ReadonlyArray<Edge> = [
-  { from: 'user', to: 'apigw', impact: '4B calls/mo', color: 'blue' },
-  { from: 'apigw', to: 'connect', impact: 'IVR + Salesforce', color: 'cyan' },
-  { from: 'apigw', to: 'sns', impact: 'event-driven', color: 'purple' },
-  { from: 'java', to: 'sns', impact: '200K addresses/batch', color: 'blue' },
-  { from: 'sns', to: 'erp', impact: '35% faster procurement', color: 'purple' },
+  {
+    from: 'lambda',
+    to: 'gateway',
+    primary: 'Multi-runtime',
+    secondary: 'production-grade',
+    color: 'blue',
+  },
+  {
+    from: 'gateway',
+    to: 'connect',
+    primary: 'Real-time',
+    secondary: 'IVR · Pinpoint',
+    color: 'purple',
+  },
+  { from: 'clients', to: 'forex', primary: '4B calls', secondary: 'per month', color: 'blue' },
+  {
+    from: 'forex',
+    to: 'hybrid',
+    primary: '0 data-loss',
+    secondary: '3 years uptime',
+    color: 'purple',
+  },
 ];
 
 export const COLOR_HEX: Record<GraphColor, string> = {
@@ -81,3 +99,80 @@ export const COLOR_HEX: Record<GraphColor, string> = {
   purple: '#a35dff',
   cyan: '#5dc7ff',
 };
+
+export type CardRect = { x: number; y: number; width: number; height: number };
+
+export type RoutedEdge = {
+  edge: Edge;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  midX: number;
+  midY: number;
+  orientation: 'horizontal' | 'vertical' | 'diagonal';
+};
+
+export function routeEdge(edge: Edge, rects: Record<string, CardRect>): RoutedEdge | null {
+  const a = rects[edge.from];
+  const b = rects[edge.to];
+  if (!a || !b) return null;
+  const aCx = a.x + a.width / 2;
+  const aCy = a.y + a.height / 2;
+  const bCx = b.x + b.width / 2;
+  const bCy = b.y + b.height / 2;
+
+  const sameRow = Math.abs(aCy - bCy) < a.height * 0.5;
+  const sameCol = Math.abs(aCx - bCx) < a.width * 0.5;
+
+  let x1: number;
+  let y1: number;
+  let x2: number;
+  let y2: number;
+  let orientation: RoutedEdge['orientation'];
+
+  if (sameRow) {
+    if (aCx < bCx) {
+      x1 = a.x + a.width;
+      y1 = aCy;
+      x2 = b.x;
+      y2 = bCy;
+    } else {
+      x1 = a.x;
+      y1 = aCy;
+      x2 = b.x + b.width;
+      y2 = bCy;
+    }
+    orientation = 'horizontal';
+  } else if (sameCol) {
+    if (aCy < bCy) {
+      x1 = aCx;
+      y1 = a.y + a.height;
+      x2 = bCx;
+      y2 = b.y;
+    } else {
+      x1 = aCx;
+      y1 = a.y;
+      x2 = bCx;
+      y2 = b.y + b.height;
+    }
+    orientation = 'vertical';
+  } else {
+    x1 = aCx;
+    y1 = aCy;
+    x2 = bCx;
+    y2 = bCy;
+    orientation = 'diagonal';
+  }
+
+  return {
+    edge,
+    x1,
+    y1,
+    x2,
+    y2,
+    midX: (x1 + x2) / 2,
+    midY: (y1 + y2) / 2,
+    orientation,
+  };
+}
