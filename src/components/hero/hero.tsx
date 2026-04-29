@@ -17,7 +17,7 @@ export function Hero() {
   const t = useTranslations('hero');
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative -mt-16 min-h-[100svh] flex items-center overflow-hidden">
       <AuroraOrbs />
       <div className="relative mx-auto max-w-7xl w-full px-6 grid md:grid-cols-2 gap-12 items-center">
         <div>
