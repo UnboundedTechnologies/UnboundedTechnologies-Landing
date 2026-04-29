@@ -45,7 +45,7 @@ export function TrustedByStrip() {
                 <img
                   src={c.src}
                   alt={c.name}
-                  className="max-h-full w-auto max-w-[150px] object-contain"
+                  className="h-10 w-auto max-w-[150px] object-contain"
                   loading="lazy"
                   decoding="async"
                 />
