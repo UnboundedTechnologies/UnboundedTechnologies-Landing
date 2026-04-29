@@ -5,7 +5,6 @@ import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { useTranslations } from 'next-intl';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Atmosphere } from './atmosphere';
 import { CloudsSphere } from './clouds-sphere';
 import { EarthSphere } from './earth-sphere';
 import { HubLabel } from './hub-label';
@@ -174,22 +173,19 @@ function Scene() {
   );
 
   return (
-    <>
-      <group ref={groupRef} rotation={[0.18, 0, 0]}>
-        <EarthSphere />
-        <CloudsSphere />
-        <Continents />
-        <HubPin city={HUB} />
-        {SPOKES.map((c) => (
-          <CityMarker key={c.name} city={c} />
-        ))}
-        {spokeRoutePositions.map((to, i) => (
-          <Route key={SPOKES[i].name} from={hubRoutePos} to={to} color={SPOKES[i].color} />
-        ))}
-        <HubLabel position={hubLabelPos} primary={t('hubName')} secondary={t('hubRegion')} />
-      </group>
-      <Atmosphere />
-    </>
+    <group ref={groupRef} rotation={[0.18, 0, 0]}>
+      <EarthSphere />
+      <CloudsSphere />
+      <Continents />
+      <HubPin city={HUB} />
+      {SPOKES.map((c) => (
+        <CityMarker key={c.name} city={c} />
+      ))}
+      {spokeRoutePositions.map((to, i) => (
+        <Route key={SPOKES[i].name} from={hubRoutePos} to={to} color={SPOKES[i].color} />
+      ))}
+      <HubLabel position={hubLabelPos} primary={t('hubName')} secondary={t('hubRegion')} />
+    </group>
   );
 }
 
