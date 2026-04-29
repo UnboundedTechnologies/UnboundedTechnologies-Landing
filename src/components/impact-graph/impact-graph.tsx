@@ -1,19 +1,38 @@
 'use client';
-import { motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { EDGES, type GraphColor, NODES } from './graph-data';
+import { GraphCard } from './graph-card';
+import { NODES } from './graph-data';
+import { GraphEdges } from './graph-edges';
+import { useCardPositions } from './use-card-positions';
 
-const COLOR: Record<GraphColor, string> = {
-  blue: '#5d6fff',
-  purple: '#a35dff',
-  cyan: '#5dc7ff',
-};
-
-const EASE_OUT_QUART = [0.16, 1, 0.3, 1] as const;
+const NODE_IDS = NODES.map((n) => n.id);
 
 export function ImpactGraph() {
   const t = useTranslations('impactGraph');
+  const { containerRef, register, rects, recompute } = useCardPositions(NODE_IDS);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      setContainerSize({ width: el.offsetWidth, height: el.offsetHeight });
+    };
+    update();
+    if (typeof ResizeObserver !== 'undefined') {
+      const obs = new ResizeObserver(update);
+      obs.observe(el);
+      return () => obs.disconnect();
+    }
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [containerRef]);
+
+  useEffect(() => {
+    if (containerSize.width > 0) recompute();
+  }, [containerSize.width, recompute]);
 
   return (
     <section className="relative py-24 md:py-32 overflow-hidden">
@@ -33,95 +52,25 @@ export function ImpactGraph() {
           <span className="aurora-text">{t('headlineAccent')}</span>
         </h2>
 
-        <svg
-          viewBox="0 0 800 380"
-          className="mt-12 w-full h-auto"
-          role="img"
-          aria-label={t('eyebrow')}
+        <div
+          ref={containerRef}
+          className="relative mt-16 grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-y-20 gap-x-8 md:gap-x-24"
         >
-          <title>{t('eyebrow')}</title>
-          {EDGES.map((e, i) => {
-            const from = NODES.find((n) => n.id === e.from);
-            const to = NODES.find((n) => n.id === e.to);
-            if (!from || !to) return null;
-            const x1 = from.x + 60;
-            const y1 = from.y + 20;
-            const x2 = to.x;
-            const y2 = to.y + 20;
-            const mid = { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
-            return (
-              <g key={`${e.from}-${e.to}`}>
-                <motion.line
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke={COLOR[e.color]}
-                  strokeWidth="1.5"
-                  strokeDasharray="6 4"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 1.2, delay: 0.2 + i * 0.3, ease: EASE_OUT_QUART }}
-                  viewport={{ once: true, margin: '-100px' }}
-                />
-                <motion.text
-                  x={mid.x}
-                  y={mid.y - 6}
-                  fill={COLOR[e.color]}
-                  fontSize="10"
-                  fontFamily="monospace"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.4, delay: 0.6 + i * 0.3 }}
-                  viewport={{ once: true }}
-                >
-                  {e.impact}
-                </motion.text>
-              </g>
-            );
-          })}
           {NODES.map((n, i) => (
-            <motion.g
+            <GraphCard
               key={n.id}
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.15 }}
-              viewport={{ once: true }}
-            >
-              <rect
-                x={n.x}
-                y={n.y}
-                width="120"
-                height="40"
-                rx="6"
-                fill={`${COLOR[n.color]}1f`}
-                stroke={COLOR[n.color]}
-                strokeWidth="1"
-              />
-              <text
-                x={n.x + 60}
-                y={n.y + 18}
-                fill="#f4f5fa"
-                fontSize="11"
-                fontFamily="Inter, sans-serif"
-                fontWeight="600"
-                textAnchor="middle"
-              >
-                {n.label}
-              </text>
-              <text
-                x={n.x + 60}
-                y={n.y + 31}
-                fill={COLOR[n.color]}
-                fontSize="9"
-                fontFamily="monospace"
-                textAnchor="middle"
-              >
-                {n.sub}
-              </text>
-            </motion.g>
+              ref={register(n.id)}
+              label={n.label}
+              sub={n.sub}
+              color={n.color}
+              category={n.category}
+              index={i}
+            />
           ))}
-        </svg>
+          <div className="hidden md:block">
+            <GraphEdges rects={rects} width={containerSize.width} height={containerSize.height} />
+          </div>
+        </div>
       </div>
     </section>
   );

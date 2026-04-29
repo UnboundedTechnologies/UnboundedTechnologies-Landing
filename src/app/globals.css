@@ -100,3 +100,13 @@
 .services-orb {
   animation: services-orb-drift 8s var(--ease-out) infinite;
 }
+
+@keyframes graph-energy {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+
+.graph-energy-line {
+  stroke-dasharray: 6 14;
+  animation: graph-energy 1.6s linear infinite;
+}
