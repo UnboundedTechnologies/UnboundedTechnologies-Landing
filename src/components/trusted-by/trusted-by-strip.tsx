@@ -4,21 +4,33 @@ import { Eyebrow } from '@/components/primitives/eyebrow';
 // Full-color logo strip with a staggered entrance fade-up and a gentle hover
 // lift.
 //
-// Visual harmony approach: every <li> is a uniform-height (h-10 = 40px)
-// flex container. Every logo - text wordmark or SVG - is centered inside.
-// SVGs use `max-h-full max-w-[150px] w-auto object-contain` so they scale
-// down to fit the 40px row regardless of their native viewBox aspect ratio.
-// Wordmarks use text-2xl which optically pairs with a 40px row when the
-// SVG content fills the row vertically.
+// Each SVG carries its own height class because the source files have
+// different internal padding ratios. Sizing all SVGs to the same container
+// height looks uneven because Melty's "melty." text fills its full viewBox
+// (no padding), while Renault Group's stacked "Renault / Group" leaves
+// vertical room above and below the strokes. Per-logo heights are tuned
+// for optical letter-size parity (each visible letter is ~20-24px tall):
+//
+//   BMO at h-9    -> ~28px letters (BMO seal+text uses most of the viewBox)
+//   Renault at h-12 -> "Renault" word ~20px, "Group" subtext smaller
+//   Melty at h-6  -> "melty." body text ~22px (text fills the viewBox)
+//   text-2xl wordmarks -> caps ~22px (matches the letter heights above)
 
-type Client = { name: string; kind: 'wordmark' } | { name: string; kind: 'svg'; src: string };
+type Client =
+  | { name: string; kind: 'wordmark' }
+  | { name: string; kind: 'svg'; src: string; sizeClass: string };
 
 const CLIENTS: ReadonlyArray<Client> = [
   { name: 'AWS', kind: 'wordmark' },
-  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg' },
+  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-9 max-w-[120px]' },
   { name: 'S.i Systems', kind: 'wordmark' },
-  { name: 'Renault Group', kind: 'svg', src: '/logos/renault.svg' },
-  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg' },
+  {
+    name: 'Renault Group',
+    kind: 'svg',
+    src: '/logos/renault.svg',
+    sizeClass: 'h-12 max-w-[140px]',
+  },
+  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-6 max-w-[110px]' },
   { name: 'ETBA', kind: 'wordmark' },
 ];
 
@@ -33,7 +45,7 @@ export function TrustedByStrip() {
           {CLIENTS.map((c, i) => (
             <li
               key={c.name}
-              className="trusted-by-logo flex items-center justify-center h-10 transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105"
+              className="trusted-by-logo flex items-center justify-center transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               {c.kind === 'wordmark' ? (
@@ -45,7 +57,7 @@ export function TrustedByStrip() {
                 <img
                   src={c.src}
                   alt={c.name}
-                  className="h-10 w-auto max-w-[150px] object-contain"
+                  className={`${c.sizeClass} w-auto object-contain`}
                   loading="lazy"
                   decoding="async"
                 />
