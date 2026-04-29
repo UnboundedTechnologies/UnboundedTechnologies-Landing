@@ -62,7 +62,7 @@ export function ServicesPillars() {
           {PILLARS.map((p) => (
             <div
               key={p.titleKey}
-              className="relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8"
+              className="relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col"
             >
               {/* Corner glow overlay. Inline style for the brand color so each
                   card has its own; sizing/positioning kept in Tailwind. */}
@@ -80,7 +80,7 @@ export function ServicesPillars() {
               <p className="relative text-sm text-text-muted leading-relaxed mb-5">
                 {t(p.bodyKey)}
               </p>
-              <div className="relative flex flex-wrap gap-2">
+              <div className="relative flex flex-wrap gap-2 mt-auto">
                 {p.tags.map((tag) => (
                   <span
                     key={tag}
