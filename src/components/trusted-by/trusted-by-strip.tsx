@@ -3,19 +3,26 @@ import { Eyebrow } from '@/components/primitives/eyebrow';
 
 // Grayscale logo strip. Logos render desaturated and dimmed by default; on hover
 // the entire row gains color. Renault, BMO, Melty, ETBA are SVGs already in
-// public/logos/ (normalized by Task 1). AWS and S.i Systems render as styled
-// wordmarks because the owner explicitly asked for AWS as a wordmark, and the
-// available S.i Systems asset is a multi-color JPEG with a white background
-// that does not survive a grayscale + opacity treatment cleanly.
+// public/logos/. AWS and S.i Systems render as styled wordmarks because the
+// owner explicitly asked for AWS as a wordmark, and the available S.i Systems
+// asset is a multi-color JPEG with a white background that does not survive
+// a grayscale + opacity treatment cleanly.
+//
+// Each SVG entry carries its own `sizeClass` because the source files have
+// wildly different aspect ratios. Without per-logo sizing, h-8 w-auto would
+// make wide wordmarks (Melty) huge and square logos (ETBA) tiny. Hand-tuned
+// widths and heights normalize the visual weight across the row.
 
-type Client = { name: string; kind: 'wordmark' } | { name: string; kind: 'svg'; src: string };
+type Client =
+  | { name: string; kind: 'wordmark' }
+  | { name: string; kind: 'svg'; src: string; sizeClass: string };
 
 const CLIENTS: ReadonlyArray<Client> = [
   { name: 'AWS', kind: 'wordmark' },
-  { name: 'Renault', kind: 'svg', src: '/logos/renault.svg' },
-  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg' },
-  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg' },
-  { name: 'ETBA', kind: 'svg', src: '/logos/etba.svg' },
+  { name: 'Renault', kind: 'svg', src: '/logos/renault.svg', sizeClass: 'h-9 max-w-[120px]' },
+  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-8 max-w-[110px]' },
+  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-5 max-w-[100px]' },
+  { name: 'ETBA', kind: 'svg', src: '/logos/etba.svg', sizeClass: 'h-12 max-w-[60px]' },
   { name: 'S.i Systems', kind: 'wordmark' },
 ];
 
@@ -32,20 +39,19 @@ export function TrustedByStrip() {
         >
           {CLIENTS.map((c) =>
             c.kind === 'wordmark' ? (
-              <li key={c.name} className="text-2xl font-semibold tracking-tight text-text">
+              <li
+                key={c.name}
+                className="flex items-center justify-center h-12 text-xl font-semibold tracking-tight text-text whitespace-nowrap"
+              >
                 {c.name}
               </li>
             ) : (
-              <li key={c.name}>
-                {/* Plain <img> rather than next/image so we don't need
-                    dangerouslyAllowSVG: true. SVGs are tiny static assets. */}
+              <li key={c.name} className="flex items-center justify-center h-12">
                 {/* biome-ignore lint/performance/noImgElement: SVG logos are tiny; next/image requires dangerouslyAllowSVG */}
                 <img
                   src={c.src}
                   alt={c.name}
-                  className="h-8 w-auto"
-                  width={120}
-                  height={32}
+                  className={`${c.sizeClass} w-auto object-contain`}
                   loading="lazy"
                   decoding="async"
                 />

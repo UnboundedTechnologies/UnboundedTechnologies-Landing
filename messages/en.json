@@ -31,7 +31,7 @@
     "p1Body": "AWS (expert), GCP, Azure. Hybrid topologies, IaC with Terraform, cost & security audits, well-architected reviews.",
     "p2Num": "02 / SPECIALTY",
     "p2Title": "Contact Center Modernization",
-    "p2Body": "Amazon Connect migrations, IVR design, Salesforce CRM integration, Pinpoint & End-User Messaging.",
+    "p2Body": "Amazon Connect migrations, IVR design, SNS messaging fan-out, Pinpoint & End-User Messaging.",
     "p3Num": "03 / SCALE",
     "p3Title": "Serverless & Event-Driven",
     "p3Body": "Lambda (Node, Python, Java), SNS/SQS, API Gateway, DynamoDB. Decoupled microservices that scale to billions."
