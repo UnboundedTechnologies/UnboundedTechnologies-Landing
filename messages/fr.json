@@ -9,5 +9,31 @@
     "ctaSecondary": "Voir nos projets",
     "scrollCue": "Faites défiler"
   },
-  "presence": { "available": "Disponible", "offline": "Hors ligne" }
+  "presence": { "available": "Disponible", "offline": "Hors ligne" },
+  "trustedBy": {
+    "eyebrow": "— Clients actuels et anciens"
+  },
+  "outcomes": {
+    "renaultStat": "4B+",
+    "renaultUnit": "appels API / mois",
+    "renaultContext": "Classé n°1 dans le DataLake de Renault",
+    "etbaStat": "35%",
+    "etbaUnit": "Approvisionnement plus rapide",
+    "etbaContext": "Modernisation ERP Construction ETBA",
+    "uptimeStat": "0",
+    "uptimeUnit": "Incident de perte de données · 3 ans",
+    "uptimeContext": "Architecture hybride GCP + AWS, Renault Group"
+  },
+  "services": {
+    "eyebrow": "— Services",
+    "p1Num": "01 / CORE",
+    "p1Title": "Architecture Cloud",
+    "p1Body": "AWS (expert), GCP, Azure. Topologies hybrides, IaC avec Terraform, audits de coût et sécurité, revues well-architected.",
+    "p2Num": "02 / SPÉCIALITÉ",
+    "p2Title": "Modernisation Centre de Contact",
+    "p2Body": "Migrations Amazon Connect, conception SVI, intégration CRM Salesforce, Pinpoint & End-User Messaging.",
+    "p3Num": "03 / SCALE",
+    "p3Title": "Serverless & Event-Driven",
+    "p3Body": "Lambda (Node, Python, Java), SNS/SQS, API Gateway, DynamoDB. Microservices découplés qui passent à l'échelle du milliard."
+  }
 }
