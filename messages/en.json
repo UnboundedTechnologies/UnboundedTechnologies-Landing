@@ -25,6 +25,13 @@
     "uptimeUnit": "Data-loss incidents · 3 years",
     "uptimeContext": "Hybrid GCP + AWS architecture, Renault Group"
   },
+  "globe": {
+    "eyebrow": "— Proof of scale",
+    "headlineLead": "Across continents.",
+    "headlineAccent": "At the scale enterprise demands.",
+    "counterTitle": "Cumulative API calls shipped",
+    "counterUnit": "+47 / sec · live counter · since 2020"
+  },
   "services": {
     "eyebrow": "— Services",
     "p1Num": "01 / CORE",

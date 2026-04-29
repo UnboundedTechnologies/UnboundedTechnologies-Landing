@@ -1,4 +1,5 @@
 import { setRequestLocale } from 'next-intl/server';
+import { GlobeSection } from '@/components/globe/globe-section';
 import { Hero } from '@/components/hero/hero';
 import { OutcomeRibbon } from '@/components/outcomes/outcome-ribbon';
 import { ServicesPillars } from '@/components/services/services-pillars';
@@ -12,6 +13,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Hero />
       <TrustedByStrip />
       <OutcomeRibbon />
+      <GlobeSection />
       <ServicesPillars />
     </>
   );
