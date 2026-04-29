@@ -1,108 +1,100 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { InfinityLogo3D } from './infinity-logo-3d';
 
-// Layout-level WebGL Canvas owner. See project_back_nav_bug.md / commit history
-// for the full story; in short: the Canvas is mounted ONCE in the layout and
-// never tears down across in-app navigation. Visibility is determined by
-// whether `[data-hero-canvas-anchor]` exists in the DOM.
+// Layout-level WebGL Canvas owner. Mounted ONCE in [locale]/layout.tsx and
+// persists across every in-app navigation, so the Canvas never has to tear
+// down and rebuild.
 //
-// Diagnostic build: console.logs are intentionally present while the back-nav
-// bug is being chased. Once the fix lands and is verified, the logs go away.
+// The wrapper's position is driven by an imperative requestAnimationFrame
+// loop that reads the Hero anchor's bounding rect and writes inline styles
+// directly to the wrapper DOM node. No React state, no observers: rAF is
+// the single source of truth.
+//
+// IMPORTANT: the wrapper is NEVER set to display:none, and never sized to
+// 0x0. When no anchor is present we move it off-screen with a large negative
+// top instead. Earlier versions hid via display:none and observed that the
+// browser would release the WebGL GPU context for the offscreen canvas (we
+// captured `[InfinityLogo3D] WebGL context lost` in the browser console).
+// When the user navigated back to /en the context was dead and the canvas
+// could not redraw. Keeping the canvas continuously on the layer tree, even
+// if positioned outside the viewport, keeps the context alive.
 
 const ANCHOR_SELECTOR = '[data-hero-canvas-anchor]';
-const LOG_PREFIX = '[PersistentInfinityLogo]';
-
-type Box = { top: number; left: number; width: number; height: number };
+const OFFSCREEN_TOP = -10000;
 
 export function PersistentInfinityLogo() {
-  const [box, setBox] = useState<Box | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    console.log(`${LOG_PREFIX} effect mount`);
-    let currentAnchor: Element | null = null;
-    let ro: ResizeObserver | null = null;
-    let reconcileCount = 0;
+    let raf = 0;
+    let lastKey = '';
 
-    function readBox(target: Element) {
-      const rect = target.getBoundingClientRect();
-      console.log(`${LOG_PREFIX} readBox`, {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      });
-      setBox({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    function applyOffscreen() {
+      const w = wrapperRef.current;
+      if (!w) return;
+      const key = 'offscreen';
+      if (key === lastKey) return;
+      lastKey = key;
+      w.style.top = `${OFFSCREEN_TOP}px`;
+      w.style.left = '0px';
+      w.style.width = '400px';
+      w.style.height = '400px';
+      w.setAttribute('aria-hidden', 'true');
     }
 
-    function reconcile(reason: string) {
-      reconcileCount += 1;
-      const found = document.querySelector(ANCHOR_SELECTOR);
-      console.log(`${LOG_PREFIX} reconcile #${reconcileCount} reason=${reason}`, {
-        foundAnchor: !!found,
-        sameAsCurrent: found === currentAnchor,
-        currentAnchorWas: !!currentAnchor,
-      });
-      if (found === currentAnchor) {
-        if (currentAnchor) readBox(currentAnchor);
+    function applyRect(rect: DOMRect) {
+      const w = wrapperRef.current;
+      if (!w) return;
+      const key = `${rect.top}|${rect.left}|${rect.width}|${rect.height}`;
+      if (key === lastKey) return;
+      lastKey = key;
+      w.style.top = `${rect.top}px`;
+      w.style.left = `${rect.left}px`;
+      w.style.width = `${rect.width}px`;
+      w.style.height = `${rect.height}px`;
+      w.setAttribute('aria-hidden', 'false');
+    }
+
+    function tick() {
+      raf = requestAnimationFrame(tick);
+      const anchor = document.querySelector(ANCHOR_SELECTOR);
+      if (!anchor) {
+        applyOffscreen();
         return;
       }
-      ro?.disconnect();
-      ro = null;
-      currentAnchor = found;
-      if (currentAnchor) {
-        ro = new ResizeObserver(() => {
-          if (currentAnchor) readBox(currentAnchor);
-        });
-        ro.observe(currentAnchor);
-        readBox(currentAnchor);
-      } else {
-        console.log(`${LOG_PREFIX} clearing box (no anchor)`);
-        setBox(null);
+      const rect = anchor.getBoundingClientRect();
+      // Treat zero-sized anchors as "not yet laid out"; stay offscreen until
+      // the layout settles so we never present a 0x0 canvas.
+      if (rect.width === 0 || rect.height === 0) {
+        applyOffscreen();
+        return;
       }
+      applyRect(rect);
     }
 
-    reconcile('initial');
-
-    const mo = new MutationObserver(() => reconcile('mutation'));
-    mo.observe(document.body, { childList: true, subtree: true });
-
-    const onScrollOrResize = () => {
-      if (currentAnchor) readBox(currentAnchor);
-    };
-    window.addEventListener('scroll', onScrollOrResize, { passive: true });
-    window.addEventListener('resize', onScrollOrResize);
-
-    return () => {
-      console.log(`${LOG_PREFIX} effect cleanup`);
-      mo.disconnect();
-      ro?.disconnect();
-      window.removeEventListener('scroll', onScrollOrResize);
-      window.removeEventListener('resize', onScrollOrResize);
-    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
-  const visible = box !== null;
-  console.log(`${LOG_PREFIX} render`, { visible, box });
-
+  // SSR markup must match what the browser sees on first paint to keep
+  // hydration clean. We render position:fixed at the offscreen position so
+  // the rAF loop does not have to fight an initial `display:none` step.
   return (
     <div
-      aria-hidden={!visible}
-      style={
-        visible
-          ? {
-              position: 'fixed',
-              top: `${box.top}px`,
-              left: `${box.left}px`,
-              width: `${box.width}px`,
-              height: `${box.height}px`,
-              pointerEvents: 'none',
-              zIndex: 5,
-            }
-          : { display: 'none' }
-      }
+      ref={wrapperRef}
+      aria-hidden="true"
+      style={{
+        position: 'fixed',
+        top: `${OFFSCREEN_TOP}px`,
+        left: 0,
+        width: '400px',
+        height: '400px',
+        pointerEvents: 'none',
+        zIndex: 5,
+      }}
     >
-      <InfinityLogo3D paused={!visible} />
+      <InfinityLogo3D />
     </div>
   );
 }
