@@ -75,3 +75,18 @@
 [data-theme="cinematic"] .grain::before {
   opacity: 0.05;
 }
+
+@keyframes trusted-by-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trusted-by-logo {
+  animation: trusted-by-fade-up 480ms var(--ease-out) both;
+}

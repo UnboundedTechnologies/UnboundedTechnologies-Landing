@@ -38,7 +38,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     glowColor: 'rgba(163,93,255,0.3)',
     numClass: 'text-brand-purple',
     tagClass: 'text-brand-purple',
-    tags: ['Amazon Connect', 'Salesforce', 'Pinpoint'],
+    tags: ['Amazon Connect', 'End-User Messaging', 'Pinpoint'],
   },
   {
     numKey: 'p3Num',
