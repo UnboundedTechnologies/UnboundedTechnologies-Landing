@@ -90,3 +90,13 @@
 .trusted-by-logo {
   animation: trusted-by-fade-up 480ms var(--ease-out) both;
 }
+
+@keyframes services-orb-drift {
+  0%   { transform: translate(48px, -48px) scale(1); opacity: 1; }
+  50%  { transform: translate(40px, -56px) scale(1.15); opacity: 0.85; }
+  100% { transform: translate(48px, -48px) scale(1); opacity: 1; }
+}
+
+.services-orb {
+  animation: services-orb-drift 8s var(--ease-out) infinite;
+}

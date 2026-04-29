@@ -14,6 +14,7 @@
     "eyebrow": "— Clients actuels et anciens"
   },
   "outcomes": {
+    "eyebrow": "— Résultats",
     "renaultStat": "4B+",
     "renaultUnit": "appels API / mois",
     "renaultContext": "Classé n°1 dans le DataLake de Renault",

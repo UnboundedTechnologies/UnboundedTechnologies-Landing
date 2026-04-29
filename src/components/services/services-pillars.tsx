@@ -59,7 +59,7 @@ export function ServicesPillars() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {PILLARS.map((p) => (
+          {PILLARS.map((p, i) => (
             <div
               key={p.titleKey}
               className="relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col"
@@ -68,8 +68,8 @@ export function ServicesPillars() {
                   card has its own; sizing/positioning kept in Tailwind. */}
               <div
                 aria-hidden
-                className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-12 translate-x-12 blur-2xl pointer-events-none"
-                style={{ background: p.glowColor }}
+                className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                style={{ background: p.glowColor, animationDelay: `${i * 1500}ms` }}
               />
               <div className={`relative font-mono text-xs tracking-widest ${p.numClass} mb-4`}>
                 {t(p.numKey)}

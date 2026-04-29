@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl';
+import { Eyebrow } from '@/components/primitives/eyebrow';
 
 // Three quantified-outcome cards. Each card has a brand-color stat number, a
 // short unit label, and a one-line context line. Stat colors are LITERAL Tailwind
@@ -42,20 +43,23 @@ export function OutcomeRibbon() {
   const t = useTranslations('outcomes');
 
   return (
-    <section aria-label="Client outcomes" className="py-20">
-      <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-3 gap-6">
-        {OUTCOMES.map((o) => (
-          <div
-            key={o.contextKey}
-            className="block bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover"
-          >
-            <div className={`font-mono text-4xl font-semibold tracking-tight ${o.statClass}`}>
-              {t(o.statKey)}
+    <section aria-label={t('eyebrow')} className="py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
+        <div className="grid md:grid-cols-3 gap-6">
+          {OUTCOMES.map((o) => (
+            <div
+              key={o.contextKey}
+              className="block bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover"
+            >
+              <div className={`font-mono text-4xl font-semibold tracking-tight ${o.statClass}`}>
+                {t(o.statKey)}
+              </div>
+              <div className="mt-2 text-text font-medium">{t(o.unitKey)}</div>
+              <div className="mt-3 text-sm text-text-muted">{t(o.contextKey)}</div>
             </div>
-            <div className="mt-2 text-text font-medium">{t(o.unitKey)}</div>
-            <div className="mt-3 text-sm text-text-muted">{t(o.contextKey)}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
