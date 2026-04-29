@@ -1,36 +1,20 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { InfinityLogo3D } from './infinity-logo-3d';
 import { InfinityLogoStatic } from './infinity-logo-static';
 
-// Static import + client-only mount gate. The 3D Canvas component is imported
-// at module top so the chunk is ready immediately, but it is only RENDERED
-// after the Hero has mounted on the client (mounted=true). This avoids:
+// The Hero NO LONGER owns the 3D Canvas. The Canvas is mounted once inside
+// the locale layout (PersistentInfinityLogo) and overlays the anchor div
+// rendered below in the right column. This sidesteps the entire class of
+// remount-on-back-nav bugs that six prior lazy-loading attempts could not
+// fix: the Canvas now never tears down during in-app navigation.
 //
-// - Lazy-loading state machines (next/dynamic, React.lazy, manual setState)
-//   that have proven unreliable across navigation in this Next 16 setup.
-// - SSR hydration mismatches between an empty placeholder on the server and
-//   the WebGL canvas on the client.
-//
-// Trade-off: R3F + three (around 500KB) is in the initial JS bundle for the
-// homepage. Acceptable cost for a brand centerpiece that has to render every
-// time, including back-navigation.
+// The static SVG fallback is retained for prefers-reduced-motion users.
 
 export function Hero() {
   const t = useTranslations('hero');
-
-  // mounted starts false; the static SVG fallback renders during SSR and the
-  // initial client paint. After the first useEffect tick, mounted flips to
-  // true and the 3D Canvas takes over. This pattern ensures the Canvas is
-  // only ever instantiated on the client where WebGL is available.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -56,7 +40,8 @@ export function Hero() {
           </div>
         </div>
         <div className="relative h-[400px] md:h-[500px] flex items-center justify-center">
-          {/* Glow halo behind the canvas. */}
+          {/* Glow halo behind the canvas. Stays in the Hero so the halo lives
+              with the page content; only the WebGL Canvas itself was hoisted. */}
           <div
             className="absolute inset-0 pointer-events-none"
             aria-hidden
@@ -66,15 +51,15 @@ export function Hero() {
               filter: 'blur(36px)',
             }}
           />
-          <div className="relative w-full h-full motion-reduce:hidden">
-            {mounted ? (
-              <InfinityLogo3D />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-              </div>
-            )}
-          </div>
+          {/* Anchor div: PersistentInfinityLogo (mounted at layout level)
+              ResizeObserves this element and overlays its WebGL Canvas
+              exactly here. The anchor itself is empty and reserves layout
+              space; visual content comes from the layout-level Canvas. */}
+          <div
+            data-hero-canvas-anchor
+            className="relative w-full h-full motion-reduce:hidden"
+            aria-hidden
+          />
           <div className="hidden motion-reduce:block relative">
             <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
           </div>
