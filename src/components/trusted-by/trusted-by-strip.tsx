@@ -18,11 +18,11 @@ type Client =
 
 const CLIENTS: ReadonlyArray<Client> = [
   { name: 'AWS', kind: 'wordmark' },
-  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-9 max-w-[120px]' },
-  { name: 'Renault', kind: 'svg', src: '/logos/renault.svg', sizeClass: 'h-10 max-w-[130px]' },
-  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-6 max-w-[110px]' },
-  { name: 'ETBA', kind: 'svg', src: '/logos/etba.svg', sizeClass: 'h-24 max-w-[240px]' },
+  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-10 max-w-[130px]' },
   { name: 'S.i Systems', kind: 'wordmark' },
+  { name: 'Renault Group', kind: 'svg', src: '/logos/renault.svg', sizeClass: 'h-12 max-w-[160px]' },
+  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-8 max-w-[140px]' },
+  { name: 'ETBA', kind: 'wordmark' },
 ];
 
 export function TrustedByStrip() {
