@@ -18,10 +18,10 @@ type Client =
 
 const CLIENTS: ReadonlyArray<Client> = [
   { name: 'AWS', kind: 'wordmark' },
-  { name: 'Renault', kind: 'svg', src: '/logos/renault.svg', sizeClass: 'h-9 max-w-[120px]' },
-  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-8 max-w-[110px]' },
-  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-5 max-w-[100px]' },
-  { name: 'ETBA', kind: 'svg', src: '/logos/etba.svg', sizeClass: 'h-9 max-w-[110px]' },
+  { name: 'Renault', kind: 'svg', src: '/logos/renault.svg', sizeClass: 'h-10 max-w-[130px]' },
+  { name: 'BMO', kind: 'svg', src: '/logos/bmo.svg', sizeClass: 'h-9 max-w-[120px]' },
+  { name: 'Melty', kind: 'svg', src: '/logos/melty.svg', sizeClass: 'h-6 max-w-[110px]' },
+  { name: 'ETBA', kind: 'svg', src: '/logos/etba.svg', sizeClass: 'h-14 max-w-[160px]' },
   { name: 'S.i Systems', kind: 'wordmark' },
 ];
 
@@ -36,11 +36,11 @@ export function TrustedByStrip() {
           {CLIENTS.map((c, i) => (
             <li
               key={c.name}
-              className="trusted-by-logo flex items-center justify-center h-12 transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105"
+              className="trusted-by-logo flex items-center justify-center transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               {c.kind === 'wordmark' ? (
-                <span className="text-xl font-semibold tracking-tight text-text whitespace-nowrap">
+                <span className="text-2xl font-semibold tracking-tight text-text whitespace-nowrap">
                   {c.name}
                 </span>
               ) : (
