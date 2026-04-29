@@ -23,10 +23,13 @@ export function TrustedByStrip() {
   const t = useTranslations('trustedBy');
 
   return (
-    <section className="py-20 border-y border-border">
+    <section aria-label={t('eyebrow')} className="py-20 border-y border-border">
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="text-center mb-10">{t('eyebrow')}</Eyebrow>
-        <ul className="flex flex-wrap items-center justify-around gap-x-12 gap-y-8 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-[opacity,filter] duration-[var(--duration-medium)]">
+        <ul
+          role="list"
+          className="flex flex-wrap items-center justify-around gap-x-12 gap-y-8 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-[opacity,filter] duration-[var(--duration-medium)]"
+        >
           {CLIENTS.map((c) =>
             c.kind === 'wordmark' ? (
               <li key={c.name} className="text-2xl font-semibold tracking-tight text-text">

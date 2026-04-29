@@ -35,5 +35,17 @@
       "trailingCommas": "all",
       "semicolons": "always"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/components/trusted-by/trusted-by-strip.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noRedundantRoles": "off"
+          }
+        }
+      }
+    }
+  ]
 }
