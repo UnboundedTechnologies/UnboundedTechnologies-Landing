@@ -30,7 +30,9 @@
     "headlineLead": "Across continents.",
     "headlineAccent": "At the scale enterprise demands.",
     "counterTitle": "Cumulative API calls shipped",
-    "counterUnit": "+47 / sec · live counter · since 2020"
+    "counterUnit": "+47 / sec · live counter · since 2020",
+    "hubName": "Toronto, Canada",
+    "hubRegion": "- Hub"
   },
   "services": {
     "eyebrow": "— Services",

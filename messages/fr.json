@@ -30,7 +30,9 @@
     "headlineLead": "À travers les continents.",
     "headlineAccent": "À l'échelle qu'exige l'entreprise.",
     "counterTitle": "Appels API cumulés livrés",
-    "counterUnit": "+47 / s · compteur en direct · depuis 2020"
+    "counterUnit": "+47 / s · compteur en direct · depuis 2020",
+    "hubName": "Toronto, Canada",
+    "hubRegion": "- Pôle"
   },
   "services": {
     "eyebrow": "— Services",
