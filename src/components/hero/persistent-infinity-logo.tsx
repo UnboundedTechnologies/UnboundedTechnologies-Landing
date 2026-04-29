@@ -2,29 +2,16 @@
 import { useEffect, useState } from 'react';
 import { InfinityLogo3D } from './infinity-logo-3d';
 
-// Layout-level WebGL Canvas owner. Mounted ONCE in [locale]/layout.tsx and
-// persists across every in-app navigation, so the Canvas never has to tear
-// down and rebuild. Six prior fix attempts proved that R3F + postprocessing
-// + three does not survive that cycle reliably under this Next 16 + React 19
-// + cacheComponents + Strict Mode + React Compiler stack.
+// Layout-level WebGL Canvas owner. See project_back_nav_bug.md / commit history
+// for the full story; in short: the Canvas is mounted ONCE in the layout and
+// never tears down across in-app navigation. Visibility is determined by
+// whether `[data-hero-canvas-anchor]` exists in the DOM.
 //
-// SOURCE OF TRUTH IS THE DOM, NOT PATHNAME. We tried gating visibility on
-// usePathname() === '/'; on the second back-nav cycle the wrapper stayed
-// display:none even though the Hero anchor was clearly in the DOM, meaning
-// the pathname-derived state had gone stale (router cache restore, missed
-// re-render, or React Compiler optimization). Switching to MutationObserver
-// on document.body removes that reactivity dependency entirely: the Canvas
-// is shown if and only if a Hero is currently rendering its anchor.
-//
-// Visibility model:
-//   - The Canvas is ALWAYS mounted in the layout for the lifetime of the
-//     session. Its WebGL context is created exactly once.
-//   - On every DOM mutation, we check for `[data-hero-canvas-anchor]`. If
-//     present, we ResizeObserve it and overlay the Canvas on its bounding
-//     box via position:fixed. If absent, we hide via display:none and
-//     pause the R3F frame loop.
+// Diagnostic build: console.logs are intentionally present while the back-nav
+// bug is being chased. Once the fix lands and is verified, the logs go away.
 
 const ANCHOR_SELECTOR = '[data-hero-canvas-anchor]';
+const LOG_PREFIX = '[PersistentInfinityLogo]';
 
 type Box = { top: number; left: number; width: number; height: number };
 
@@ -32,30 +19,37 @@ export function PersistentInfinityLogo() {
   const [box, setBox] = useState<Box | null>(null);
 
   useEffect(() => {
+    console.log(`${LOG_PREFIX} effect mount`);
     let currentAnchor: Element | null = null;
     let ro: ResizeObserver | null = null;
+    let reconcileCount = 0;
 
     function readBox(target: Element) {
       const rect = target.getBoundingClientRect();
+      console.log(`${LOG_PREFIX} readBox`, {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
       setBox({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
     }
 
-    function reconcile() {
+    function reconcile(reason: string) {
+      reconcileCount += 1;
       const found = document.querySelector(ANCHOR_SELECTOR);
+      console.log(`${LOG_PREFIX} reconcile #${reconcileCount} reason=${reason}`, {
+        foundAnchor: !!found,
+        sameAsCurrent: found === currentAnchor,
+        currentAnchorWas: !!currentAnchor,
+      });
       if (found === currentAnchor) {
-        // Same anchor as last reconcile: just re-read the box in case the
-        // viewport changed underneath us.
         if (currentAnchor) readBox(currentAnchor);
         return;
       }
-
-      // Anchor identity changed (Hero remounted, or Hero unmounted entirely).
-      // Tear down any prior observer and either attach to the new anchor or
-      // clear the box so the Canvas hides.
       ro?.disconnect();
       ro = null;
       currentAnchor = found;
-
       if (currentAnchor) {
         ro = new ResizeObserver(() => {
           if (currentAnchor) readBox(currentAnchor);
@@ -63,17 +57,14 @@ export function PersistentInfinityLogo() {
         ro.observe(currentAnchor);
         readBox(currentAnchor);
       } else {
+        console.log(`${LOG_PREFIX} clearing box (no anchor)`);
         setBox(null);
       }
     }
 
-    // Initial reconcile in case the anchor is already in the DOM at mount.
-    reconcile();
+    reconcile('initial');
 
-    // MutationObserver scoped to the body for childList/subtree changes.
-    // Triggers on any insertion or removal anywhere in the tree, which is
-    // exactly what we need to catch Hero mount/unmount across in-app navs.
-    const mo = new MutationObserver(reconcile);
+    const mo = new MutationObserver(() => reconcile('mutation'));
     mo.observe(document.body, { childList: true, subtree: true });
 
     const onScrollOrResize = () => {
@@ -83,6 +74,7 @@ export function PersistentInfinityLogo() {
     window.addEventListener('resize', onScrollOrResize);
 
     return () => {
+      console.log(`${LOG_PREFIX} effect cleanup`);
       mo.disconnect();
       ro?.disconnect();
       window.removeEventListener('scroll', onScrollOrResize);
@@ -91,6 +83,7 @@ export function PersistentInfinityLogo() {
   }, []);
 
   const visible = box !== null;
+  console.log(`${LOG_PREFIX} render`, { visible, box });
 
   return (
     <div
