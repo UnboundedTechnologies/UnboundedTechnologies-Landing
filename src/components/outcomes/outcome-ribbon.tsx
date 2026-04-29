@@ -16,6 +16,7 @@ type Outcome = {
   unitKey: string;
   contextKey: string;
   statClass: string;
+  glowColor: string;
 };
 
 const OUTCOMES: ReadonlyArray<Outcome> = [
@@ -24,18 +25,21 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     unitKey: 'renaultUnit',
     contextKey: 'renaultContext',
     statClass: 'text-brand-blue',
+    glowColor: 'rgba(93,111,255,0.3)',
   },
   {
     statKey: 'etbaStat',
     unitKey: 'etbaUnit',
     contextKey: 'etbaContext',
     statClass: 'text-brand-purple',
+    glowColor: 'rgba(163,93,255,0.3)',
   },
   {
     statKey: 'uptimeStat',
     unitKey: 'uptimeUnit',
     contextKey: 'uptimeContext',
     statClass: 'text-brand-cyan',
+    glowColor: 'rgba(93,199,255,0.3)',
   },
 ];
 
@@ -47,16 +51,23 @@ export function OutcomeRibbon() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {OUTCOMES.map((o) => (
+          {OUTCOMES.map((o, i) => (
             <div
               key={o.contextKey}
-              className="block bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover"
+              className="relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover"
             >
-              <div className={`font-mono text-4xl font-semibold tracking-tight ${o.statClass}`}>
+              <div
+                aria-hidden
+                className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                style={{ background: o.glowColor, animationDelay: `${i * 1500}ms` }}
+              />
+              <div
+                className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass}`}
+              >
                 {t(o.statKey)}
               </div>
-              <div className="mt-2 text-text font-medium">{t(o.unitKey)}</div>
-              <div className="mt-3 text-sm text-text-muted">{t(o.contextKey)}</div>
+              <div className="relative mt-2 text-text font-medium">{t(o.unitKey)}</div>
+              <div className="relative mt-3 text-sm text-text-muted">{t(o.contextKey)}</div>
             </div>
           ))}
         </div>
