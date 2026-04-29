@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
+import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
 import { type Locale, routing } from '@/i18n/routing';
@@ -27,6 +28,7 @@ export default async function LocaleLayout({
         <TopNav />
         <main className="flex-1">{children}</main>
         <Footer />
+        <PersistentInfinityLogo />
       </div>
     </NextIntlClientProvider>
   );
