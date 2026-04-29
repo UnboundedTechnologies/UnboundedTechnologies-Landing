@@ -110,3 +110,24 @@
   stroke-dasharray: 6 14;
   animation: graph-energy 1.6s linear infinite;
 }
+
+html {
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 4rem;
+  scroll-behavior: smooth;
+}
+
+main > section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+  main > section {
+    scroll-snap-align: none;
+  }
+}

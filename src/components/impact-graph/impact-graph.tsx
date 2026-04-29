@@ -54,7 +54,7 @@ export function ImpactGraph() {
 
         <div
           ref={containerRef}
-          className="relative mt-16 grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-y-20 gap-x-8 md:gap-x-24"
+          className="relative mt-20 grid grid-cols-1 md:grid-cols-3 gap-y-14 md:gap-y-32 gap-x-10 md:gap-x-32"
         >
           {NODES.map((n, i) => (
             <GraphCard

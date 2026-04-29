@@ -34,7 +34,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       viewport={{ once: true, margin: '-80px' }}
       className={cn(
         'relative rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
-        'px-5 py-4 min-h-[96px] flex flex-col justify-center',
+        'px-6 py-5 min-h-[112px] flex flex-col justify-center',
         'transition-colors duration-300 hover:bg-bg-elevated/85 hover:border-border-hover',
       )}
       style={{ boxShadow: `inset 3px 0 0 0 ${accent}` }}

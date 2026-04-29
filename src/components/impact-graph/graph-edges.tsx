@@ -105,9 +105,9 @@ export function GraphEdges({ rects, width, height }: Props) {
     >
       {routed.map(({ edge, x1, y1, x2, y2, midX, midY, orientation }, i) => {
         const stroke = COLOR_HEX[edge.color];
-        const labelOffset = orientation === 'horizontal' ? -10 : 14;
+        const labelOffset = orientation === 'horizontal' ? -16 : 8;
         const textAnchor = orientation === 'vertical' ? 'start' : 'middle';
-        const labelX = orientation === 'vertical' ? midX + 12 : midX;
+        const labelX = orientation === 'vertical' ? midX + 18 : midX;
         const labelY = midY + labelOffset;
         return (
           <g key={`${edge.from}-${edge.to}`}>
@@ -139,9 +139,14 @@ export function GraphEdges({ rects, width, height }: Props) {
               x={labelX}
               y={labelY}
               fill={stroke}
-              fontSize={11}
+              fontSize={12}
+              fontWeight={500}
               fontFamily="ui-monospace, monospace"
               textAnchor={textAnchor}
+              stroke="#07060d"
+              strokeWidth={4}
+              paintOrder="stroke"
+              strokeLinejoin="round"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 0.95 }}
               transition={{ duration: 0.4, delay: 1.0 + i * 0.18 }}
