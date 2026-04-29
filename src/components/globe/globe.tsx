@@ -34,7 +34,7 @@ const SPOKES: ReadonlyArray<City> = [
 
 const SPHERE_RADIUS = 1;
 const MARKER_LIFT = 1.015;
-const ARC_BULGE = 1.45;
+const ARC_BULGE = 1.28;
 const ARC_POINTS = 64;
 
 function latLngToVec3(lat: number, lng: number, r: number): THREE.Vector3 {
@@ -90,19 +90,14 @@ function Scene() {
   return (
     <group ref={groupRef} rotation={[0.18, 0, 0]}>
       <mesh>
-        <sphereGeometry args={[SPHERE_RADIUS, 48, 48]} />
+        <sphereGeometry args={[SPHERE_RADIUS, 64, 48]} />
         <meshBasicMaterial
-          color="#0d0c16"
+          color="#7c8eff"
           wireframe
           transparent
-          opacity={0.45}
+          opacity={0.18}
           toneMapped={false}
         />
-      </mesh>
-
-      <mesh>
-        <sphereGeometry args={[SPHERE_RADIUS * 0.998, 48, 48]} />
-        <meshBasicMaterial color="#07060d" transparent opacity={0.85} />
       </mesh>
 
       <CityMarker city={HUB} />
@@ -120,7 +115,7 @@ function Scene() {
 export function Globe() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 2.8], fov: 45 }}
+      camera={{ position: [0, 0, 3.4], fov: 45 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       onCreated={({ gl }) => {

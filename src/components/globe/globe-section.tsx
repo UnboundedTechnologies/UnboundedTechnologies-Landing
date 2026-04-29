@@ -64,7 +64,7 @@ export function GlobeSection() {
             <LiveCounter />
           </div>
         </div>
-        <div className="relative aspect-square w-full max-w-[500px] mx-auto motion-reduce:contents">
+        <div className="relative aspect-square w-full mx-auto motion-reduce:contents">
           <div className="hidden motion-reduce:block w-full h-full">
             <GlobeStatic />
           </div>
