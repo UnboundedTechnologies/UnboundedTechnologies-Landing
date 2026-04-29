@@ -69,7 +69,7 @@ export function GraphEdges({ rects, width, height }: Props) {
             className="graph-pill absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{
               left: midX,
-              top: midY,
+              top: midY - 36,
               ['--pill-glow' as string]: `${stroke}55`,
             }}
             initial={{ opacity: 0, scale: 0.85, y: 6 }}
@@ -78,12 +78,16 @@ export function GraphEdges({ rects, width, height }: Props) {
             viewport={{ once: true, margin: '-80px' }}
           >
             <div
-              className="px-3 py-1.5 rounded-full border bg-bg-elevated/70 backdrop-blur-md font-mono text-[11px] flex items-baseline gap-1.5 whitespace-nowrap shadow-lg"
+              className="px-3 py-1.5 rounded-xl border bg-bg-elevated/70 backdrop-blur-md font-mono shadow-lg flex flex-col items-center"
               style={{ borderColor: stroke }}
             >
-              <span className="font-semibold text-text">{edge.primary}</span>
+              <span className="font-semibold text-text text-[12px] leading-tight">
+                {edge.primary}
+              </span>
               {edge.secondary && (
-                <span className="text-text-muted font-normal">{edge.secondary}</span>
+                <span className="text-text-muted font-normal text-[10px] leading-tight mt-0.5">
+                  {edge.secondary}
+                </span>
               )}
             </div>
           </motion.div>
