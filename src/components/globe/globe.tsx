@@ -13,12 +13,12 @@ type City = { name: string; lat: number; lng: number; color: string };
 
 const HUB: City = { name: 'Toronto', lat: 43.65, lng: -79.38, color: '#ef4444' };
 const SPOKES: ReadonlyArray<City> = [
-  { name: 'Paris', lat: 48.86, lng: 2.35, color: '#a35dff' },
-  { name: 'Dubai', lat: 25.2, lng: 55.27, color: '#5dc7ff' },
-  { name: 'São Paulo', lat: -23.55, lng: -46.63, color: '#a35dff' },
-  { name: 'Singapore', lat: 1.35, lng: 103.82, color: '#5dc7ff' },
-  { name: 'Mumbai', lat: 19.08, lng: 72.88, color: '#a35dff' },
-  { name: 'Tokyo', lat: 35.68, lng: 139.69, color: '#5dc7ff' },
+  { name: 'Paris', lat: 48.86, lng: 2.35, color: '#5d6fff' },
+  { name: 'Dubai', lat: 25.2, lng: 55.27, color: '#a35dff' },
+  { name: 'São Paulo', lat: -23.55, lng: -46.63, color: '#5dc7ff' },
+  { name: 'Singapore', lat: 1.35, lng: 103.82, color: '#7cf2c6' },
+  { name: 'Mumbai', lat: 19.08, lng: 72.88, color: '#ff7eb6' },
+  { name: 'Tokyo', lat: 35.68, lng: 139.69, color: '#fcd566' },
 ];
 
 const SPHERE_RADIUS = 1;
