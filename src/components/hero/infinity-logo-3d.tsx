@@ -173,23 +173,35 @@ function InfinityMesh() {
   );
 }
 
-export function InfinityLogo3D() {
+export function InfinityLogo3D({ paused = false }: { paused?: boolean } = {}) {
   return (
     <div className="w-full h-full">
       <Canvas
         // Camera moved further back so rotation never clips the mesh edges.
         camera={{ position: [0, 0, 5], fov: 45 }}
         dpr={[1, 2]}
-        // frameloop=always guarantees the render loop runs every frame even after
-        // back-navigation or bfcache restoration. Without this, the Canvas can
-        // remount but the loop stays paused and the mesh appears frozen.
-        frameloop="always"
+        // Pause the frame loop entirely when the Canvas is hidden so it does not
+        // burn CPU/GPU on routes that do not show it. When unpaused, render every
+        // frame so motion never freezes after a visibility change.
+        frameloop={paused ? 'never' : 'always'}
         gl={{ antialias: true, alpha: true, premultipliedAlpha: false }}
         // Force the WebGL clear color to be fully transparent so the page background
         // (aurora orbs, glow halo, etc.) shows through behind the mesh. Also kicks
         // an immediate frame request to bootstrap the loop on first paint.
         onCreated={({ gl, invalidate }) => {
           gl.setClearColor(0x000000, 0);
+          // Surface WebGL context loss/restore so silent failures stop being silent.
+          // Long sessions or GPU resets occasionally drop the context; logging it
+          // means future regressions are diagnosable instead of mysterious.
+          const canvas = gl.domElement;
+          canvas.addEventListener('webglcontextlost', (event) => {
+            event.preventDefault();
+            console.warn('[InfinityLogo3D] WebGL context lost');
+          });
+          canvas.addEventListener('webglcontextrestored', () => {
+            console.warn('[InfinityLogo3D] WebGL context restored');
+            invalidate();
+          });
           invalidate();
         }}
       >
