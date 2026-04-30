@@ -50,5 +50,21 @@
     "eyebrow": "- Le graphe d'impact",
     "headlineLead": "Chaque capacité,",
     "headlineAccent": "reliée à un impact mesurable."
+  },
+  "work": {
+    "eyebrow": "- Travaux sélectionnés",
+    "indexHeadlineLead": "Du design",
+    "indexHeadlineAccent": "à un résultat mesurable.",
+    "indexIntro": "Quatre missions. Toutes livrées.",
+    "metaClient": "Client",
+    "metaYears": "Années",
+    "metaRole": "Rôle",
+    "metaStack": "Stack",
+    "sectionProblem": "Problème",
+    "sectionApproach": "Approche",
+    "sectionOutcome": "Résultat",
+    "prevLink": "Précédent",
+    "nextLink": "Suivant",
+    "allWork": "Tous les travaux"
   }
 }

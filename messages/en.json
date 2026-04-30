@@ -50,5 +50,21 @@
     "eyebrow": "- The impact graph",
     "headlineLead": "Each capability,",
     "headlineAccent": "connected to measurable impact."
+  },
+  "work": {
+    "eyebrow": "- Selected work",
+    "indexHeadlineLead": "From design",
+    "indexHeadlineAccent": "to measurable outcome.",
+    "indexIntro": "Four engagements. Each one shipped.",
+    "metaClient": "Client",
+    "metaYears": "Years",
+    "metaRole": "Role",
+    "metaStack": "Stack",
+    "sectionProblem": "Problem",
+    "sectionApproach": "Approach",
+    "sectionOutcome": "Outcome",
+    "prevLink": "Previous",
+    "nextLink": "Next",
+    "allWork": "All work"
   }
 }

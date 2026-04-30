@@ -1,0 +1,28 @@
+---
+slug: renault-forex
+locale: fr
+title: "4 milliards d'appels API par mois, n°1 du DataLake Renault"
+client: "Renault Group"
+years: "2020 - 2023"
+role: "Responsable architecture data"
+stack:
+  - GCP
+  - AWS
+  - Java
+  - Spring Boot
+  - API Gateway
+accent: blue
+order: 1
+---
+
+## Problème
+
+Plus de 2 500 clients internes au sein de l'alliance Renault-Nissan-Mitsubishi récupéraient les taux de change depuis des pipelines indépendants. Les données dérivaient entre les équipes, les coûts se dupliquaient à travers les unités d'affaires, et le reporting en aval ralentissait sous le poids de valeurs de référence incohérentes. Le groupe avait besoin d'une seule source de vérité à laquelle chaque application puisse se fier.
+
+## Approche
+
+Nous avons construit un service de référentiel FX centralisé sur une empreinte hybride GCP + AWS, avec API Gateway en front et des workers Java / Spring Boot derrière. Des standards d'architecture multi-cloud ont gardé le runtime portable, tandis que l'observabilité, la sémantique de retry et les tests de contrat protégeaient l'interface sur laquelle reposait chaque consommateur.
+
+## Résultat
+
+Le service s'est stabilisé à plus de 4 milliards d'appels API par mois avec une latence p95 sous les 100 ms, et a obtenu la première position dans le DataLake de Renault par usage. Sur un cycle de vie de trois ans, il a fonctionné sans aucun incident de perte de données, et son contrat est devenu la référence canonique pour le FX au sein de l'alliance.

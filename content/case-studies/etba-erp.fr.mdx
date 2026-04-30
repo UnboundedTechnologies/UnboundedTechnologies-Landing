@@ -1,0 +1,27 @@
+---
+slug: etba-erp
+locale: fr
+title: "Achats 35% plus rapides chez ETBA Construction"
+client: "ETBA Construction"
+years: "2018 - 2020"
+role: "Ingénieur full-stack"
+stack:
+  - React
+  - Spring Boot
+  - PostgreSQL
+  - AWS
+accent: cyan
+order: 3
+---
+
+## Problème
+
+Les achats et les stocks chez ETBA étaient répartis entre des feuilles de calcul et une poignée d'outils legacy qui ne s'accordaient jamais vraiment entre eux. Les cycles d'approbation traînaient parce que personne n'avait la même vue de l'état d'une commande. La réconciliation était une taxe récurrente : des heures passées chaque semaine à prouver que deux systèmes racontaient la même histoire, et ce n'était souvent pas le cas.
+
+## Approche
+
+Nous avons modernisé l'ERP en un workflow unique : un front-end React au-dessus d'un back-end Spring Boot, avec PostgreSQL sur AWS comme unique source de vérité. Un moteur de workflow a pris en charge les approbations, avec une piste d'audit conçue dès le départ plutôt qu'ajoutée après coup. Stocks, achats et finance partageaient les mêmes entités sous-jacentes, donc les rapports ont cessé de se contredire.
+
+## Résultat
+
+Le temps de cycle des achats a chuté de 35 % une fois que la nouvelle plateforme est devenue le seul chemin. Les erreurs qui prenaient des jours à pister à travers les feuilles de calcul remontaient désormais en quelques heures, avec une piste d'audit claire jusqu'à l'étape qui les avait introduites. Les équipes ont arrêté de réconcilier et ont commencé à utiliser ce temps pour le vrai travail d'achat.
