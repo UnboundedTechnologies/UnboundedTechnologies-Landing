@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
 import { ACCENT_TEXT_CLASS, accentStripeShadow } from '@/lib/accents';
@@ -12,8 +13,9 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
   const studies = await getAllCaseStudies(locale as Locale);
 
   return (
-    <section className="relative py-20 md:py-28">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative overflow-hidden py-20 md:py-28">
+      <AuroraOrbs />
+      <div className="relative mx-auto max-w-7xl px-6">
         <Eyebrow>{t('eyebrow')}</Eyebrow>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.04em] leading-[1.05] max-w-3xl">
           {t('indexHeadlineLead')}
