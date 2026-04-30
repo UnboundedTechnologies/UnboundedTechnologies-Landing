@@ -164,9 +164,17 @@ body {
  * `focus-visible:outline-*` instead of `focus-visible:ring-*`.
  */
 /*
- * 1.5 px blur on the inset stripe lets the corner taper carry visible
- * anti-aliasing, even on the bright cyan accent where hard 0-blur AA
- * was reading as a square edge against the dark card surface (711.png).
+ * Blue and purple use box-shadow inset because shadow AA softens the
+ * corner taper in a way the eye reads as rounded. Cyan and mixed both
+ * go through a ::before pseudo with mask path because:
+ *   - Cyan #5dc7ff is too high-luminance for shadow AA to dim against
+ *     the dark card bg, so box-shadow's corner taper reads as square
+ *     (711.png, 207.png card 3). The geometric clipping of a rounded
+ *     ::before reads as obviously rounded for any color.
+ *   - Mixed must use ::before because gradients aren't allowed in
+ *     box-shadow.
+ * The uniform cyan stripe has nothing to distract the eye from the
+ * corner shape; the geometric clip is what makes it read as rounded.
  */
 [data-accent="blue"] {
   box-shadow: inset 3px 0 1.5px 0 var(--color-brand-blue);
@@ -174,25 +182,29 @@ body {
 [data-accent="purple"] {
   box-shadow: inset 3px 0 1.5px 0 var(--color-brand-purple);
 }
-[data-accent="cyan"] {
-  box-shadow: inset 3px 0 1.5px 0 var(--color-brand-cyan);
-}
 
+[data-accent="cyan"],
 [data-accent="mixed"] {
   position: relative;
 }
+[data-accent="cyan"]::before,
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
   inset: 1px;
   border-radius: 11px;
+  -webkit-mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
+  mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
+  pointer-events: none;
+}
+[data-accent="cyan"]::before {
+  background: var(--color-brand-cyan);
+}
+[data-accent="mixed"]::before {
   background: linear-gradient(
     to bottom,
     var(--color-brand-blue) 0%,
     var(--color-brand-purple) 50%,
     var(--color-brand-cyan) 100%
   );
-  -webkit-mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
-  mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
-  pointer-events: none;
 }
