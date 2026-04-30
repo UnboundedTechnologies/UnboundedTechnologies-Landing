@@ -226,7 +226,7 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
         if (!diagram) return null;
         return (
           <section aria-labelledby="architecture-diagram" className="border-t border-border">
-            <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+            <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
               <div
                 className={cn(
                   'font-mono text-xs uppercase tracking-[0.18em]',

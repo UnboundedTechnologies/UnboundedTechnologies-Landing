@@ -39,6 +39,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
         role="presentation"
         aria-hidden
         focusable="false"
+        style={{ overflow: 'visible' }}
       >
         {routed.map(({ edge, x1, y1, x2, y2, midX, midY, orientation }, i) => {
           const stroke = COLOR_HEX[edge.color];
