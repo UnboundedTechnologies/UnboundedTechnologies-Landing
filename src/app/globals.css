@@ -101,6 +101,73 @@
   animation: services-orb-drift 8s var(--ease-out) infinite;
 }
 
+/*
+ * Three distinct corner-orb drift paths so cards on the same page never feel
+ * synchronized. Each card sets its own --orb-dur and --orb-delay inline so
+ * even cards sharing a keyframe variant tick at different speeds and phases.
+ *
+ * On hover, the parent card (with `group` class) intensifies the orb:
+ * brightness up, saturation up, and the keyframe duration drops sharply for
+ * a more frantic reaction. The duration change is a hard cut (CSS cannot
+ * smoothly transition animation-duration); the filter/opacity changes
+ * transition cleanly so the overall feel is "the light wakes up".
+ */
+@keyframes orb-drift-a {
+  0%   { transform: translate(48px, -48px) scale(1);    opacity: 0.85; }
+  25%  { transform: translate(34px, -62px) scale(1.18); opacity: 1; }
+  55%  { transform: translate(58px, -40px) scale(0.9);  opacity: 0.72; }
+  80%  { transform: translate(42px, -52px) scale(1.08); opacity: 0.95; }
+  100% { transform: translate(48px, -48px) scale(1);    opacity: 0.85; }
+}
+
+@keyframes orb-drift-b {
+  0%   { transform: translate(40px, -56px) scale(0.95); opacity: 0.85; }
+  35%  { transform: translate(60px, -36px) scale(1.22); opacity: 1; }
+  70%  { transform: translate(44px, -60px) scale(0.88); opacity: 0.78; }
+  100% { transform: translate(40px, -56px) scale(0.95); opacity: 0.85; }
+}
+
+@keyframes orb-drift-c {
+  0%   { transform: translate(54px, -42px) scale(1.05); opacity: 0.92; }
+  20%  { transform: translate(38px, -56px) scale(0.92); opacity: 0.78; }
+  50%  { transform: translate(62px, -50px) scale(1.2);  opacity: 1; }
+  85%  { transform: translate(46px, -38px) scale(0.98); opacity: 0.85; }
+  100% { transform: translate(54px, -42px) scale(1.05); opacity: 0.92; }
+}
+
+.orb-a,
+.orb-b,
+.orb-c {
+  filter: brightness(1) saturate(1);
+  transition: filter 380ms var(--ease-out), opacity 380ms var(--ease-out);
+  will-change: transform, opacity, filter;
+}
+
+.orb-a {
+  animation: orb-drift-a var(--orb-dur, 9s) var(--ease-out) infinite;
+  animation-delay: var(--orb-delay, 0ms);
+}
+
+.orb-b {
+  animation: orb-drift-b var(--orb-dur, 11s) var(--ease-out) infinite;
+  animation-delay: var(--orb-delay, 0ms);
+}
+
+.orb-c {
+  animation: orb-drift-c var(--orb-dur, 13s) var(--ease-out) infinite;
+  animation-delay: var(--orb-delay, 0ms);
+}
+
+.group:hover .orb-a,
+.group:hover .orb-b,
+.group:hover .orb-c,
+.orb-host:hover .orb-a,
+.orb-host:hover .orb-b,
+.orb-host:hover .orb-c {
+  --orb-dur: 3.4s;
+  filter: brightness(1.55) saturate(1.25);
+}
+
 @keyframes graph-energy {
   from { stroke-dashoffset: 0; }
   to { stroke-dashoffset: -100; }
@@ -112,14 +179,14 @@
 }
 
 html {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   scroll-padding-top: 4rem;
   scroll-behavior: smooth;
 }
 
 main > section {
   scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  scroll-snap-stop: always;
 }
 
 @media (prefers-reduced-motion: reduce) {

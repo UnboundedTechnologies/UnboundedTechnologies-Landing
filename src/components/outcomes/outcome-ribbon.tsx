@@ -20,6 +20,11 @@ type Outcome = {
   contextKey: string;
   statClass: string;
   glowColor: string;
+  orbClass: 'orb-a' | 'orb-b' | 'orb-c';
+  orbDur: string;
+  orbDelay: string;
+  hoverBorderColor: string;
+  hoverShadow: string;
 };
 
 const OUTCOMES: ReadonlyArray<Outcome> = [
@@ -30,6 +35,11 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'renaultContext',
     statClass: 'text-brand-blue',
     glowColor: 'rgba(93,111,255,0.3)',
+    orbClass: 'orb-a',
+    orbDur: '9.4s',
+    orbDelay: '0ms',
+    hoverBorderColor: 'rgba(93,111,255,0.55)',
+    hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
   },
   {
     slug: 'etba-erp',
@@ -38,6 +48,11 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'etbaContext',
     statClass: 'text-brand-purple',
     glowColor: 'rgba(163,93,255,0.3)',
+    orbClass: 'orb-b',
+    orbDur: '11.2s',
+    orbDelay: '720ms',
+    hoverBorderColor: 'rgba(163,93,255,0.55)',
+    hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
   },
   {
     slug: 'renault-forex',
@@ -46,6 +61,11 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'uptimeContext',
     statClass: 'text-brand-cyan',
     glowColor: 'rgba(93,199,255,0.3)',
+    orbClass: 'orb-c',
+    orbDur: '13.6s',
+    orbDelay: '1480ms',
+    hoverBorderColor: 'rgba(93,199,255,0.55)',
+    hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
   },
 ];
 
@@ -58,20 +78,32 @@ export function OutcomeRibbon() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {OUTCOMES.map((o, i) => {
+          {OUTCOMES.map((o) => {
             return (
               <Link
                 key={o.contextKey}
                 href={workHref(o.slug)}
-                className="group relative overflow-hidden block bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="group relative overflow-hidden block bg-bg-elevated border border-border rounded-xl p-8 transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                style={
+                  {
+                    ['--card-hover-border' as string]: o.hoverBorderColor,
+                    ['--card-hover-shadow' as string]: o.hoverShadow,
+                  } as React.CSSProperties
+                }
               >
                 <div
                   aria-hidden
-                  className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
-                  style={{ background: o.glowColor, animationDelay: `${i * 1500}ms` }}
+                  className={`${o.orbClass} absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none`}
+                  style={
+                    {
+                      background: o.glowColor,
+                      ['--orb-dur' as string]: o.orbDur,
+                      ['--orb-delay' as string]: o.orbDelay,
+                    } as React.CSSProperties
+                  }
                 />
                 <div
-                  className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass}`}
+                  className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}
                 >
                   {t(o.statKey)}
                 </div>
