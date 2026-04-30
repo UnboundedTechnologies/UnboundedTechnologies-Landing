@@ -163,14 +163,19 @@ body {
  * use box-shadow (so it doesn't fight the stripe on solid accents): use
  * `focus-visible:outline-*` instead of `focus-visible:ring-*`.
  */
+/*
+ * 1.5 px blur on the inset stripe lets the corner taper carry visible
+ * anti-aliasing, even on the bright cyan accent where hard 0-blur AA
+ * was reading as a square edge against the dark card surface (711.png).
+ */
 [data-accent="blue"] {
-  box-shadow: inset 3px 0 0 0 var(--color-brand-blue);
+  box-shadow: inset 3px 0 1.5px 0 var(--color-brand-blue);
 }
 [data-accent="purple"] {
-  box-shadow: inset 3px 0 0 0 var(--color-brand-purple);
+  box-shadow: inset 3px 0 1.5px 0 var(--color-brand-purple);
 }
 [data-accent="cyan"] {
-  box-shadow: inset 3px 0 0 0 var(--color-brand-cyan);
+  box-shadow: inset 3px 0 1.5px 0 var(--color-brand-cyan);
 }
 
 [data-accent="mixed"] {
