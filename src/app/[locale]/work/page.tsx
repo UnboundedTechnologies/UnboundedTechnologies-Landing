@@ -41,7 +41,7 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                     'p-8 md:p-10 min-h-[260px] flex flex-col',
                     'transition-all duration-[var(--duration-short)]',
                     'hover:border-border-hover hover:bg-bg-elevated/85 hover:-translate-y-1',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue',
                   )}
                 >
                   <div className={cn('font-mono text-xs tracking-[0.18em]', numberClass)}>
