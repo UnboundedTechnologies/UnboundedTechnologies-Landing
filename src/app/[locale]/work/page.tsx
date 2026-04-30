@@ -37,7 +37,7 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                   href={workHref(study.slug)}
                   data-accent={study.accent}
                   className={cn(
-                    'group relative block rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
+                    'group relative block overflow-hidden rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
                     'p-8 md:p-10 min-h-[260px] flex flex-col',
                     'transition-all duration-[var(--duration-short)]',
                     'hover:border-border-hover hover:bg-bg-elevated/85 hover:-translate-y-1',

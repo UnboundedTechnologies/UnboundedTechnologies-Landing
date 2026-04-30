@@ -148,15 +148,15 @@ body {
 }
 
 /*
- * Unified left-edge accent stripe for cards on the work index. All four
- * accent values render as the same pill shape so cards read as visually
- * consistent and the rounded ends are unambiguously visible. A
- * box-shadow inset at 3 px on a rounded-xl card tapers over only 12 px,
- * which reads as squarish, so we render an explicit ::before pill: 3 px
- * wide, inset 12 px from the card's top and bottom, fully rounded ends.
- * Solid accents fill with a single brand color; the mixed accent fills
- * with the tri-tone aurora gradient. Consumers opt in by setting
- * `data-accent="blue|purple|cyan|mixed"` on a positioned element.
+ * Unified left-edge accent stripe for cards. A rectangular 3 px ::before
+ * runs the full height of the card; the card's own `overflow: hidden`
+ * combined with its rounded corners (rounded-xl, etc.) clips the stripe
+ * so the corner taper is the card's rounded curve itself. Same shape
+ * for solid colors and gradients alike, no box-shadow / mask trickery.
+ * The card's focus-visible ring keeps working because it's a non-inset
+ * box-shadow that renders outside the element. Consumers opt in by
+ * setting `data-accent="blue|purple|cyan|mixed"` on a positioned card
+ * that also has `overflow: hidden`.
  */
 [data-accent="blue"],
 [data-accent="purple"],
@@ -170,11 +170,10 @@ body {
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
-  left: 1px;
-  top: 12px;
-  bottom: 12px;
+  top: 0;
+  bottom: 0;
+  left: 0;
   width: 3px;
-  border-radius: 9999px;
   pointer-events: none;
 }
 [data-accent="blue"]::before {
