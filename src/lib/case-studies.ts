@@ -48,6 +48,10 @@ const FrontmatterSchema = z.object({
       }),
     )
     .optional(),
+  // Optional preset name for the inline architecture diagram. The runtime
+  // looks the name up in `case-study-diagrams.ts` and renders nothing when
+  // the preset is unknown. Locale-agnostic: same value in en + fr files.
+  diagram: z.string().optional(),
 });
 
 export type CaseStudyMeta = z.infer<typeof FrontmatterSchema>;

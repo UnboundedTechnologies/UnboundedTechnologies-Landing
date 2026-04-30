@@ -1,38 +1,11 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { GraphCard } from './graph-card';
-import { NODES } from './graph-data';
-import { GraphEdges } from './graph-edges';
-import { useCardPositions } from './use-card-positions';
-
-const NODE_IDS = NODES.map((n) => n.id);
+import { GraphCanvas } from './graph-canvas';
+import { EDGES, NODES } from './graph-data';
 
 export function ImpactGraph() {
   const t = useTranslations('impactGraph');
-  const { containerRef, register, rects, recompute } = useCardPositions(NODE_IDS);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const update = () => {
-      setContainerSize({ width: el.offsetWidth, height: el.offsetHeight });
-    };
-    update();
-    if (typeof ResizeObserver !== 'undefined') {
-      const obs = new ResizeObserver(update);
-      obs.observe(el);
-      return () => obs.disconnect();
-    }
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, [containerRef]);
-
-  useEffect(() => {
-    if (containerSize.width > 0) recompute();
-  }, [containerSize.width, recompute]);
 
   return (
     <section className="relative py-28 md:py-44 overflow-hidden">
@@ -52,26 +25,7 @@ export function ImpactGraph() {
           <span className="aurora-text">{t('headlineAccent')}</span>
         </h2>
 
-        <div
-          ref={containerRef}
-          className="relative mt-28 md:mt-36 grid grid-cols-1 md:grid-cols-3 gap-y-20 md:gap-y-48 gap-x-12 md:gap-x-40"
-        >
-          {NODES.map((n, i) => (
-            <GraphCard
-              key={n.id}
-              ref={register(n.id)}
-              label={n.label}
-              sub={n.sub}
-              href={n.href}
-              color={n.color}
-              category={n.category}
-              index={i}
-            />
-          ))}
-          <div className="hidden md:block">
-            <GraphEdges rects={rects} width={containerSize.width} height={containerSize.height} />
-          </div>
-        </div>
+        <GraphCanvas nodes={NODES} edges={EDGES} variant="page" />
       </div>
     </section>
   );

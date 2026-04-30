@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { GraphCanvas } from '@/components/impact-graph/graph-canvas';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
 import {
@@ -10,6 +11,7 @@ import {
   sectionEyebrowClass,
 } from '@/lib/accents';
 import type { CaseStudy } from '@/lib/case-studies';
+import { getCaseStudyDiagram } from '@/lib/case-study-diagrams';
 import { cn } from '@/lib/utils';
 
 /**
@@ -213,6 +215,42 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
           </div>
         </section>
       )}
+
+      {/* Inline tech diagram (spec 6.2 item 4). Renders only when frontmatter
+          declares a `diagram` preset that resolves in case-study-diagrams.ts.
+          BMO has no diagram per NDA. Self-links are suppressed via
+          `activeSlug`. */}
+      {(() => {
+        if (!study.diagram) return null;
+        const diagram = getCaseStudyDiagram(study.diagram);
+        if (!diagram) return null;
+        return (
+          <section aria-labelledby="architecture-diagram" className="border-t border-border">
+            <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+              <div
+                className={cn(
+                  'font-mono text-xs uppercase tracking-[0.18em]',
+                  sectionEyebrowClass(study.accent, 1),
+                )}
+              >
+                {t('architectureEyebrow')}
+              </div>
+              <h2
+                id="architecture-diagram"
+                className="mt-4 text-2xl md:text-3xl font-semibold tracking-[-0.02em] leading-tight max-w-2xl"
+              >
+                {t('architectureHeading')}
+              </h2>
+              <GraphCanvas
+                nodes={diagram.nodes}
+                edges={diagram.edges}
+                variant="inline"
+                activeSlug={study.slug}
+              />
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Prev / Next nav */}
       {(prev || next) && (

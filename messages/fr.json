@@ -67,6 +67,8 @@
     "nextLink": "Suivant",
     "allWork": "Tous les travaux",
     "readCaseStudy": "Lire l'étude de cas",
-    "outcomeCallouts": "Résultats en bref"
+    "outcomeCallouts": "Résultats en bref",
+    "architectureEyebrow": "- Architecture",
+    "architectureHeading": "Comment c'est câblé"
   }
 }

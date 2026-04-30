@@ -1,0 +1,117 @@
+'use client';
+import { useEffect, useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { GraphCard } from './graph-card';
+import type { Edge, Node } from './graph-data';
+import { GraphEdges } from './graph-edges';
+import { useCardPositions } from './use-card-positions';
+
+type Variant = 'page' | 'inline';
+
+type Props = {
+  nodes: ReadonlyArray<Node>;
+  edges: ReadonlyArray<Edge>;
+  /**
+   * 'page'   - homepage Impact Graph spacing (large, generous gaps).
+   * 'inline' - tighter spacing for embedding inside a case-study layout.
+   * Default: 'page'.
+   */
+  variant?: Variant;
+  /**
+   * When set, any node whose `href` resolves to the active slug renders as a
+   * non-link card (avoids self-links on the case-study page that owns the
+   * diagram).
+   */
+  activeSlug?: string;
+};
+
+// Tailwind grid-cols mapping. Kept as literal class strings so the v4 oxide
+// compiler can detect them at build time.
+const GRID_COLS_CLASS: Record<number, string> = {
+  1: 'md:grid-cols-1',
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+  4: 'md:grid-cols-4',
+  5: 'md:grid-cols-5',
+  6: 'md:grid-cols-6',
+};
+
+/**
+ * Render a graph (cards + animated SVG edges) from a data spec.
+ *
+ * The homepage path (`variant='page'`) reproduces the exact spacing classes
+ * used previously inline in `ImpactGraph` (mt-28/36, gap-y-20/48, gap-x-12/40).
+ * The `inline` variant uses tighter spacing suitable for mid-page embedding.
+ *
+ * Pattern A is preserved: the outer `motion.div` of each `GraphCard` is the
+ * measurement target, and the inner Link (when present) fills the parent.
+ */
+export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Props) {
+  const nodeIds = useMemo(() => nodes.map((n) => n.id), [nodes]);
+  const { containerRef, register, rects, recompute } = useCardPositions(nodeIds);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      setContainerSize({ width: el.offsetWidth, height: el.offsetHeight });
+    };
+    update();
+    if (typeof ResizeObserver !== 'undefined') {
+      const obs = new ResizeObserver(update);
+      obs.observe(el);
+      return () => obs.disconnect();
+    }
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [containerRef]);
+
+  useEffect(() => {
+    if (containerSize.width > 0) recompute();
+  }, [containerSize.width, recompute]);
+
+  // Derive grid columns from node categories. The graph layout convention is
+  // one column per unique category (origin / capability / outcome), with rows
+  // formed by repeated categories. This matches the homepage 3-col x 2-row
+  // arrangement and the case-study 3-col x 1-row arrangement automatically.
+  const uniqueCategoryCount = new Set(nodes.map((n) => n.category)).size;
+  const colsClass = GRID_COLS_CLASS[uniqueCategoryCount] ?? 'md:grid-cols-3';
+
+  const spacing =
+    variant === 'page'
+      ? 'mt-28 md:mt-36 gap-y-20 md:gap-y-48 gap-x-12 md:gap-x-40'
+      : 'mt-10 md:mt-14 gap-y-10 md:gap-y-20 gap-x-8 md:gap-x-24';
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn('relative grid grid-cols-1', colsClass, spacing)}
+      data-graph-variant={variant}
+    >
+      {nodes.map((n, i) => {
+        const isSelf = activeSlug !== undefined && n.href.replace(/^\/work\//, '') === activeSlug;
+        return (
+          <GraphCard
+            key={n.id}
+            ref={register(n.id)}
+            label={n.label}
+            sub={n.sub}
+            href={isSelf ? undefined : n.href}
+            color={n.color}
+            category={n.category}
+            index={i}
+          />
+        );
+      })}
+      <div className="hidden md:block">
+        <GraphEdges
+          edges={edges}
+          rects={rects}
+          width={containerSize.width}
+          height={containerSize.height}
+        />
+      </div>
+    </div>
+  );
+}

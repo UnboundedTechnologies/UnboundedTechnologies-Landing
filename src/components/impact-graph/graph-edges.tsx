@@ -1,9 +1,10 @@
 'use client';
 import { motion } from 'motion/react';
 import { useMemo } from 'react';
-import { type CardRect, COLOR_HEX, EDGES, type RoutedEdge, routeEdge } from './graph-data';
+import { type CardRect, COLOR_HEX, type Edge, type RoutedEdge, routeEdge } from './graph-data';
 
 type Props = {
+  edges: ReadonlyArray<Edge>;
   rects: Record<string, CardRect>;
   width: number;
   height: number;
@@ -11,10 +12,10 @@ type Props = {
 
 const PILL_DISTANCE = 64;
 
-export function GraphEdges({ rects, width, height }: Props) {
+export function GraphEdges({ edges, rects, width, height }: Props) {
   const routed = useMemo(
-    () => EDGES.map((e) => routeEdge(e, rects)).filter((r): r is RoutedEdge => r !== null),
-    [rects],
+    () => edges.map((e) => routeEdge(e, rects)).filter((r): r is RoutedEdge => r !== null),
+    [edges, rects],
   );
 
   if (routed.length === 0 || width === 0 || height === 0) return null;

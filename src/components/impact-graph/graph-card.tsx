@@ -14,22 +14,45 @@ const CATEGORY_LABEL: Record<GraphCategory, string> = {
 type Props = {
   label: string;
   sub: string;
-  href: string;
+  /**
+   * When undefined or empty, the card renders as informational (no Link
+   * wrapping). Used by case-study pages to suppress self-links on the active
+   * slug. Pattern A is preserved either way: the outer motion.div remains the
+   * measurement target.
+   */
+  href?: string;
   color: GraphColor;
   category: GraphCategory;
   index: number;
 };
 
 // The outer motion.div is the layout / measurement target that
-// useCardPositions registers via ref. The inner Link fills the parent so the
-// entire card surface is clickable. This Pattern A keeps the SVG edge
-// geometry intact (the measured rect is unchanged).
+// useCardPositions registers via ref. The inner Link (or static content) fills
+// the parent so the entire card surface is clickable when linked. This
+// Pattern A keeps the SVG edge geometry intact (the measured rect is
+// unchanged regardless of inner element).
 export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
   { label, sub, href, color, category, index }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const accent = COLOR_HEX[color];
   const number = String(index + 1).padStart(2, '0');
+  const isLinked = typeof href === 'string' && href.length > 0;
+
+  const innerContent = (
+    <>
+      <div
+        className="font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-2"
+        style={{ color: accent }}
+      >
+        <span>{number}</span>
+        <span aria-hidden>·</span>
+        <span>{CATEGORY_LABEL[category]}</span>
+      </div>
+      <div className="mt-2 text-sm md:text-base font-semibold text-text leading-snug">{label}</div>
+      <div className="mt-1 font-mono text-[11px] text-text-muted">{sub}</div>
+    </>
+  );
 
   return (
     <motion.div
@@ -41,30 +64,27 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       className={cn(
         'relative rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
         'min-h-[132px]',
-        'transition-colors duration-300 hover:bg-bg-elevated/85 hover:border-border-hover',
+        isLinked &&
+          'transition-colors duration-300 hover:bg-bg-elevated/85 hover:border-border-hover',
       )}
       style={{ boxShadow: `inset 3px 0 0 0 ${accent}` }}
+      aria-current={isLinked ? undefined : 'page'}
     >
-      <Link
-        href={workHref(href.replace(/^\/work\//, ''))}
-        className={cn(
-          'absolute inset-0 block rounded-xl px-7 py-6 flex flex-col justify-center',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
-        )}
-      >
-        <div
-          className="font-mono text-[10px] uppercase tracking-[0.18em] flex items-center gap-2"
-          style={{ color: accent }}
+      {isLinked ? (
+        <Link
+          href={workHref(href.replace(/^\/work\//, ''))}
+          className={cn(
+            'absolute inset-0 block rounded-xl px-7 py-6 flex flex-col justify-center',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+          )}
         >
-          <span>{number}</span>
-          <span aria-hidden>·</span>
-          <span>{CATEGORY_LABEL[category]}</span>
+          {innerContent}
+        </Link>
+      ) : (
+        <div className="absolute inset-0 block rounded-xl px-7 py-6 flex flex-col justify-center">
+          {innerContent}
         </div>
-        <div className="mt-2 text-sm md:text-base font-semibold text-text leading-snug">
-          {label}
-        </div>
-        <div className="mt-1 font-mono text-[11px] text-text-muted">{sub}</div>
-      </Link>
+      )}
     </motion.div>
   );
 });
