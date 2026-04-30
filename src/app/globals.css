@@ -149,10 +149,14 @@ body {
 
 /*
  * Tri-tone left-edge stripe for the `mixed` accent. Stacking three
- * identical-position `inset` box-shadows collapses to a solid color (only the
- * topmost layer paints), so we render the gradient via a ::before pseudo
- * element instead. Consumers opt in by setting `data-accent="mixed"` on a
- * positioned element (the rounded card already has `position: relative`).
+ * identical-position `inset` box-shadows collapses to a solid color, so we
+ * render the gradient via a ::before pseudo element. The pseudo fills the
+ * entire card (so its border-radius can inherit cleanly from the parent's
+ * rounded-xl) and a CSS mask cuts it down to a 3 px stripe on the left
+ * edge. Without the mask trick, a 3 px-wide ::before would have its
+ * border-radius proportionally clamped to ~1.5 px and the stripe would look
+ * square at the corners. Consumers opt in by setting `data-accent="mixed"`
+ * on a positioned element (the rounded card already has `position: relative`).
  */
 [data-accent="mixed"] {
   position: relative;
@@ -160,17 +164,15 @@ body {
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
+  inset: 0;
+  border-radius: inherit;
   background: linear-gradient(
     to bottom,
     var(--color-brand-blue) 0%,
     var(--color-brand-purple) 50%,
     var(--color-brand-cyan) 100%
   );
+  -webkit-mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
+  mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
   pointer-events: none;
 }

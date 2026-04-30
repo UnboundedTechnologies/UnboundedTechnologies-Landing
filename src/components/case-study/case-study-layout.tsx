@@ -120,7 +120,7 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
       </header>
 
       {/* Meta strip */}
-      <div className="border-y border-border bg-bg-elevated/40 backdrop-blur-sm">
+      <div className="border-b border-border">
         <div className="mx-auto max-w-5xl px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6">
           <MetaCol label={t('metaClient')} value={study.client} />
           <MetaCol label={t('metaYears')} value={study.years} />
