@@ -3,6 +3,7 @@ import 'server-only';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
+import { cache } from 'react';
 import { z } from 'zod';
 
 const CONTENT_DIR = path.join(process.cwd(), 'content', 'case-studies');
@@ -24,11 +25,12 @@ export type CaseStudy = CaseStudyMeta & { body: string };
 
 export type Locale = 'en' | 'fr';
 
-/**
- * Read a single case-study MDX file at content/case-studies/{slug}.{locale}.mdx.
- * Returns null if the file is missing. Throws if the frontmatter is invalid.
- */
-export async function getCaseStudy(slug: string, locale: Locale): Promise<CaseStudy | null> {
+// Internal: actually read + parse the MDX file. Wrapped with `'use cache'` so
+// Next 16 Cache Components can prerender pages that depend on it without each
+// call counting as uncached I/O. The file system is the source of truth here
+// and content is fully static at build time, so caching is safe.
+async function readCaseStudy(slug: string, locale: Locale): Promise<CaseStudy | null> {
+  'use cache';
   const filePath = path.join(CONTENT_DIR, `${slug}.${locale}.mdx`);
 
   let raw: string;
@@ -65,10 +67,20 @@ export async function getCaseStudy(slug: string, locale: Locale): Promise<CaseSt
 }
 
 /**
- * Read every unique slug from the content directory. A slug is the prefix
- * before the first `.` in `{slug}.{locale}.mdx`.
+ * Read a single case-study MDX file at content/case-studies/{slug}.{locale}.mdx.
+ * Returns null if the file is missing. Throws if the frontmatter is invalid.
+ *
+ * Wrapped in React.cache so multiple calls within a single render request
+ * (generateStaticParams + generateMetadata + page) share one read.
  */
-export async function getCaseStudySlugs(): Promise<string[]> {
+export const getCaseStudy = cache(
+  async (slug: string, locale: Locale): Promise<CaseStudy | null> => {
+    return readCaseStudy(slug, locale);
+  },
+);
+
+async function readCaseStudySlugs(): Promise<string[]> {
+  'use cache';
   const entries = await readdir(CONTENT_DIR);
   const slugs = new Set<string>();
   for (const entry of entries) {
@@ -81,13 +93,15 @@ export async function getCaseStudySlugs(): Promise<string[]> {
 }
 
 /**
- * Read all case studies for a given locale, sorted by `order` ascending.
- *
- * Build-time invariant: every slug present in the content directory must have
- * BOTH an `.en.mdx` and an `.fr.mdx` file. If either is missing for any slug,
- * this function throws so the build fails fast.
+ * Read every unique slug from the content directory. A slug is the prefix
+ * before the first `.` in `{slug}.{locale}.mdx`.
  */
-export async function getAllCaseStudies(locale: Locale): Promise<CaseStudy[]> {
+export const getCaseStudySlugs = cache(async (): Promise<string[]> => {
+  return readCaseStudySlugs();
+});
+
+async function readAllCaseStudies(locale: Locale): Promise<CaseStudy[]> {
+  'use cache';
   const entries = await readdir(CONTENT_DIR);
 
   const grouped = new Map<string, Set<Locale>>();
@@ -119,7 +133,7 @@ export async function getAllCaseStudies(locale: Locale): Promise<CaseStudy[]> {
   const slugs = Array.from(grouped.keys());
   const studies = await Promise.all(
     slugs.map(async (slug) => {
-      const study = await getCaseStudy(slug, locale);
+      const study = await readCaseStudy(slug, locale);
       if (!study) {
         throw new Error(
           `Case study "${slug}" missing for locale "${locale}" despite directory parity check.`,
@@ -133,32 +147,45 @@ export async function getAllCaseStudies(locale: Locale): Promise<CaseStudy[]> {
 }
 
 /**
+ * Read all case studies for a given locale, sorted by `order` ascending.
+ *
+ * Build-time invariant: every slug present in the content directory must have
+ * BOTH an `.en.mdx` and an `.fr.mdx` file. If either is missing for any slug,
+ * this function throws so the build fails fast.
+ */
+export const getAllCaseStudies = cache(async (locale: Locale): Promise<CaseStudy[]> => {
+  return readAllCaseStudies(locale);
+});
+
+/**
  * Return the previous and next case study (by `order`) for a given slug, with
  * circular wrap-around: the first study's `prev` is the last study, and the
  * last study's `next` is the first study. Returns `{ prev: null, next: null }`
  * when the slug isn't found or is the only study.
  */
-export async function getAdjacentCaseStudies(
-  slug: string,
-  locale: Locale,
-): Promise<{ prev: CaseStudy | null; next: CaseStudy | null }> {
-  const all = await getAllCaseStudies(locale);
-  if (all.length === 0) {
-    return { prev: null, next: null };
-  }
+export const getAdjacentCaseStudies = cache(
+  async (
+    slug: string,
+    locale: Locale,
+  ): Promise<{ prev: CaseStudy | null; next: CaseStudy | null }> => {
+    const all = await readAllCaseStudies(locale);
+    if (all.length === 0) {
+      return { prev: null, next: null };
+    }
 
-  const idx = all.findIndex((s) => s.slug === slug);
-  if (idx === -1) {
-    return { prev: null, next: null };
-  }
-  if (all.length === 1) {
-    return { prev: null, next: null };
-  }
+    const idx = all.findIndex((s) => s.slug === slug);
+    if (idx === -1) {
+      return { prev: null, next: null };
+    }
+    if (all.length === 1) {
+      return { prev: null, next: null };
+    }
 
-  const prev = all[(idx - 1 + all.length) % all.length] ?? null;
-  const next = all[(idx + 1) % all.length] ?? null;
-  return { prev, next };
-}
+    const prev = all[(idx - 1 + all.length) % all.length] ?? null;
+    const next = all[(idx + 1) % all.length] ?? null;
+    return { prev, next };
+  },
+);
 
 function isNodeError(err: unknown): err is NodeJS.ErrnoException {
   return err instanceof Error && 'code' in err;

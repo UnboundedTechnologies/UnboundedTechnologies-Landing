@@ -62,6 +62,7 @@ export function ImpactGraph() {
               ref={register(n.id)}
               label={n.label}
               sub={n.sub}
+              href={n.href}
               color={n.color}
               category={n.category}
               index={i}
