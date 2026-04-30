@@ -89,24 +89,29 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
 
   return (
     <article className="relative">
-      {/* Back link */}
-      <div className="mx-auto max-w-5xl px-6 pt-12 md:pt-16">
-        <Link
-          href="/work"
-          className="font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors"
-        >
-          <span aria-hidden>←</span> {t('allWork')}
-        </Link>
-      </div>
-
-      {/* Hero block */}
-      <header className="relative overflow-hidden">
+      {/* Hero region: back link + title + meta strip share a single gradient
+          backdrop so there is no visible seam where the hero ends and the meta
+          begins. The gradient fades to transparent at its lower edge, blending
+          into the body sections below. */}
+      <div className="relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{ background: heroGradient(study.accent) }}
         />
-        <div className="relative mx-auto max-w-5xl px-6 pt-12 pb-16 md:pt-20 md:pb-24">
+
+        {/* Back link */}
+        <div className="relative mx-auto max-w-5xl px-6 pt-12 md:pt-16">
+          <Link
+            href="/work"
+            className="font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors"
+          >
+            <span aria-hidden>←</span> {t('allWork')}
+          </Link>
+        </div>
+
+        {/* Title block */}
+        <header className="relative mx-auto max-w-5xl px-6 pt-12 pb-12 md:pt-16 md:pb-16">
           <Eyebrow className={cn(sectionEyebrowClass(study.accent, 0))}>{study.client}</Eyebrow>
           <h1
             className={cn(
@@ -116,12 +121,10 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
           >
             {study.title}
           </h1>
-        </div>
-      </header>
+        </header>
 
-      {/* Meta strip */}
-      <div className="border-b border-border">
-        <div className="mx-auto max-w-5xl px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6">
+        {/* Meta strip (no bg / no border, shares the hero gradient above) */}
+        <div className="relative mx-auto max-w-5xl px-6 pb-16 md:pb-24 grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6">
           <MetaCol label={t('metaClient')} value={study.client} />
           <MetaCol label={t('metaYears')} value={study.years} />
           <MetaCol label={t('metaRole')} value={study.role} />
