@@ -4,7 +4,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
-import { SmoothScroll } from '@/components/smooth-scroll';
 import { type Locale, routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
@@ -25,7 +24,6 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <SmoothScroll />
       <div className="grain min-h-screen flex flex-col">
         <TopNav />
         <main className="flex-1">{children}</main>
