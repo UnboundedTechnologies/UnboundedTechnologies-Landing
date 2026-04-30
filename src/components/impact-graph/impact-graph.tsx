@@ -14,7 +14,7 @@ export function ImpactGraph() {
         aria-hidden
         style={{
           background:
-            'radial-gradient(ellipse at 70% 30%, rgba(80,90,255,0.15) 0%, rgba(163,93,255,0.08) 40%, transparent 70%)',
+            'radial-gradient(ellipse at 70% 30%, rgba(80,90,255,0.15) 0%, rgba(163,93,255,0.08) 40%, transparent 70%), radial-gradient(ellipse at 25% 90%, rgba(93,199,255,0.08) 0%, transparent 60%)',
         }}
       />
       <div className="relative mx-auto max-w-7xl px-6">

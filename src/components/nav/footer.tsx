@@ -2,7 +2,7 @@ import { Link } from '@/i18n/routing';
 
 export function Footer() {
   return (
-    <footer className="border-t border-border mt-32">
+    <footer className="relative border-t border-border">
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-8 text-sm text-text-muted">
         <div>
           <div className="font-semibold text-text">∞ Unbounded Technologies Inc.</div>
