@@ -9,6 +9,8 @@ type Props = {
   height: number;
 };
 
+const PILL_DISTANCE = 64;
+
 export function GraphEdges({ rects, width, height }: Props) {
   const routed = useMemo(
     () => EDGES.map((e) => routeEdge(e, rects)).filter((r): r is RoutedEdge => r !== null),
@@ -16,6 +18,8 @@ export function GraphEdges({ rects, width, height }: Props) {
   );
 
   if (routed.length === 0 || width === 0 || height === 0) return null;
+
+  const verticalCenter = height / 2;
 
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden>
@@ -28,8 +32,15 @@ export function GraphEdges({ rects, width, height }: Props) {
         aria-hidden
         focusable="false"
       >
-        {routed.map(({ edge, x1, y1, x2, y2 }, i) => {
+        {routed.map(({ edge, x1, y1, x2, y2, midX, midY, orientation }, i) => {
           const stroke = COLOR_HEX[edge.color];
+          const isVertical = orientation === 'vertical';
+          const pillUp = !isVertical && midY < verticalCenter;
+          const stemEndX = isVertical ? midX + PILL_DISTANCE : midX;
+          const stemEndY = isVertical ? midY : pillUp ? midY - PILL_DISTANCE : midY + PILL_DISTANCE;
+          const lineDelay = i * 0.08;
+          const dotDelay = 0.55 + i * 0.08;
+          const stemDelay = 0.7 + i * 0.08;
           return (
             <g key={`line-${edge.from}-${edge.to}`}>
               <motion.line
@@ -38,14 +49,15 @@ export function GraphEdges({ rects, width, height }: Props) {
                 x2={x2}
                 y2={y2}
                 stroke={stroke}
-                strokeWidth={1.25}
-                strokeOpacity={0.35}
+                strokeWidth={1.5}
+                strokeOpacity={0.55}
+                strokeLinecap="round"
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1.0, delay: 0.4 + i * 0.18, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.5, delay: lineDelay, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <line
+              <motion.line
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -55,6 +67,54 @@ export function GraphEdges({ rects, width, height }: Props) {
                 strokeOpacity={0.95}
                 strokeLinecap="round"
                 className="graph-energy-line"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: lineDelay + 0.5, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <motion.circle
+                cx={x1}
+                cy={y1}
+                r={4}
+                fill={stroke}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: dotDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <motion.circle
+                cx={x2}
+                cy={y2}
+                r={4}
+                fill={stroke}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: dotDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <motion.line
+                x1={midX}
+                y1={midY}
+                x2={stemEndX}
+                y2={stemEndY}
+                stroke={stroke}
+                strokeWidth={1.25}
+                strokeOpacity={0.9}
+                strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: stemDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <motion.circle
+                cx={midX}
+                cy={midY}
+                r={3.5}
+                fill={stroke}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: stemDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
               />
             </g>
           );
@@ -63,36 +123,48 @@ export function GraphEdges({ rects, width, height }: Props) {
 
       {routed.map(({ edge, midX, midY, orientation }, i) => {
         const stroke = COLOR_HEX[edge.color];
-        const offsetX = orientation === 'vertical' ? 64 : 0;
-        const offsetY = orientation === 'horizontal' ? -36 : 0;
+        const isVertical = orientation === 'vertical';
+        const pillUp = !isVertical && midY < verticalCenter;
+        const anchorLeft = isVertical ? midX + PILL_DISTANCE : midX;
+        const anchorTop = isVertical
+          ? midY
+          : pillUp
+            ? midY - PILL_DISTANCE
+            : midY + PILL_DISTANCE;
+        const translateClass = isVertical
+          ? '-translate-y-1/2'
+          : pillUp
+            ? '-translate-x-1/2 -translate-y-full'
+            : '-translate-x-1/2';
         return (
-          <motion.div
+          <div
             key={`pill-${edge.from}-${edge.to}`}
-            className="graph-pill absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            style={{
-              left: midX + offsetX,
-              top: midY + offsetY,
-              ['--pill-glow' as string]: `${stroke}55`,
-            }}
-            initial={{ opacity: 0, scale: 0.85, y: 6 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 1.0 + i * 0.18, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true, margin: '-80px' }}
+            className={`absolute pointer-events-none ${translateClass}`}
+            style={{ left: anchorLeft, top: anchorTop }}
           >
-            <div
-              className="px-3 py-1.5 rounded-xl border bg-bg-elevated/70 backdrop-blur-md font-mono shadow-lg flex flex-col items-center"
-              style={{ borderColor: stroke }}
+            <motion.div
+              className="graph-pill"
+              style={{ ['--pill-glow' as string]: `${stroke}55` }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.85 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: true, margin: '-80px' }}
             >
-              <span className="font-semibold text-text text-[12px] leading-tight">
-                {edge.primary}
-              </span>
-              {edge.secondary && (
-                <span className="text-text-muted font-normal text-[10px] leading-tight mt-0.5">
-                  {edge.secondary}
+              <div
+                className="px-3.5 py-2 rounded-lg border bg-bg-elevated/90 backdrop-blur-md font-mono shadow-xl flex flex-col items-center whitespace-nowrap"
+                style={{ borderColor: `${stroke}b3` }}
+              >
+                <span className="font-semibold text-text text-[12px] leading-tight tracking-tight">
+                  {edge.primary}
                 </span>
-              )}
-            </div>
-          </motion.div>
+                {edge.secondary && (
+                  <span className="text-text-muted font-normal text-[10px] leading-tight mt-0.5 tracking-tight">
+                    {edge.secondary}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          </div>
         );
       })}
     </div>

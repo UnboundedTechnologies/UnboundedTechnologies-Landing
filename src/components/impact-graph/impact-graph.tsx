@@ -35,7 +35,7 @@ export function ImpactGraph() {
   }, [containerSize.width, recompute]);
 
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section className="relative py-28 md:py-44 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
@@ -54,7 +54,7 @@ export function ImpactGraph() {
 
         <div
           ref={containerRef}
-          className="relative mt-20 grid grid-cols-1 md:grid-cols-3 gap-y-14 md:gap-y-32 gap-x-10 md:gap-x-32"
+          className="relative mt-28 md:mt-36 grid grid-cols-1 md:grid-cols-3 gap-y-20 md:gap-y-48 gap-x-12 md:gap-x-40"
         >
           {NODES.map((n, i) => (
             <GraphCard
