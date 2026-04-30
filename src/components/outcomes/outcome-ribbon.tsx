@@ -20,9 +20,6 @@ type Outcome = {
   contextKey: string;
   statClass: string;
   glowColor: string;
-  orbClass: 'orb-a' | 'orb-b' | 'orb-c';
-  orbDur: string;
-  orbDelay: string;
   hoverBorderColor: string;
   hoverShadow: string;
 };
@@ -35,9 +32,6 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'renaultContext',
     statClass: 'text-brand-blue',
     glowColor: 'rgba(93,111,255,0.3)',
-    orbClass: 'orb-a',
-    orbDur: '9.4s',
-    orbDelay: '0ms',
     hoverBorderColor: 'rgba(93,111,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
   },
@@ -48,9 +42,6 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'etbaContext',
     statClass: 'text-brand-purple',
     glowColor: 'rgba(163,93,255,0.3)',
-    orbClass: 'orb-b',
-    orbDur: '11.2s',
-    orbDelay: '720ms',
     hoverBorderColor: 'rgba(163,93,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
   },
@@ -61,9 +52,6 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     contextKey: 'uptimeContext',
     statClass: 'text-brand-cyan',
     glowColor: 'rgba(93,199,255,0.3)',
-    orbClass: 'orb-c',
-    orbDur: '13.6s',
-    orbDelay: '1480ms',
     hoverBorderColor: 'rgba(93,199,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
   },
@@ -78,7 +66,7 @@ export function OutcomeRibbon() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {OUTCOMES.map((o) => {
+          {OUTCOMES.map((o, i) => {
             return (
               <Link
                 key={o.contextKey}
@@ -93,14 +81,8 @@ export function OutcomeRibbon() {
               >
                 <div
                   aria-hidden
-                  className={`${o.orbClass} absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none`}
-                  style={
-                    {
-                      background: o.glowColor,
-                      ['--orb-dur' as string]: o.orbDur,
-                      ['--orb-delay' as string]: o.orbDelay,
-                    } as React.CSSProperties
-                  }
+                  className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                  style={{ background: o.glowColor, animationDelay: `${i * 1500}ms` }}
                 />
                 <div
                   className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}

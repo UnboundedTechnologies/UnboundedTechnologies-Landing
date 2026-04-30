@@ -19,9 +19,6 @@ type Pillar = {
   numClass: string;
   tagClass: string;
   tags: ReadonlyArray<string>;
-  orbClass: 'orb-a' | 'orb-b' | 'orb-c';
-  orbDur: string;
-  orbDelay: string;
   hoverBorderColor: string;
   hoverShadow: string;
 };
@@ -35,9 +32,6 @@ const PILLARS: ReadonlyArray<Pillar> = [
     numClass: 'text-brand-blue',
     tagClass: 'text-brand-blue',
     tags: ['AWS', 'Terraform', 'GCP', 'Azure'],
-    orbClass: 'orb-c',
-    orbDur: '10.6s',
-    orbDelay: '420ms',
     hoverBorderColor: 'rgba(93,111,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
   },
@@ -49,9 +43,6 @@ const PILLARS: ReadonlyArray<Pillar> = [
     numClass: 'text-brand-purple',
     tagClass: 'text-brand-purple',
     tags: ['Amazon Connect', 'End-User Messaging', 'Pinpoint'],
-    orbClass: 'orb-a',
-    orbDur: '12.3s',
-    orbDelay: '980ms',
     hoverBorderColor: 'rgba(163,93,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
   },
@@ -63,9 +54,6 @@ const PILLARS: ReadonlyArray<Pillar> = [
     numClass: 'text-brand-cyan',
     tagClass: 'text-brand-cyan',
     tags: ['Lambda', 'DynamoDB', 'API GW'],
-    orbClass: 'orb-b',
-    orbDur: '14.5s',
-    orbDelay: '1620ms',
     hoverBorderColor: 'rgba(93,199,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
   },
@@ -79,7 +67,7 @@ export function ServicesPillars() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {PILLARS.map((p) => (
+          {PILLARS.map((p, i) => (
             <div
               key={p.titleKey}
               className="group relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]"
@@ -90,21 +78,12 @@ export function ServicesPillars() {
                 } as React.CSSProperties
               }
             >
-              {/* Corner glow overlay. Inline CSS vars feed the per-card orb
-                  variant (different keyframe / duration / delay) so the three
-                  lights are visibly out of sync. On hover the parent's `group`
-                  state intensifies the orb (faster duration + brightness boost
-                  via globals.css). */}
+              {/* Corner glow overlay. Inline style for the brand color so each
+                  card has its own; sizing/positioning kept in Tailwind. */}
               <div
                 aria-hidden
-                className={`${p.orbClass} absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none`}
-                style={
-                  {
-                    background: p.glowColor,
-                    ['--orb-dur' as string]: p.orbDur,
-                    ['--orb-delay' as string]: p.orbDelay,
-                  } as React.CSSProperties
-                }
+                className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                style={{ background: p.glowColor, animationDelay: `${i * 1500}ms` }}
               />
               <div
                 className={`relative font-mono text-xs tracking-widest ${p.numClass} mb-4 transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:tracking-[0.3em]`}
