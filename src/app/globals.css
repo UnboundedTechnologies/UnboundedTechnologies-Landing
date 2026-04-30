@@ -148,18 +148,25 @@ body {
 }
 
 /*
- * Tri-tone left-edge stripe for the `mixed` accent. We can't use a
- * box-shadow (gradients aren't supported there), and a full-area ::before
- * with a left-edge mask still reads as squarish because the taper happens
- * over only 12 px (the card's corner radius). Instead, render an explicit
- * pill-shaped stripe: 3 px wide, inset 12 px from top and bottom of the
- * card so the rounded ends sit cleanly inside the card's rounded corners.
- * Consumers opt in by setting `data-accent="mixed"` on a positioned
- * element (the rounded card already has `position: relative`).
+ * Unified left-edge accent stripe for cards on the work index. All four
+ * accent values render as the same pill shape so cards read as visually
+ * consistent and the rounded ends are unambiguously visible. A
+ * box-shadow inset at 3 px on a rounded-xl card tapers over only 12 px,
+ * which reads as squarish, so we render an explicit ::before pill: 3 px
+ * wide, inset 12 px from the card's top and bottom, fully rounded ends.
+ * Solid accents fill with a single brand color; the mixed accent fills
+ * with the tri-tone aurora gradient. Consumers opt in by setting
+ * `data-accent="blue|purple|cyan|mixed"` on a positioned element.
  */
+[data-accent="blue"],
+[data-accent="purple"],
+[data-accent="cyan"],
 [data-accent="mixed"] {
   position: relative;
 }
+[data-accent="blue"]::before,
+[data-accent="purple"]::before,
+[data-accent="cyan"]::before,
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
@@ -168,11 +175,22 @@ body {
   bottom: 12px;
   width: 3px;
   border-radius: 9999px;
+  pointer-events: none;
+}
+[data-accent="blue"]::before {
+  background: var(--color-brand-blue);
+}
+[data-accent="purple"]::before {
+  background: var(--color-brand-purple);
+}
+[data-accent="cyan"]::before {
+  background: var(--color-brand-cyan);
+}
+[data-accent="mixed"]::before {
   background: linear-gradient(
     to bottom,
     var(--color-brand-blue) 0%,
     var(--color-brand-purple) 50%,
     var(--color-brand-cyan) 100%
   );
-  pointer-events: none;
 }

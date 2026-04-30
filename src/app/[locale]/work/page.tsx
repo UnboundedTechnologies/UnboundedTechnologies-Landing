@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
-import { ACCENT_TEXT_CLASS, accentStripeShadow } from '@/lib/accents';
+import { ACCENT_TEXT_CLASS } from '@/lib/accents';
 import { getAllCaseStudies, type Locale } from '@/lib/case-studies';
 import { cn } from '@/lib/utils';
 
@@ -31,7 +31,6 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
             const number = String(study.order).padStart(2, '0');
             const numberClass =
               study.accent === 'mixed' ? 'aurora-text' : ACCENT_TEXT_CLASS[study.accent];
-            const stripeShadow = accentStripeShadow(study.accent);
             return (
               <li key={study.slug}>
                 <Link
@@ -44,7 +43,6 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                     'hover:border-border-hover hover:bg-bg-elevated/85 hover:-translate-y-1',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
                   )}
-                  style={stripeShadow ? { boxShadow: stripeShadow } : undefined}
                 >
                   <div className={cn('font-mono text-xs tracking-[0.18em]', numberClass)}>
                     {number}
