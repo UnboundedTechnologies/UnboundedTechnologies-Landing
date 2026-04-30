@@ -148,15 +148,14 @@ body {
 }
 
 /*
- * Tri-tone left-edge stripe for the `mixed` accent. Stacking three
- * identical-position `inset` box-shadows collapses to a solid color, so we
- * render the gradient via a ::before pseudo element. The pseudo fills the
- * entire card (so its border-radius can inherit cleanly from the parent's
- * rounded-xl) and a CSS mask cuts it down to a 3 px stripe on the left
- * edge. Without the mask trick, a 3 px-wide ::before would have its
- * border-radius proportionally clamped to ~1.5 px and the stripe would look
- * square at the corners. Consumers opt in by setting `data-accent="mixed"`
- * on a positioned element (the rounded card already has `position: relative`).
+ * Tri-tone left-edge stripe for the `mixed` accent. We can't use a
+ * box-shadow (gradients aren't supported there), and a full-area ::before
+ * with a left-edge mask still reads as squarish because the taper happens
+ * over only 12 px (the card's corner radius). Instead, render an explicit
+ * pill-shaped stripe: 3 px wide, inset 12 px from top and bottom of the
+ * card so the rounded ends sit cleanly inside the card's rounded corners.
+ * Consumers opt in by setting `data-accent="mixed"` on a positioned
+ * element (the rounded card already has `position: relative`).
  */
 [data-accent="mixed"] {
   position: relative;
@@ -164,15 +163,16 @@ body {
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: 1px;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 9999px;
   background: linear-gradient(
     to bottom,
     var(--color-brand-blue) 0%,
     var(--color-brand-purple) 50%,
     var(--color-brand-cyan) 100%
   );
-  -webkit-mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
-  mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
   pointer-events: none;
 }
