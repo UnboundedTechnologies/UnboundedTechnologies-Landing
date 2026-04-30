@@ -1,0 +1,29 @@
+---
+slug: aws-connect-ivr
+locale: en
+title: "Amazon Connect IVR + Pinpoint at AWS Toronto"
+client: "AWS Toronto"
+years: "2024 - present"
+role: "CPaaS / Cloud Architect"
+stack:
+  - Amazon Connect
+  - Lambda
+  - API Gateway
+  - SNS
+  - SQS
+  - Pinpoint
+accent: purple
+order: 2
+---
+
+## Problem
+
+Real-time IVR and outbound messaging at AWS scale: every customer interaction has to route, branch, and reply within hundreds of milliseconds, while the same platform feeds CRM, analytics, and engagement systems downstream. The integration surface is multi-runtime by design (Node, Python, Java) and has to keep behaving when one of those runtimes wobbles.
+
+## Approach
+
+The architecture is event-driven from end to end. API Gateway fans into Lambda, which orchestrates Amazon Connect for voice and Pinpoint for outbound messaging. SNS and SQS sit between the moving parts, decoupling producers from consumers so a slow consumer never backs up a hot path. Production-grade observability, structured logging, and graceful shutdown ship as first-class concerns.
+
+## Outcome
+
+Real-time call routing and customer engagement now run at AWS scale, with a multi-runtime Lambda fleet shipping under one operational standard. The platform is built so a runtime upgrade in one corner of the system does not pull on the others, and incidents in third-party CRM or engagement endpoints are absorbed by the queue layer rather than surfaced to the caller.
