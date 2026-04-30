@@ -164,15 +164,16 @@ body {
  * `focus-visible:outline-*` instead of `focus-visible:ring-*`.
  */
 /*
- * All three solid accents render as a box-shadow inset stripe so the
- * card surfaces read identically. 1.5 px blur lets the corner taper
+ * All four card accents render as the same box-shadow inset stripe so
+ * the card surfaces read identically. 1.5 px blur lets the corner taper
  * carry visible AA on every accent, including the bright cyan.
  *
- * Mixed cannot use box-shadow because gradients aren't allowed there.
- * It uses a ::before pseudo with the same geometry plus a soft mask
- * transition (2 px fade from opaque to transparent at the right edge)
- * to approximate the same AA softness solid accents get from shadow
- * rendering.
+ * Mixed (BMO) uses a solid indigo (#8066ff: the literal RGB midpoint of
+ * brand-blue #5d6fff and brand-purple #a35dff) so it can share the
+ * box-shadow path. The aurora gradient is still used for the mixed
+ * accent in OTHER surfaces (case-study hero gradient, eyebrow cycling)
+ * via heroGradient() and sectionEyebrowClass() in src/lib/accents.ts;
+ * only the work-index card stripe uses this solid blend, by design.
  */
 [data-accent="blue"] {
   box-shadow: inset 3px 0 1.5px 0 var(--color-brand-blue);
@@ -183,22 +184,6 @@ body {
 [data-accent="cyan"] {
   box-shadow: inset 3px 0 1.5px 0 var(--color-brand-cyan);
 }
-
 [data-accent="mixed"] {
-  position: relative;
-}
-[data-accent="mixed"]::before {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  border-radius: 11px;
-  background: linear-gradient(
-    to bottom,
-    var(--color-brand-blue) 0%,
-    var(--color-brand-purple) 50%,
-    var(--color-brand-cyan) 100%
-  );
-  -webkit-mask: linear-gradient(to right, #000 0, #000 2px, transparent 4px);
-  mask: linear-gradient(to right, #000 0, #000 2px, transparent 4px);
-  pointer-events: none;
+  box-shadow: inset 3px 0 1.5px 0 #8066ff;
 }
