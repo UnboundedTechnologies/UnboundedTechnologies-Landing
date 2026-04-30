@@ -148,15 +148,16 @@ body {
 }
 
 /*
- * Unified left-edge accent stripe for cards. A rectangular 3 px ::before
- * runs the full height of the card; the card's own `overflow: hidden`
- * combined with its rounded corners (rounded-xl, etc.) clips the stripe
- * so the corner taper is the card's rounded curve itself. Same shape
- * for solid colors and gradients alike, no box-shadow / mask trickery.
- * The card's focus-visible ring keeps working because it's a non-inset
- * box-shadow that renders outside the element. Consumers opt in by
- * setting `data-accent="blue|purple|cyan|mixed"` on a positioned card
- * that also has `overflow: hidden`.
+ * Unified left-edge accent stripe for cards. The ::before sits exactly
+ * inside the 1 px border (inset: 1px) and inherits an 11 px inner radius
+ * matching the card's rounded-xl outer 12 px minus the border width, so
+ * the stripe follows the same inner curve a `box-shadow: inset 3px 0 0 0`
+ * would. A horizontal mask cuts the filled ::before down to the leftmost
+ * 3 px while preserving the rounded corner taper. Same shape rendered
+ * for solid colors and the mixed gradient alike. No overflow: hidden
+ * needed, focus-visible ring keeps composing as a non-inset shadow.
+ * Consumers opt in by setting `data-accent="blue|purple|cyan|mixed"` on
+ * a positioned, rounded-xl, 1 px-bordered card.
  */
 [data-accent="blue"],
 [data-accent="purple"],
@@ -170,10 +171,10 @@ body {
 [data-accent="mixed"]::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
+  inset: 1px;
+  border-radius: 11px;
+  -webkit-mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
+  mask: linear-gradient(to right, #000 0, #000 3px, transparent 3px);
   pointer-events: none;
 }
 [data-accent="blue"]::before {
