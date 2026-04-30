@@ -185,5 +185,5 @@ body {
   box-shadow: inset 3px 0 1.5px 0 var(--color-brand-cyan);
 }
 [data-accent="mixed"] {
-  box-shadow: inset 3px 0 1.5px 0 #8066ff;
+  box-shadow: inset 3px 0 1.5px 0 var(--color-brand-purple);
 }
