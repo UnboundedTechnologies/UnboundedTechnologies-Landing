@@ -22,10 +22,10 @@ export function SmoothScroll() {
     }
 
     const lenis = new Lenis({
-      lerp: 0.075,
+      lerp: 0.085,
       smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.4,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 2,
     });
 
     let rafId = 0;

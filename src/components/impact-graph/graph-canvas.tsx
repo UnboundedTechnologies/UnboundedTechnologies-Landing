@@ -81,7 +81,7 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
   const spacing =
     variant === 'page'
       ? 'mt-28 md:mt-36 gap-y-20 md:gap-y-48 gap-x-12 md:gap-x-40'
-      : 'mt-10 md:mt-14 gap-y-10 md:gap-y-20 gap-x-8 md:gap-x-24';
+      : 'mt-20 md:mt-32 gap-y-10 md:gap-y-20 gap-x-8 md:gap-x-24';
 
   return (
     <div
@@ -110,6 +110,7 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
           rects={rects}
           width={containerSize.width}
           height={containerSize.height}
+          pillDistance={variant === 'page' ? 64 : 110}
         />
       </div>
     </div>

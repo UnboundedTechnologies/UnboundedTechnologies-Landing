@@ -8,11 +8,18 @@ type Props = {
   rects: Record<string, CardRect>;
   width: number;
   height: number;
+  /**
+   * Px distance between the connecting line and the floating stat pill. The
+   * pill is anchored at this offset perpendicular to the line; the dashed
+   * stem fills the gap. Tighter inline diagrams use a larger value so the
+   * pill clearly floats above the row instead of looking jammed against the
+   * cards.
+   */
+  pillDistance?: number;
 };
 
-const PILL_DISTANCE = 64;
-
-export function GraphEdges({ edges, rects, width, height }: Props) {
+export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: Props) {
+  const PILL_DISTANCE = pillDistance;
   const routed = useMemo(
     () => edges.map((e) => routeEdge(e, rects)).filter((r): r is RoutedEdge => r !== null),
     [edges, rects],
