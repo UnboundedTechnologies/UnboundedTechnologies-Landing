@@ -141,11 +141,7 @@ export function GraphEdges({ rects, width, height }: Props) {
         const isVertical = orientation === 'vertical';
         const pillUp = !isVertical && midY < verticalCenter;
         const anchorLeft = isVertical ? midX + PILL_DISTANCE : midX;
-        const anchorTop = isVertical
-          ? midY
-          : pillUp
-            ? midY - PILL_DISTANCE
-            : midY + PILL_DISTANCE;
+        const anchorTop = isVertical ? midY : pillUp ? midY - PILL_DISTANCE : midY + PILL_DISTANCE;
         const translateClass = isVertical
           ? '-translate-y-1/2'
           : pillUp

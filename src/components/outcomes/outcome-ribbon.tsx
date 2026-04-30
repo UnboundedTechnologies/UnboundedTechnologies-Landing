@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { Link } from '@/i18n/routing';
+import { Link, workHref } from '@/i18n/routing';
 
 // Three quantified-outcome cards. Each card has a brand-color stat number, a
 // short unit label, and a one-line context line. Stat colors are LITERAL Tailwind
@@ -59,11 +59,10 @@ export function OutcomeRibbon() {
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
           {OUTCOMES.map((o, i) => {
-            const slugHref = `/work/${o.slug}` as Parameters<typeof Link>[0]['href'];
             return (
               <Link
                 key={o.contextKey}
-                href={slugHref}
+                href={workHref(o.slug)}
                 className="group relative overflow-hidden block bg-bg-elevated border border-border rounded-xl p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 <div

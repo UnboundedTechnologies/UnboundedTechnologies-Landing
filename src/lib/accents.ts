@@ -1,0 +1,108 @@
+// Single source of truth for the four brand accents that drive case-study
+// layout, work-index cards, outcome ribbon, and impact-graph colors. New pages
+// (About, Services, Phase 8 surfaces) should import from here so they stay
+// visually consistent with the rest of the site.
+//
+// The four accents:
+//   blue   -> single-tone glow / stripe in --color-brand-blue
+//   purple -> single-tone glow / stripe in --color-brand-purple
+//   cyan   -> single-tone glow / stripe in --color-brand-cyan
+//   mixed  -> tri-tone aurora; rendered via the .aurora-text class for
+//             headlines and via a left-edge gradient stripe for cards (see
+//             globals.css [data-accent="mixed"]).
+
+export type Accent = 'blue' | 'purple' | 'cyan' | 'mixed';
+export type SolidAccent = Exclude<Accent, 'mixed'>;
+
+// Hex values mirror the @theme tokens in globals.css. Keep them in sync.
+export const BRAND_HEX: Record<SolidAccent, string> = {
+  blue: '#5d6fff',
+  purple: '#a35dff',
+  cyan: '#5dc7ff',
+} as const;
+
+// "R, G, B" triples for use inside rgba(...) calls. Avoids per-call string
+// surgery in the hero/glow gradients.
+export const BRAND_RGB: Record<SolidAccent, string> = {
+  blue: '93, 111, 255',
+  purple: '163, 93, 255',
+  cyan: '93, 199, 255',
+} as const;
+
+// LITERAL Tailwind classes (not interpolated) so the v4 oxide compiler can
+// detect them at build time. Do not template these into another string.
+export const ACCENT_TEXT_CLASS: Record<SolidAccent, string> = {
+  blue: 'text-brand-blue',
+  purple: 'text-brand-purple',
+  cyan: 'text-brand-cyan',
+};
+
+/**
+ * CSS background-image gradient for the case-study hero glow.
+ *
+ * Solid accents render a soft single-tone radial. `mixed` renders a tri-tone
+ * aurora ellipse with the three brand stops.
+ */
+export function heroGradient(accent: Accent): string {
+  if (accent === 'mixed') {
+    return 'radial-gradient(ellipse at 30% 20%, rgba(93,111,255,0.20) 0%, rgba(163,93,255,0.14) 35%, rgba(93,199,255,0.10) 65%, transparent 85%)';
+  }
+  const rgb = BRAND_RGB[accent].replace(/\s+/g, '');
+  return `radial-gradient(ellipse at 30% 20%, rgba(${rgb},0.22) 0%, rgba(${rgb},0.10) 45%, transparent 80%)`;
+}
+
+/**
+ * `box-shadow` value for the inset accent stripe used on case-study index
+ * cards, prev/next adjacent cards, and impact-graph cards.
+ *
+ * For solid accents this returns a single inset shadow on the requested side
+ * (defaults to a 3px stripe on the left edge).
+ *
+ * For the `mixed` accent this returns an EMPTY string and the consumer must
+ * additionally set `data-accent="mixed"` on the element so the CSS rule in
+ * globals.css renders the tri-tone gradient via a `::before` pseudo-element.
+ * Stacking three identical-position insets does NOT work: CSS composites them
+ * such that only the topmost layer paints, collapsing the visual to a single
+ * solid color.
+ */
+export function accentStripeShadow(
+  accent: Accent,
+  options?: { side?: 'left' | 'right'; widthPx?: number },
+): string {
+  if (accent === 'mixed') {
+    // Rendered via [data-accent="mixed"]::before in globals.css.
+    return '';
+  }
+  const width = options?.widthPx ?? 3;
+  const side = options?.side ?? 'left';
+  const xOffset = side === 'left' ? width : -width;
+  return `inset ${xOffset}px 0 0 0 ${BRAND_HEX[accent]}`;
+}
+
+/**
+ * Translucent border tint for adjacent (prev/next) case-study cards. Solid
+ * accents return their brand hex with ~45% alpha; `mixed` falls back to a
+ * neutral purple tone (the prev/next surface is too small to render the
+ * gradient stripe reliably).
+ */
+export function accentBorderColor(accent: Accent): string {
+  if (accent === 'mixed') return 'rgba(163,93,255,0.45)';
+  return `${BRAND_HEX[accent]}73`; // ~45% alpha
+}
+
+/**
+ * Eyebrow color class per section in a 3-section page (Problem / Approach /
+ * Outcome). Solid accents repeat their tone across all three sections; `mixed`
+ * cycles blue / purple / cyan so the page reads as a tri-tone.
+ */
+export function sectionEyebrowClass(accent: Accent, sectionIndex: 0 | 1 | 2): string {
+  if (accent === 'mixed') {
+    const cycle: ReadonlyArray<string> = [
+      ACCENT_TEXT_CLASS.blue,
+      ACCENT_TEXT_CLASS.purple,
+      ACCENT_TEXT_CLASS.cyan,
+    ];
+    return cycle[sectionIndex];
+  }
+  return ACCENT_TEXT_CLASS[accent];
+}

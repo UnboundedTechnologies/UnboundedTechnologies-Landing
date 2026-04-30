@@ -1,24 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { Link } from '@/i18n/routing';
-import { type CaseStudy, getAllCaseStudies, type Locale } from '@/lib/case-studies';
+import { Link, workHref } from '@/i18n/routing';
+import { ACCENT_TEXT_CLASS, accentStripeShadow } from '@/lib/accents';
+import { getAllCaseStudies, type Locale } from '@/lib/case-studies';
 import { cn } from '@/lib/utils';
-
-const ACCENT_INSET: Record<CaseStudy['accent'], string> = {
-  blue: 'inset 3px 0 0 0 #5d6fff',
-  purple: 'inset 3px 0 0 0 #a35dff',
-  cyan: 'inset 3px 0 0 0 #5dc7ff',
-  // Mixed: a layered tri-stop using all three brand tones along the left edge.
-  mixed:
-    'inset 3px 0 0 0 #5d6fff, inset 3px 0 0 0 rgba(163,93,255,0.6), inset 3px 0 0 0 rgba(93,199,255,0.4)',
-};
-
-const ACCENT_NUMBER_CLASS: Record<CaseStudy['accent'], string> = {
-  blue: 'text-brand-blue',
-  purple: 'text-brand-purple',
-  cyan: 'text-brand-cyan',
-  mixed: 'aurora-text',
-};
 
 export default async function WorkIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -42,11 +27,14 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
         <ul className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
           {studies.map((study) => {
             const number = String(study.order).padStart(2, '0');
-            const slugHref = `/work/${study.slug}` as Parameters<typeof Link>[0]['href'];
+            const numberClass =
+              study.accent === 'mixed' ? 'aurora-text' : ACCENT_TEXT_CLASS[study.accent];
+            const stripeShadow = accentStripeShadow(study.accent);
             return (
               <li key={study.slug}>
                 <Link
-                  href={slugHref}
+                  href={workHref(study.slug)}
+                  data-accent={study.accent}
                   className={cn(
                     'group relative block rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
                     'p-8 md:p-10 min-h-[260px] flex flex-col',
@@ -54,14 +42,9 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                     'hover:border-border-hover hover:bg-bg-elevated/85 hover:-translate-y-1',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
                   )}
-                  style={{ boxShadow: ACCENT_INSET[study.accent] }}
+                  style={stripeShadow ? { boxShadow: stripeShadow } : undefined}
                 >
-                  <div
-                    className={cn(
-                      'font-mono text-xs tracking-[0.18em]',
-                      ACCENT_NUMBER_CLASS[study.accent],
-                    )}
-                  >
+                  <div className={cn('font-mono text-xs tracking-[0.18em]', numberClass)}>
                     {number}
                   </div>
                   <h2 className="mt-6 text-xl md:text-2xl font-semibold text-text leading-snug">

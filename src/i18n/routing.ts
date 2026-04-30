@@ -24,3 +24,10 @@ export const routing = defineRouting({
 });
 
 export const { Link, getPathname, redirect, usePathname, useRouter } = createNavigation(routing);
+
+/**
+ * Build a typed `/work/{slug}` href for `<Link>`. Centralizes the cast that
+ * tells next-intl's typed-routes machinery the dynamic slug is a valid
+ * `[slug]` for the `/work/[slug]` pathname.
+ */
+export const workHref = (slug: string) => `/work/${slug}` as Parameters<typeof Link>[0]['href'];

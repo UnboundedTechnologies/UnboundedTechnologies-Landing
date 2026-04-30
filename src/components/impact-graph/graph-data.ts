@@ -1,4 +1,6 @@
-export type GraphColor = 'blue' | 'purple' | 'cyan';
+import { BRAND_HEX, type SolidAccent } from '@/lib/accents';
+
+export type GraphColor = SolidAccent;
 export type GraphCategory = 'origin' | 'capability' | 'outcome';
 
 export type Node = {
@@ -101,10 +103,12 @@ export const EDGES: ReadonlyArray<Edge> = [
   },
 ];
 
+// Derived view of BRAND_HEX so the graph stays in sync with the shared accent
+// tokens. Consumers continue to read it as Record<GraphColor, string>.
 export const COLOR_HEX: Record<GraphColor, string> = {
-  blue: '#5d6fff',
-  purple: '#a35dff',
-  cyan: '#5dc7ff',
+  blue: BRAND_HEX.blue,
+  purple: BRAND_HEX.purple,
+  cyan: BRAND_HEX.cyan,
 };
 
 export type CardRect = { x: number; y: number; width: number; height: number };

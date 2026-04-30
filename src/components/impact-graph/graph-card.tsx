@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'motion/react';
 import { type ForwardedRef, forwardRef } from 'react';
-import { Link } from '@/i18n/routing';
+import { Link, workHref } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { COLOR_HEX, type GraphCategory, type GraphColor } from './graph-data';
 
@@ -46,7 +46,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       style={{ boxShadow: `inset 3px 0 0 0 ${accent}` }}
     >
       <Link
-        href={href as Parameters<typeof Link>[0]['href']}
+        href={workHref(href.replace(/^\/work\//, ''))}
         className={cn(
           'absolute inset-0 block rounded-xl px-7 py-6 flex flex-col justify-center',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',

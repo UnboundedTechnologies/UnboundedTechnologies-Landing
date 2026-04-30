@@ -1,3 +1,24 @@
+/**
+ * Case-study MDX loader.
+ *
+ * Cache layering rationale (do NOT remove either layer):
+ *
+ * 1. The inner reader functions (`readCaseStudy`, `readCaseStudySlugs`,
+ *    `readAllCaseStudies`) carry the Next 16 `'use cache'` directive. With
+ *    `cacheComponents: true` enabled in next.config, filesystem reads are
+ *    flagged as uncached I/O and break prerender unless they sit inside a
+ *    cached function or a Suspense boundary. `'use cache'` puts them inside
+ *    one. Dropping this layer breaks the build under Cache Components.
+ *
+ * 2. The exported wrappers (`getCaseStudy`, `getCaseStudySlugs`,
+ *    `getAllCaseStudies`, `getAdjacentCaseStudies`) use `React.cache` for
+ *    per-render promise dedup. A single page render typically calls a loader
+ *    from `generateStaticParams`, `generateMetadata`, AND the page itself.
+ *    `React.cache` makes those three awaits share one promise instead of
+ *    re-awaiting the cached function multiple times.
+ *
+ * Either layer alone is insufficient. Keep both.
+ */
 import 'server-only';
 
 import { readdir, readFile } from 'node:fs/promises';

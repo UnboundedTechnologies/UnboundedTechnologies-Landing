@@ -148,3 +148,31 @@ main > section {
 .graph-pill > div {
   animation: graph-pill-pulse 3.6s ease-in-out infinite;
 }
+
+/*
+ * Tri-tone left-edge stripe for the `mixed` accent. Stacking three
+ * identical-position `inset` box-shadows collapses to a solid color (only the
+ * topmost layer paints), so we render the gradient via a ::before pseudo
+ * element instead. Consumers opt in by setting `data-accent="mixed"` on a
+ * positioned element (the rounded card already has `position: relative`).
+ */
+[data-accent="mixed"] {
+  position: relative;
+}
+[data-accent="mixed"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    var(--color-brand-blue) 0%,
+    var(--color-brand-purple) 50%,
+    var(--color-brand-cyan) 100%
+  );
+  pointer-events: none;
+}
