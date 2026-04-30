@@ -11,17 +11,15 @@ export function useCardPositions(ids: ReadonlyArray<string>) {
   const recompute = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
-    const containerBox = container.getBoundingClientRect();
     const next: Record<string, CardRect> = {};
     for (const id of ids) {
       const el = elements.current.get(id);
       if (!el) continue;
-      const box = el.getBoundingClientRect();
       next[id] = {
-        x: box.left - containerBox.left,
-        y: box.top - containerBox.top,
-        width: box.width,
-        height: box.height,
+        x: el.offsetLeft,
+        y: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
       };
     }
     setRects(next);
