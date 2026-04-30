@@ -2,7 +2,13 @@ import { getTranslations } from 'next-intl/server';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
-import { accentBorderColor, heroGradient, sectionEyebrowClass } from '@/lib/accents';
+import {
+  accentBorderColor,
+  accentGlowColor,
+  accentNumberClass,
+  heroGradient,
+  sectionEyebrowClass,
+} from '@/lib/accents';
 import type { CaseStudy } from '@/lib/case-studies';
 import { cn } from '@/lib/utils';
 
@@ -148,6 +154,65 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
           </section>
         ))}
       </div>
+
+      {/* Quantified outcome callouts (spec 6.2 item 5). Renders only when
+          the case study declares a non-empty `stats` array in frontmatter. */}
+      {study.stats && study.stats.length > 0 && (
+        <section
+          aria-labelledby="outcome-callouts"
+          className="border-t border-border bg-bg-elevated/30"
+        >
+          <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+            <h2
+              id="outcome-callouts"
+              className={cn(
+                'font-mono text-xs uppercase tracking-[0.18em]',
+                sectionEyebrowClass(study.accent, 2),
+              )}
+            >
+              {t('outcomeCallouts')}
+            </h2>
+            <div
+              className={cn(
+                'mt-8 grid gap-6',
+                study.stats.length === 1
+                  ? 'md:grid-cols-1 max-w-md'
+                  : study.stats.length === 2
+                    ? 'md:grid-cols-2'
+                    : 'md:grid-cols-3',
+              )}
+            >
+              {study.stats.map((s, i) => (
+                <div
+                  key={`${s.number}-${s.unit}`}
+                  className="group relative overflow-hidden rounded-xl border border-border bg-bg-elevated p-8 transition-colors duration-[var(--duration-short)] hover:border-border-hover"
+                >
+                  <div
+                    aria-hidden
+                    className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                    style={{
+                      background: accentGlowColor(study.accent, i),
+                      animationDelay: `${i * 1500}ms`,
+                    }}
+                  />
+                  <div
+                    className={cn(
+                      'relative font-mono text-4xl font-semibold tracking-tight',
+                      accentNumberClass(study.accent, i),
+                    )}
+                  >
+                    {s.number}
+                  </div>
+                  <div className="relative mt-2 text-text font-medium">{s.unit}</div>
+                  {s.context && (
+                    <div className="relative mt-3 text-sm text-text-muted">{s.context}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Prev / Next nav */}
       {(prev || next) && (

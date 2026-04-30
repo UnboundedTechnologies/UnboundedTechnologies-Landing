@@ -39,6 +39,15 @@ const FrontmatterSchema = z.object({
   stack: z.array(z.string()),
   accent: z.enum(['blue', 'purple', 'cyan', 'mixed']),
   order: z.number().int(),
+  stats: z
+    .array(
+      z.object({
+        number: z.string(),
+        unit: z.string(),
+        context: z.string().optional(),
+      }),
+    )
+    .optional(),
 });
 
 export type CaseStudyMeta = z.infer<typeof FrontmatterSchema>;

@@ -106,3 +106,36 @@ export function sectionEyebrowClass(accent: Accent, sectionIndex: 0 | 1 | 2): st
   }
   return ACCENT_TEXT_CLASS[accent];
 }
+
+/**
+ * Tailwind text-color class for a quantified-outcome stat number on the
+ * case-study layout's callout strip. Solid accents stick to their tone across
+ * every card; `mixed` cycles blue / purple / cyan so a 3-card row reads as a
+ * tri-tone (and a 1- or 2-card row still picks distinct stops). The index is
+ * taken modulo 3 so the helper is safe for any card count.
+ */
+export function accentNumberClass(accent: Accent, index: number): string {
+  if (accent === 'mixed') {
+    const cycle: ReadonlyArray<string> = [
+      ACCENT_TEXT_CLASS.blue,
+      ACCENT_TEXT_CLASS.purple,
+      ACCENT_TEXT_CLASS.cyan,
+    ];
+    return cycle[((index % 3) + 3) % 3];
+  }
+  return ACCENT_TEXT_CLASS[accent];
+}
+
+/**
+ * `rgba(...)` glow color used by the callout strip's animated `services-orb`.
+ * Mirrors `BRAND_RGB` at ~0.3 alpha. For `mixed`, cycles through the three
+ * brand stops so a multi-card row reads as a tri-tone.
+ */
+export function accentGlowColor(accent: Accent, index: number): string {
+  if (accent === 'mixed') {
+    const cycle: ReadonlyArray<SolidAccent> = ['blue', 'purple', 'cyan'];
+    const pick = cycle[((index % 3) + 3) % 3];
+    return `rgba(${BRAND_RGB[pick].replace(/\s+/g, '')},0.3)`;
+  }
+  return `rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.3)`;
+}
