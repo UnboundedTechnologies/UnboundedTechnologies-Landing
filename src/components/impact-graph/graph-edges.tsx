@@ -99,11 +99,26 @@ export function GraphEdges({ rects, width, height }: Props) {
                 y2={stemEndY}
                 stroke={stroke}
                 strokeWidth={1.25}
-                strokeOpacity={0.9}
+                strokeOpacity={0.55}
                 strokeLinecap="round"
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.4, delay: stemDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true, margin: '-80px' }}
+              />
+              <motion.line
+                x1={midX}
+                y1={midY}
+                x2={stemEndX}
+                y2={stemEndY}
+                stroke={stroke}
+                strokeWidth={1.25}
+                strokeOpacity={0.95}
+                strokeLinecap="round"
+                className="graph-energy-line"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.3, delay: stemDelay + 0.4, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
               <motion.circle

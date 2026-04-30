@@ -139,28 +139,30 @@ export function routeEdge(edge: Edge, rects: Record<string, CardRect>): RoutedEd
   let orientation: RoutedEdge['orientation'];
 
   if (sameRow) {
+    const sharedY = (aCy + bCy) / 2;
     if (aCx < bCx) {
       x1 = a.x + a.width;
-      y1 = aCy;
+      y1 = sharedY;
       x2 = b.x;
-      y2 = bCy;
+      y2 = sharedY;
     } else {
       x1 = a.x;
-      y1 = aCy;
+      y1 = sharedY;
       x2 = b.x + b.width;
-      y2 = bCy;
+      y2 = sharedY;
     }
     orientation = 'horizontal';
   } else if (sameCol) {
+    const sharedX = (aCx + bCx) / 2;
     if (aCy < bCy) {
-      x1 = aCx;
+      x1 = sharedX;
       y1 = a.y + a.height;
-      x2 = bCx;
+      x2 = sharedX;
       y2 = b.y;
     } else {
-      x1 = aCx;
+      x1 = sharedX;
       y1 = a.y;
-      x2 = bCx;
+      x2 = sharedX;
       y2 = b.y + b.height;
     }
     orientation = 'vertical';
