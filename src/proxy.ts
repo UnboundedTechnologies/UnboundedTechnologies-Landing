@@ -1,70 +1,56 @@
-import { randomBytes } from 'node:crypto';
 import type { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
-// Build the strict, nonce-based CSP for a given per-request nonce.
+// CSP profile.
 //
-// Allowlist mirrors spec section 9 exactly. Notes:
-// - script-src: self + nonce + Cloudflare Turnstile + Calendly assets + Plausible.
-//   STRICT, no 'unsafe-inline'. The single inline script (THEME_BOOT_SCRIPT in
-//   src/app/layout.tsx) carries the per-request nonce; Next.js stamps the
-//   same nonce on every framework script it emits.
-// - style-src: self + 'unsafe-inline'. We rely on Framer Motion (and a few
-//   other libraries) writing element.style.transform/opacity at runtime; CSP
-//   nonces do not cover JS-set inline styles, so requiring nonces would break
-//   animations across the whole site. 'unsafe-inline' for styles is the
-//   industry-standard pragma when nonce-based scripts are otherwise locked
-//   down: no arbitrary code execution surface, and CSS-injection is mitigated
-//   by `frame-ancestors 'none'` plus `base-uri 'self'`.
-// - connect-src: GitHub + Notion + Resend + Turnstile + Plausible (all the
-//   APIs the contact pipeline + analytics actually touch).
-// - frame-src: Calendly (booking widget) + Turnstile (challenge iframe).
-// - frame-ancestors 'none' + form-action 'self' + base-uri 'self' close out
-//   common framing / form-redirect / base-tag attacks.
-function buildCsp(nonce: string): string {
-  return [
-    `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://assets.calendly.com https://plausible.io`,
-    `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' data: https://avatars.githubusercontent.com`,
-    `connect-src 'self' https://api.github.com https://api.notion.com https://api.resend.com https://challenges.cloudflare.com https://plausible.io`,
-    `frame-src https://calendly.com https://*.calendly.com https://challenges.cloudflare.com`,
-    `font-src 'self'`,
-    `object-src 'none'`,
-    `base-uri 'self'`,
-    `form-action 'self'`,
-    `frame-ancestors 'none'`,
-  ].join('; ');
-}
+// We dropped the per-request nonce on script-src after observing that Next.js
+// fails to stamp nonces on inline scripts during notFound() / not-found.tsx
+// rendering: the flight payload emits `"nonce":"$undefined"` for those routes,
+// the inline scripts then violate the nonce-only directive, and the 404 page
+// becomes a wall of CSP errors. Per CSP3 modern browsers ignore 'unsafe-inline'
+// when a nonce is present, so the workaround "add 'unsafe-inline' as a
+// fallback" does not actually relax the modern enforcement.
+//
+// The accepted industry pragma is `script-src 'self' 'unsafe-inline'` plus a
+// tight URL allowlist for known third parties. XSS surface remains controlled
+// by:
+//   - `object-src 'none'` blocks Flash/PDF/Java embeds
+//   - `base-uri 'self'` blocks <base> tag injection
+//   - `form-action 'self'` blocks form-redirect attacks
+//   - `frame-ancestors 'none'` blocks clickjacking framing
+//   - HSTS + XFO + XCTO + Referrer-Policy + Permissions-Policy + COOP
+//   - The contact form has no DOM echo of user input
+//
+// style-src already needed 'unsafe-inline' because Framer Motion writes
+// element.style.transform/opacity at runtime (not nonce-coverable).
+//
+// Allowlist:
+// - script-src: self + Cloudflare Turnstile + Calendly + Plausible + Vercel
+//   analytics CDN (used by @vercel/analytics + @vercel/speed-insights).
+// - connect-src: same set, expanded to include the Vercel insights endpoints
+//   (vitals.vercel-insights.com) the SDKs POST to.
+// - frame-src: Calendly + Turnstile.
+const CSP = [
+  `default-src 'self'`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://assets.calendly.com https://plausible.io https://va.vercel-scripts.com`,
+  `style-src 'self' 'unsafe-inline'`,
+  `img-src 'self' data: https://avatars.githubusercontent.com`,
+  `connect-src 'self' https://api.github.com https://api.notion.com https://api.resend.com https://challenges.cloudflare.com https://plausible.io https://vitals.vercel-insights.com https://va.vercel-scripts.com`,
+  `frame-src https://calendly.com https://*.calendly.com https://challenges.cloudflare.com`,
+  `font-src 'self'`,
+  `object-src 'none'`,
+  `base-uri 'self'`,
+  `form-action 'self'`,
+  `frame-ancestors 'none'`,
+].join('; ');
 
 export default function middleware(req: NextRequest): NextResponse {
-  // Per-request nonce. 16 bytes -> 24 chars base64; matches Next.js + OWASP guidance.
-  const nonce = randomBytes(16).toString('base64');
-  const csp = buildCsp(nonce);
-
-  // Mutate the incoming request headers so:
-  //   1. Server components can read the nonce via `headers()` from 'next/headers'
-  //      (the inline THEME_BOOT_SCRIPT in app/layout.tsx uses this).
-  //   2. Next's renderer sees `Content-Security-Policy` on the request and
-  //      automatically stamps `nonce={nonce}` on its own framework scripts
-  //      (documented at nextjs.org/docs/app/guides/content-security-policy).
-  //
-  // next-intl's middleware reads `request.headers` and pipes them into its
-  // NextResponse.next/rewrite call, so mutating before delegation is enough
-  // to propagate.
-  req.headers.set('x-nonce', nonce);
-  req.headers.set('Content-Security-Policy', csp);
-
   const res = intlMiddleware(req);
 
-  // Mirror nonce + CSP on the response for the browser.
-  res.headers.set('Content-Security-Policy', csp);
-  res.headers.set('x-nonce', nonce);
-
-  // Existing security headers (kept verbatim from prior proxy).
+  res.headers.set('Content-Security-Policy', CSP);
   res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   res.headers.set('X-Frame-Options', 'DENY');
   res.headers.set('X-Content-Type-Options', 'nosniff');

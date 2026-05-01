@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { headers } from 'next/headers';
-import { Suspense } from 'react';
 import { ParticleField } from '@/components/atmosphere/particle-field';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { THEME_BOOT_SCRIPT } from '@/components/theme/theme-provider';
@@ -29,20 +27,6 @@ export const metadata: Metadata = {
   creator: 'Unbounded Technologies Inc.',
 };
 
-// Dynamic island: reads the per-request CSP nonce from the proxy and stamps
-// it on the inline THEME_BOOT_SCRIPT. Wrapped in <Suspense> by the root
-// layout so headers() doesn't taint the otherwise-static shell. The fallback
-// is a plain <script> with no nonce: it never hits the browser (Suspense
-// streams the resolved version) but lets prerender pass under
-// cacheComponents.
-async function ThemeBootScript() {
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
-  return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted constant from our own module
-    <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
-  );
-}
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -56,11 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           warnings in DevTools. The attributes are not in our control. */}
       <head>
         {/* Apply theme + motion preferences synchronously before React
-            hydrates so there is no flash of the wrong palette. The nonce is
-            attached per-request via the CSP middleware in src/proxy.ts. */}
-        <Suspense fallback={null}>
-          <ThemeBootScript />
-        </Suspense>
+            hydrates so there is no flash of the wrong palette. CSP allows
+            inline scripts via 'unsafe-inline' (see src/proxy.ts). */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: trusted constant from our own module */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body className="bg-bg text-text font-sans antialiased" suppressHydrationWarning>
         {/* These two own heavy WebGL/canvas resources. Mounted at the
