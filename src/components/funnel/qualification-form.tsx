@@ -251,7 +251,7 @@ export function QualificationForm({ onSuccess }: Props) {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            'inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold',
+            'inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold cursor-pointer',
             'bg-gradient-to-r from-brand-blue to-brand-purple text-white',
             'transition-opacity duration-[var(--duration-short)]',
             'hover:opacity-90 disabled:cursor-wait disabled:opacity-60',
