@@ -218,6 +218,7 @@
         "asap": "ASAP",
         "1-3mo": "1-3 mois",
         "3-6mo": "3-6 mois",
+        "1y+": "1 an et plus",
         "exploring": "En exploration"
       },
       "descriptionLabel": "En quelques mots, que cherchez-vous à résoudre?",
