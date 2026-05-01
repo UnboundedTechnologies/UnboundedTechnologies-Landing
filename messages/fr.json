@@ -295,5 +295,23 @@
     "outcomeCallouts": "Résultats en bref",
     "architectureEyebrow": "- Architecture",
     "architectureHeading": "Comment c'est câblé"
+  },
+  "notFound": {
+    "code": "404",
+    "eyebrow": "- Hors carte",
+    "headlineLead": "Cette page est",
+    "headlineAccent": "sans limites.",
+    "headlineTrail": "Mais pas dans le sens où on l'entend.",
+    "body": "Le lien est mauvais, la page a bougé, ou elle n'a jamais existé. Choisissez une destination ci-dessous ou ouvrez la palette de commandes pour aller n'importe où.",
+    "destinationsEyebrow": "- Où aller à partir d'ici",
+    "destinations": {
+      "work": { "label": "Travaux", "blurb": "Quatre missions livrées" },
+      "services": { "label": "Services", "blurb": "Trois modèles d'engagement" },
+      "about": { "label": "À propos", "blurb": "Architecture cloud senior" },
+      "contact": { "label": "Contact", "blurb": "Démarrer un projet" }
+    },
+    "paletteHint": "Appuyez sur",
+    "paletteHintTrail": "pour tout trouver",
+    "homeLink": "Retour à l'accueil"
   }
 }

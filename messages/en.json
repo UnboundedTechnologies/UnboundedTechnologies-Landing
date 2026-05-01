@@ -295,5 +295,23 @@
     "outcomeCallouts": "Outcome at a glance",
     "architectureEyebrow": "- Architecture",
     "architectureHeading": "How it's wired"
+  },
+  "notFound": {
+    "code": "404",
+    "eyebrow": "- Off the map",
+    "headlineLead": "This page is",
+    "headlineAccent": "unbounded.",
+    "headlineTrail": "But not in the way we meant.",
+    "body": "The link is wrong, the page moved, or it never existed in the first place. Pick a destination below or jump anywhere with the command palette.",
+    "destinationsEyebrow": "- Where to go from here",
+    "destinations": {
+      "work": { "label": "Work", "blurb": "Four shipped engagements" },
+      "services": { "label": "Services", "blurb": "Three engagement models" },
+      "about": { "label": "About", "blurb": "Senior cloud architecture" },
+      "contact": { "label": "Contact", "blurb": "Start a project" }
+    },
+    "paletteHint": "Press",
+    "paletteHintTrail": "to find anything",
+    "homeLink": "Back to home"
   }
 }
