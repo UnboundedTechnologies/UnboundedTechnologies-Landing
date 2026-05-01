@@ -8,6 +8,7 @@ import {
   getCaseStudySlugs,
   type Locale,
 } from '@/lib/case-studies';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 
 export async function generateStaticParams() {
   const slugs = await getCaseStudySlugs();
@@ -39,9 +40,19 @@ export async function generateMetadata({
       : firstParagraph
     : study.title;
 
+  // EN uses /work/<slug>, FR uses /travaux/<slug>. Slug is locale-agnostic.
+  const segment = locale === 'fr' ? 'travaux' : 'work';
+  const og = ogImageMetadata(locale as OgLocale, [segment, slug]);
+
   return {
     title: `${study.title} | Unbounded Technologies`,
     description,
+    openGraph: {
+      title: study.title,
+      description,
+      images: og.openGraph.images,
+    },
+    twitter: { ...og.twitter, title: study.title, description },
   };
 }
 

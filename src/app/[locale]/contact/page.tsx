@@ -1,8 +1,23 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ContactSurface } from '@/components/funnel/contact-surface';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { env } from '@/lib/env';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const og = ogImageMetadata(locale as OgLocale, ['contact']);
+  return {
+    openGraph: { images: og.openGraph.images },
+    twitter: og.twitter,
+  };
+}
 
 // `/contact` qualified-inquiry funnel (Phase 9). Server-rendered hero +
 // intro paragraph; the form / thank-you state machine lives in

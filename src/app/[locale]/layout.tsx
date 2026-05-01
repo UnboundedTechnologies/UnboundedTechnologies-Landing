@@ -8,6 +8,7 @@ import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { type Locale, routing } from '@/i18n/routing';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://unboundedtechnologies.com';
 
@@ -27,6 +28,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const og = ogImageMetadata(locale as OgLocale);
   return {
     alternates: {
       canonical: `${SITE_URL}/${locale}`,
@@ -39,7 +41,12 @@ export async function generateMetadata({
     openGraph: {
       locale: locale === 'fr' ? 'fr_CA' : 'en_CA',
       alternateLocale: locale === 'fr' ? 'en_CA' : 'fr_CA',
+      type: 'website',
+      siteName: 'Unbounded Technologies',
+      url: `${SITE_URL}/${locale}`,
+      images: og.openGraph.images,
     },
+    twitter: og.twitter,
   };
 }
 

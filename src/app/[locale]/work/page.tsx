@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { Eyebrow } from '@/components/primitives/eyebrow';
@@ -5,7 +6,24 @@ import { Spotlight } from '@/components/primitives/spotlight';
 import { Link, workHref } from '@/i18n/routing';
 import { ACCENT_TEXT_CLASS, accentSpotlight } from '@/lib/accents';
 import { getAllCaseStudies, type Locale } from '@/lib/case-studies';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 import { cn } from '@/lib/utils';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  // EN uses /work, FR uses /travaux. Mirror in the OG path so a tracker that
+  // round-trips share URLs sees a coherent locale-prefixed shape.
+  const segment = locale === 'fr' ? 'travaux' : 'work';
+  const og = ogImageMetadata(locale as OgLocale, [segment]);
+  return {
+    openGraph: { images: og.openGraph.images },
+    twitter: og.twitter,
+  };
+}
 
 export default async function WorkIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

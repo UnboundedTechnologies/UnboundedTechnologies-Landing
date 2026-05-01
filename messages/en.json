@@ -296,6 +296,25 @@
     "architectureEyebrow": "- Architecture",
     "architectureHeading": "How it's wired"
   },
+  "og": {
+    "siteName": "Unbounded Technologies",
+    "home": "Cloud at the scale of trust.",
+    "homeEyebrow": "Unbounded Technologies / Home",
+    "work": "Selected work, end-to-end.",
+    "workEyebrow": "Work / Case studies",
+    "caseStudyEyebrow": "Work / Case study",
+    "services": "Three engagement models.",
+    "servicesEyebrow": "Services / Engagement models",
+    "about": "Senior cloud architecture, built to last.",
+    "aboutEyebrow": "About / Saïd Aïssani",
+    "contact": "Start a project conversation.",
+    "contactEyebrow": "Contact / Start a project",
+    "legalPrivacy": "Privacy Policy",
+    "legalPrivacyEyebrow": "Legal / Privacy Policy",
+    "legalTerms": "Terms of Service",
+    "legalTermsEyebrow": "Legal / Terms of Service",
+    "alt": "Unbounded Technologies social card"
+  },
   "notFound": {
     "code": "404",
     "eyebrow": "- Off the map",

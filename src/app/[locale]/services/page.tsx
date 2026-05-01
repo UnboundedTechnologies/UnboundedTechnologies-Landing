@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
@@ -14,7 +15,21 @@ import {
   accentSpotlight,
   type SolidAccent,
 } from '@/lib/accents';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 import { cn } from '@/lib/utils';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const og = ogImageMetadata(locale as OgLocale, ['services']);
+  return {
+    openGraph: { images: og.openGraph.images },
+    twitter: og.twitter,
+  };
+}
 
 // `/services` Engagement Models page (Phase 8.1).
 //

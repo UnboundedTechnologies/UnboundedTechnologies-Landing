@@ -296,6 +296,25 @@
     "architectureEyebrow": "- Architecture",
     "architectureHeading": "Comment c'est câblé"
   },
+  "og": {
+    "siteName": "Unbounded Technologies",
+    "home": "Le cloud à l'échelle de la confiance.",
+    "homeEyebrow": "Unbounded Technologies / Accueil",
+    "work": "Travaux sélectionnés, livrés.",
+    "workEyebrow": "Travaux / Études de cas",
+    "caseStudyEyebrow": "Travaux / Étude de cas",
+    "services": "Trois modèles d'engagement.",
+    "servicesEyebrow": "Services / Modèles d'engagement",
+    "about": "Architecture cloud senior, conçue pour durer.",
+    "aboutEyebrow": "À propos / Saïd Aïssani",
+    "contact": "Démarrer une conversation projet.",
+    "contactEyebrow": "Contact / Démarrer un projet",
+    "legalPrivacy": "Politique de confidentialité",
+    "legalPrivacyEyebrow": "Légal / Politique de confidentialité",
+    "legalTerms": "Conditions d'utilisation",
+    "legalTermsEyebrow": "Légal / Conditions d'utilisation",
+    "alt": "Carte sociale Unbounded Technologies"
+  },
   "notFound": {
     "code": "404",
     "eyebrow": "- Hors carte",

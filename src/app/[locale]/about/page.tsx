@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
@@ -10,7 +11,23 @@ import {
   accentSpotlight,
   type SolidAccent,
 } from '@/lib/accents';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 import { cn } from '@/lib/utils';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  // EN uses /about, FR uses /a-propos.
+  const segment = locale === 'fr' ? 'a-propos' : 'about';
+  const og = ogImageMetadata(locale as OgLocale, [segment]);
+  return {
+    openGraph: { images: og.openGraph.images },
+    twitter: og.twitter,
+  };
+}
 
 // `/about` Saïd & Unbounded page (Phase 8.2).
 //

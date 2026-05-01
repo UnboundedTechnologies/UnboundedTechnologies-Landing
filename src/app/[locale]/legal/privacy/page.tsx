@@ -1,11 +1,28 @@
 // LAWYER REVIEW REQUIRED before public launch
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Spotlight } from '@/components/primitives/spotlight';
 import { Link } from '@/i18n/routing';
 import { accentSpotlight, type SolidAccent } from '@/lib/accents';
+import { type OgLocale, ogImageMetadata } from '@/lib/og';
 import { cn } from '@/lib/utils';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  // EN uses /legal/privacy, FR uses /legal/confidentialite.
+  const tail = locale === 'fr' ? ['legal', 'confidentialite'] : ['legal', 'privacy'];
+  const og = ogImageMetadata(locale as OgLocale, tail);
+  return {
+    openGraph: { images: og.openGraph.images },
+    twitter: og.twitter,
+  };
+}
 
 const ACCENT_CYCLE: ReadonlyArray<SolidAccent> = ['blue', 'purple', 'cyan'];
 
