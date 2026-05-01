@@ -55,15 +55,6 @@ export function AuroraOrbs({ className }: { className?: string }) {
           animation: 'orb-drift-b 18s var(--ease-out) infinite alternate',
         }}
       />
-      <style>{`
-        @keyframes orb-drift-a { from { transform: translate(0,0) scale(1); } to { transform: translate(80px, 60px) scale(1.1); } }
-        @keyframes orb-drift-b { from { transform: translate(0,0) scale(1); } to { transform: translate(-100px, -40px) scale(0.95); } }
-        @keyframes aurora-nebula-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes aurora-nebula-spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        @media (prefers-reduced-motion: reduce) {
-          div[style*="orb-drift"], div[style*="aurora-nebula-spin"] { animation: none !important; }
-        }
-      `}</style>
     </div>
   );
 }

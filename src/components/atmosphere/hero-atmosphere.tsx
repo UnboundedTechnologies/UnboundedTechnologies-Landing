@@ -78,34 +78,6 @@ export function HeroAtmosphere({ className }: { className?: string }) {
             'radial-gradient(ellipse at center, transparent 30%, rgba(7, 6, 13, 0.45) 95%)',
         }}
       />
-
-      <style>{`
-        @keyframes hero-cosmos-spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes hero-leak-cyan {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(40px, -30px) scale(1.08); }
-        }
-        @keyframes hero-leak-purple {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(-50px, 35px) scale(0.95); }
-        }
-        @keyframes orb-drift-a {
-          from { transform: translate(0,0) scale(1); }
-          to { transform: translate(80px, 60px) scale(1.1); }
-        }
-        @keyframes orb-drift-b {
-          from { transform: translate(0,0) scale(1); }
-          to { transform: translate(-100px, -40px) scale(0.95); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          div[style*="hero-cosmos"],
-          div[style*="hero-leak"],
-          div[style*="orb-drift"] { animation: none !important; }
-        }
-      `}</style>
     </div>
   );
 }

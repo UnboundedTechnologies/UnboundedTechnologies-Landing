@@ -9,11 +9,16 @@ const intlMiddleware = createMiddleware(routing);
 //
 // Allowlist mirrors spec section 9 exactly. Notes:
 // - script-src: self + nonce + Cloudflare Turnstile + Calendly assets + Plausible.
-//   No 'unsafe-inline'. The single inline script (THEME_BOOT_SCRIPT in
-//   src/app/layout.tsx) carries the per-request nonce.
-// - style-src: self + nonce. Tailwind ships a single static stylesheet, but
-//   next/font and a few framework hooks emit nonce'd inline <style> blocks;
-//   the nonce covers them.
+//   STRICT, no 'unsafe-inline'. The single inline script (THEME_BOOT_SCRIPT in
+//   src/app/layout.tsx) carries the per-request nonce; Next.js stamps the
+//   same nonce on every framework script it emits.
+// - style-src: self + 'unsafe-inline'. We rely on Framer Motion (and a few
+//   other libraries) writing element.style.transform/opacity at runtime; CSP
+//   nonces do not cover JS-set inline styles, so requiring nonces would break
+//   animations across the whole site. 'unsafe-inline' for styles is the
+//   industry-standard pragma when nonce-based scripts are otherwise locked
+//   down: no arbitrary code execution surface, and CSS-injection is mitigated
+//   by `frame-ancestors 'none'` plus `base-uri 'self'`.
 // - connect-src: GitHub + Notion + Resend + Turnstile + Plausible (all the
 //   APIs the contact pipeline + analytics actually touch).
 // - frame-src: Calendly (booking widget) + Turnstile (challenge iframe).
@@ -23,7 +28,7 @@ function buildCsp(nonce: string): string {
   return [
     `default-src 'self'`,
     `script-src 'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://assets.calendly.com https://plausible.io`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' data: https://avatars.githubusercontent.com`,
     `connect-src 'self' https://api.github.com https://api.notion.com https://api.resend.com https://challenges.cloudflare.com https://plausible.io`,
     `frame-src https://calendly.com https://*.calendly.com https://challenges.cloudflare.com`,

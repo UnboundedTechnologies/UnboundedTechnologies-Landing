@@ -464,8 +464,7 @@ function Section({
         <span className="font-mono text-[10px] uppercase tracking-[0.18em]">{label}</span>
         <span className="ml-2 h-px flex-1 bg-current opacity-15" />
       </div>
-      {/* Hide cmdk's auto-rendered heading since we render our own above. */}
-      <style>{`[cmdk-group-heading]{display:none !important;}`}</style>
+      {/* cmdk's auto-rendered heading is hidden via the global `[cmdk-group-heading]` rule in globals.css. */}
       {children}
     </Command.Group>
   );
