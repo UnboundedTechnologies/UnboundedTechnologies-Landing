@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 import { Link } from '@/i18n/routing';
@@ -8,8 +9,16 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-bg/60 border-b border-border">
       <nav className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between gap-6">
-        <Link href="/" className="font-semibold tracking-tight">
-          ∞ Unbounded<span className="opacity-50">.</span>
+        <Link href="/" aria-label="Unbounded Technologies Inc." className="flex items-center">
+          <Image
+            src="/ut-banner.png"
+            alt="Unbounded Technologies Inc."
+            width={1266}
+            height={284}
+            priority
+            sizes="(min-width: 768px) 12rem, 9rem"
+            className="h-9 md:h-10 w-auto"
+          />
         </Link>
         <ul className="hidden md:flex items-center gap-6 text-sm text-text-muted">
           <li>
