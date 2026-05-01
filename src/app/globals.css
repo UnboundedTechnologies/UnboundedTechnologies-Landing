@@ -155,6 +155,13 @@ html {
  * section ever resolves to a flat black band, especially in the
  * transition area where a section's own gradient ends and the footer
  * begins.
+ *
+ * On browsers that support scroll-driven animations (Chrome 115+,
+ * Firefox 110+ behind a flag, Safari not yet) the two pools also drift
+ * across the page bound to scroll progress: the blue pool pulls inward
+ * from top-left, the purple pool pulls inward from bottom-right, so the
+ * background quietly rearranges as you read down the page. Browsers
+ * without support fall back to the static gradient above.
  */
 body {
   background-color: var(--color-bg);
@@ -162,6 +169,33 @@ body {
     radial-gradient(ellipse at 0% 0%, rgba(93, 111, 255, 0.05) 0%, transparent 55%),
     radial-gradient(ellipse at 100% 100%, rgba(163, 93, 255, 0.05) 0%, transparent 55%);
   background-attachment: fixed;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% 100%, 100% 100%;
+}
+
+@supports (animation-timeline: scroll()) {
+  body {
+    animation: bg-scroll-drift linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0% 100%;
+  }
+  @keyframes bg-scroll-drift {
+    from {
+      background-position:
+        0% 0%,
+        100% 100%;
+    }
+    to {
+      background-position:
+        40% 30%,
+        60% 70%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body {
+      animation: none;
+    }
+  }
 }
 
 @keyframes graph-pill-pulse {
