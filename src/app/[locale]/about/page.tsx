@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
-import { InfinityLogoStatic } from '@/components/hero/infinity-logo-static';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { ACCENT_TEXT_CLASS, accentGlowColor, type SolidAccent } from '@/lib/accents';
 import { cn } from '@/lib/utils';
@@ -9,11 +9,9 @@ import { cn } from '@/lib/utils';
 //
 // Five sections, top to bottom:
 //   1. Hero (Aurora orbs, eyebrow, two-line headline with aurora-text accent,
-//      subhead). To the right on md+, the 3D infinity logo replaces the
-//      (deliberately absent) portrait per spec §6.4. The Canvas itself is
-//      owned by the layout-level PersistentInfinityLogo and follows whichever
-//      [data-hero-canvas-anchor] element is in the DOM, so this page just
-//      reserves the anchor box and the Canvas slides over it on navigation.
+//      subhead). To the right on md+, the official Unbounded Technologies
+//      brand logo (public/ut-logo.png) replaces the (deliberately absent)
+//      portrait per spec §6.4.
 //   2. The story (two short first-person paragraphs in a comfortable reading
 //      width).
 //   3. Operating model (six PSB-defensibility bullets, EXACT spec text in EN).
@@ -68,9 +66,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </p>
             </div>
             <div className="relative h-[280px] md:h-[400px] mt-12 md:mt-0 flex items-center justify-center">
-              {/* Glow halo behind the canvas. Same gradient the homepage hero
-                  uses so the logo reads as the same brand element on both
-                  pages. */}
+              {/* Glow halo behind the brand mark, same gradient the homepage
+                  hero uses so the logo reads as one brand element across
+                  surfaces. */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 aria-hidden
@@ -80,19 +78,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                   filter: 'blur(36px)',
                 }}
               />
-              {/* Anchor div: PersistentInfinityLogo (mounted at layout level)
-                  ResizeObserves any [data-hero-canvas-anchor] element and
-                  overlays its WebGL Canvas exactly here. The anchor itself
-                  is empty and reserves layout space; visual content comes
-                  from the layout-level Canvas. */}
-              <div
-                data-hero-canvas-anchor
-                className="relative w-full h-full motion-reduce:hidden"
-                aria-hidden
+              <Image
+                src="/ut-logo.png"
+                alt="Unbounded Technologies Inc."
+                width={1536}
+                height={1024}
+                priority
+                sizes="(min-width: 768px) 28rem, 18rem"
+                className="relative w-auto h-full max-h-full object-contain drop-shadow-[0_0_40px_rgba(124,142,255,0.45)]"
               />
-              <div className="hidden motion-reduce:block relative">
-                <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-              </div>
             </div>
           </div>
         </div>
