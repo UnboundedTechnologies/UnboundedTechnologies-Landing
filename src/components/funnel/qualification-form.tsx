@@ -6,7 +6,18 @@ import { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { ChipMultiSelect } from './chip-multi-select';
-import { budgets, industries, type Lead, leadSchema, projectTypes, timelines } from './form-schema';
+import {
+  HOURLY_RATE_DEFAULT,
+  HOURLY_RATE_MAX,
+  HOURLY_RATE_MIN,
+  HOURLY_RATE_STEP,
+  industries,
+  type Lead,
+  leadSchema,
+  projectTypes,
+  timelines,
+} from './form-schema';
+import { HourlyRateSlider } from './hourly-rate-slider';
 import { TurnstileWidget } from './turnstile-widget';
 
 // Qualified-inquiry form. Single-screen layout; all required fields visible
@@ -49,7 +60,7 @@ export function QualificationForm({ onSuccess }: Props) {
       company: '',
       industry: undefined,
       projectTypes: [],
-      budget: undefined,
+      hourlyRate: HOURLY_RATE_DEFAULT,
       timeline: undefined,
       description: '',
       turnstileToken: '',
@@ -165,40 +176,40 @@ export function QualificationForm({ onSuccess }: Props) {
         />
       </Field>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field label={t('budgetLabel')} error={errors.budget && t('errorRequired')}>
-          <select
-            {...register('budget')}
-            defaultValue=""
-            className={cn(inputClass(!!errors.budget), 'appearance-none')}
-          >
-            <option value="" disabled>
-              {t('budgetPlaceholder')}
+      <Field label={t('hourlyRateLabel')} error={errors.hourlyRate && t('errorRequired')}>
+        <Controller
+          control={control}
+          name="hourlyRate"
+          render={({ field }) => (
+            <HourlyRateSlider
+              value={field.value ?? HOURLY_RATE_DEFAULT}
+              onChange={field.onChange}
+              min={HOURLY_RATE_MIN}
+              max={HOURLY_RATE_MAX}
+              step={HOURLY_RATE_STEP}
+              ariaLabel={t('hourlyRateLabel')}
+              suffix={t('hourlyRateSuffix')}
+            />
+          )}
+        />
+      </Field>
+
+      <Field label={t('timelineLabel')} error={errors.timeline && t('errorRequired')}>
+        <select
+          {...register('timeline')}
+          defaultValue=""
+          className={cn(inputClass(!!errors.timeline), 'appearance-none')}
+        >
+          <option value="" disabled>
+            {t('timelinePlaceholder')}
+          </option>
+          {timelines.map((v) => (
+            <option key={v} value={v}>
+              {t(`timeline.${v}`)}
             </option>
-            {budgets.map((v) => (
-              <option key={v} value={v}>
-                {t(`budget.${v}`)}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label={t('timelineLabel')} error={errors.timeline && t('errorRequired')}>
-          <select
-            {...register('timeline')}
-            defaultValue=""
-            className={cn(inputClass(!!errors.timeline), 'appearance-none')}
-          >
-            <option value="" disabled>
-              {t('timelinePlaceholder')}
-            </option>
-            {timelines.map((v) => (
-              <option key={v} value={v}>
-                {t(`timeline.${v}`)}
-              </option>
-            ))}
-          </select>
-        </Field>
-      </div>
+          ))}
+        </select>
+      </Field>
 
       <Field
         label={t('descriptionLabel')}

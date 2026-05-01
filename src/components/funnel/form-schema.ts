@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
 export const projectTypes = ['cloud-architecture', 'ccaas-connect', 'serverless', 'other'] as const;
-export const budgets = ['<25k', '25k-100k', '100k-500k', '500k+', 'not-sure'] as const;
 export const timelines = ['asap', '1-3mo', '3-6mo', 'exploring'] as const;
+
+// Hourly-rate slider bounds in CAD. Steps land on 25-dollar increments so
+// the display reads cleanly on the slider and in the email/Notion record.
+// HST is collected on top of the quoted rate; we don't store it separately
+// since it's a function of the rate and the buyer's province.
+export const HOURLY_RATE_MIN = 100;
+export const HOURLY_RATE_MAX = 400;
+export const HOURLY_RATE_STEP = 25;
+export const HOURLY_RATE_DEFAULT = 200;
 export const industries = [
   'finance',
   'technology',
@@ -20,7 +28,11 @@ export const leadSchema = z.object({
   company: z.string().min(2).max(100),
   industry: z.enum(industries),
   projectTypes: z.array(z.enum(projectTypes)).min(1),
-  budget: z.enum(budgets),
+  hourlyRate: z
+    .number()
+    .int()
+    .min(HOURLY_RATE_MIN)
+    .max(HOURLY_RATE_MAX),
   timeline: z.enum(timelines),
   description: z.string().max(500).optional(),
   turnstileToken: z.string().min(1),
@@ -28,6 +40,5 @@ export const leadSchema = z.object({
 
 export type Lead = z.infer<typeof leadSchema>;
 export type ProjectType = (typeof projectTypes)[number];
-export type Budget = (typeof budgets)[number];
 export type Timeline = (typeof timelines)[number];
 export type Industry = (typeof industries)[number];

@@ -210,15 +210,8 @@
         "serverless": "Plateforme serverless",
         "other": "Autre"
       },
-      "budgetLabel": "Budget",
-      "budgetPlaceholder": "Choisir une fourchette",
-      "budget": {
-        "<25k": "Moins de 25k CAD",
-        "25k-100k": "25k - 100k CAD",
-        "100k-500k": "100k - 500k CAD",
-        "500k+": "500k+ CAD",
-        "not-sure": "Pas encore sûr"
-      },
+      "hourlyRateLabel": "Budget (taux horaire, CAD + TVH)",
+      "hourlyRateSuffix": "/ h + TVH",
       "timelineLabel": "Échéance",
       "timelinePlaceholder": "Choisir un horizon",
       "timeline": {

@@ -37,7 +37,7 @@ export function LeadNotificationEmail({ lead, qualified, score }: Props) {
             <Row label="Company" value={lead.company} />
             <Row label="Industry" value={lead.industry} />
             <Row label="Project type" value={lead.projectTypes.join(', ')} />
-            <Row label="Budget" value={lead.budget} />
+            <Row label="Hourly rate" value={`CAD $${lead.hourlyRate} / hr + HST`} />
             <Row label="Timeline" value={lead.timeline} />
           </Section>
           {lead.description && (

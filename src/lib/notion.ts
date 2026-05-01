@@ -18,7 +18,7 @@ export async function createLead(lead: Lead, meta: { qualified: boolean; score: 
       Company: { rich_text: [{ text: { content: lead.company } }] },
       Industry: { select: { name: lead.industry } },
       'Project type': { multi_select: lead.projectTypes.map((n) => ({ name: n })) },
-      Budget: { select: { name: lead.budget } },
+      'Hourly rate (CAD)': { number: lead.hourlyRate },
       Timeline: { select: { name: lead.timeline } },
       Description: { rich_text: [{ text: { content: lead.description ?? '' } }] },
       Status: { select: { name: meta.qualified ? 'Qualified' : 'Exploratory' } },
