@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { GraphCanvas } from '@/components/impact-graph/graph-canvas';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
@@ -147,17 +148,22 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
       </div>
 
       {/* Three body sections */}
-      <div className="mx-auto max-w-5xl px-6 py-16 md:py-24 space-y-16 md:space-y-24">
-        {sections.map((s) => (
-          <section key={s.label}>
-            <div className={cn('font-mono text-xs uppercase tracking-[0.18em]', s.eyebrowClass)}>
-              {s.label}
-            </div>
-            <div className="mt-6 max-w-prose text-base md:text-lg leading-relaxed text-text-muted prose-invert space-y-5">
-              <MDXRemote source={s.body} />
-            </div>
-          </section>
-        ))}
+      <div className="relative overflow-hidden">
+        <SectionAtmosphere accent={study.accent} position="top-right" intensity={0.7} />
+        <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24 space-y-16 md:space-y-24">
+          {sections.map((s) => (
+            <section key={s.label}>
+              <div
+                className={cn('font-mono text-xs uppercase tracking-[0.18em]', s.eyebrowClass)}
+              >
+                {s.label}
+              </div>
+              <div className="mt-6 max-w-prose text-base md:text-lg leading-relaxed text-text-muted prose-invert space-y-5">
+                <MDXRemote source={s.body} />
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
 
       {/* Quantified outcome callouts (spec 6.2 item 5). Renders only when

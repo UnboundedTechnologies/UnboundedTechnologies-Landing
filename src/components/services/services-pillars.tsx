@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import {
   ACCENT_TEXT_CLASS,
@@ -53,8 +54,9 @@ export function ServicesPillars() {
   const t = useTranslations('services');
 
   return (
-    <section aria-label="Services" className="py-20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section aria-label="Services" className="relative overflow-hidden py-20">
+      <SectionAtmosphere accent="purple" position="top-left" />
+      <div className="relative mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
           {PILLARS.map((p, i) => {

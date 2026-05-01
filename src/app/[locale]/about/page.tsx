@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { ACCENT_TEXT_CLASS, accentGlowColor, type SolidAccent } from '@/lib/accents';
 import { cn } from '@/lib/utils';
@@ -93,8 +94,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 2. The story */}
-      <section className="py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative overflow-hidden py-20 md:py-24">
+        <SectionAtmosphere accent="purple" position="top-left" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-10">{t('storyEyebrow')}</Eyebrow>
           <div className="max-w-prose space-y-6 text-base md:text-lg text-text-muted leading-relaxed">
             <p>{t('storyPara1')}</p>
@@ -104,8 +106,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 3. Operating model */}
-      <section className="py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative overflow-hidden py-20 md:py-24">
+        <SectionAtmosphere accent="cyan" position="top-right" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('operatingEyebrow')}</Eyebrow>
           <ul className="space-y-4 max-w-4xl">
             {OPERATING_BULLETS.map((bullet, idx) => {
@@ -146,8 +149,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 4. Stats row (By the numbers) */}
-      <section className="py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative overflow-hidden py-20 md:py-24">
+        <SectionAtmosphere accent="blue" position="bottom-left" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('statsEyebrow')}</Eyebrow>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {STATS.map((s) => {

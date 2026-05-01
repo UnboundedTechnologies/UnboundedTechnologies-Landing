@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import {
@@ -98,8 +99,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 2. Three engagement-model cards */}
-      <section aria-label={t('eyebrow')} className="py-16 md:py-20">
-        <div className="mx-auto max-w-7xl px-6">
+      <section aria-label={t('eyebrow')} className="relative overflow-hidden py-16 md:py-20">
+        <SectionAtmosphere accent="blue" position="top-right" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {ENGAGEMENTS.map((e, i) => {
               const accentClass = ACCENT_TEXT_CLASS[e.accent];
@@ -167,8 +169,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 3. "How an engagement starts" timeline */}
-      <section className="py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative overflow-hidden py-20 md:py-24">
+        <SectionAtmosphere accent="purple" position="top-left" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('timelineEyebrow')}</Eyebrow>
           <ol className="grid grid-cols-1 md:grid-cols-6 gap-10 md:gap-4 relative">
             {/* Connecting line on md+ behind the number circles. */}
@@ -202,8 +205,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 4. "What we bring" / "What we don't do" honesty list */}
-      <section className="py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative overflow-hidden py-20 md:py-24">
+        <SectionAtmosphere accent="cyan" position="top-right" />
+        <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid md:grid-cols-2 gap-12 md:gap-16">
             <div>
               <Eyebrow className="mb-8">{t('bringEyebrow')}</Eyebrow>
@@ -242,8 +246,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 5. Closer CTA */}
-      <section className="py-24 md:py-32">
-        <div className="mx-auto max-w-3xl px-6 text-center">
+      <section className="relative overflow-hidden py-24 md:py-32">
+        <SectionAtmosphere accent="mixed" position="center" intensity={1.2} />
+        <div className="relative mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.03em] leading-tight">
             {t('closerHeadline')}
           </h2>

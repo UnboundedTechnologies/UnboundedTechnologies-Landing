@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
 
@@ -62,8 +63,9 @@ export function OutcomeRibbon() {
   const tWork = useTranslations('work');
 
   return (
-    <section aria-label={t('eyebrow')} className="py-20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section aria-label={t('eyebrow')} className="relative overflow-hidden py-20">
+      <SectionAtmosphere accent="blue" position="top-right" />
+      <div className="relative mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
           {OUTCOMES.map((o, i) => {
