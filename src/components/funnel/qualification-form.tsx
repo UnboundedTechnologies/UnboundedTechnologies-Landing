@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { ChipMultiSelect } from './chip-multi-select';
@@ -58,6 +58,16 @@ export function QualificationForm({ onSuccess }: Props) {
   });
 
   const description = watch('description') ?? '';
+
+  // Stable callback so the Turnstile widget's useEffect doesn't tear down
+  // and recreate the challenge on every parent re-render (each keystroke in
+  // the description textarea fires a re-render via watch()).
+  const onToken = useCallback(
+    (token: string) => {
+      setValue('turnstileToken', token, { shouldValidate: !!token });
+    },
+    [setValue],
+  );
 
   async function onSubmit(values: Lead) {
     setSubmitError(null);
@@ -205,10 +215,7 @@ export function QualificationForm({ onSuccess }: Props) {
       </Field>
 
       <div className="pt-2">
-        <TurnstileWidget
-          siteKey={SITE_KEY}
-          onToken={(token) => setValue('turnstileToken', token, { shouldValidate: !!token })}
-        />
+        <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />
       </div>
 
       {submitError && (
