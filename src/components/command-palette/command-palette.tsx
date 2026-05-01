@@ -8,6 +8,15 @@ import { useTheme } from '@/components/theme/theme-provider';
 import { useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 
+// Custom event surface so the nav search button can trigger the palette
+// without prop-drilling. Augments the WindowEventMap so addEventListener
+// is type-safe.
+declare global {
+  interface WindowEventMap {
+    'palette:open': Event;
+  }
+}
+
 // Cmd/Ctrl-K command palette built on `cmdk`. Categories:
 //   Navigation: jump to /, /work, /services, /about, /contact
 //   Case studies: jump to each /work/[slug]
@@ -40,7 +49,9 @@ export function CommandPalette({ caseStudies }: Props) {
   const [open, setOpen] = useState(false);
   const [recent, setRecent] = useState<string[]>([]);
 
-  // Bind ⌘K + Ctrl-K globally.
+  // Bind ⌘K + Ctrl-K globally, plus the 'palette:open' custom event so
+  // the nav search button (and any other UI in the future) can open the
+  // palette without prop-drilling a setOpen.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -48,8 +59,13 @@ export function CommandPalette({ caseStudies }: Props) {
         setOpen((v) => !v);
       }
     };
+    const onOpenEvent = () => setOpen(true);
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('palette:open', onOpenEvent);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('palette:open', onOpenEvent);
+    };
   }, []);
 
   // Hydrate recent commands.
@@ -129,68 +145,51 @@ export function CommandPalette({ caseStudies }: Props) {
       perform: () => navigate(`/work/${cs.slug}`),
     })),
 
-    // Theme
+    // Theme - palette stays open after picking so the ✓ checkmark
+    // moves visibly to the new selection. User presses Esc to dismiss.
     {
       id: 'theme-dark',
       group: t('groupTheme'),
       label: t('themeDark'),
       keywords: ['dark', 'sombre'],
-      perform: () => {
-        setTheme('dark');
-        setOpen(false);
-      },
+      perform: () => setTheme('dark'),
     },
     {
       id: 'theme-cinematic',
       group: t('groupTheme'),
       label: t('themeCinematic'),
       keywords: ['cinematic', 'cinéma', 'oled'],
-      perform: () => {
-        setTheme('cinematic');
-        setOpen(false);
-      },
+      perform: () => setTheme('cinematic'),
     },
     {
       id: 'theme-auto',
       group: t('groupTheme'),
       label: t('themeAuto'),
       keywords: ['auto', 'system', 'time'],
-      perform: () => {
-        setTheme('auto');
-        setOpen(false);
-      },
+      perform: () => setTheme('auto'),
     },
 
-    // Motion
+    // Motion - same: palette stays open so the toggled ✓ is visible.
     {
       id: 'motion-system',
       group: t('groupMotion'),
       label: t('motionSystem'),
       keywords: ['motion', 'system'],
-      perform: () => {
-        setMotion('system');
-        setOpen(false);
-      },
+      perform: () => setMotion('system'),
     },
     {
       id: 'motion-reduce',
       group: t('groupMotion'),
       label: t('motionReduce'),
       keywords: ['reduce', 'less', 'animation'],
-      perform: () => {
-        setMotion('reduce');
-        setOpen(false);
-      },
+      perform: () => setMotion('reduce'),
     },
     {
       id: 'motion-full',
       group: t('groupMotion'),
       label: t('motionFull'),
       keywords: ['full', 'all'],
-      perform: () => {
-        setMotion('full');
-        setOpen(false);
-      },
+      perform: () => setMotion('full'),
     },
   ];
 

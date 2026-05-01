@@ -71,8 +71,22 @@ html[data-motion="reduce"] *::after {
   }
 }
 
+/*
+ * Cinematic theme: a markedly deeper, more saturated black-blue palette
+ * meant to read as "lights down, eyes adjusted." Pushes well past the
+ * default Dark so the difference is obvious at a glance, not subtle.
+ *
+ * Auto mode uses this palette between 6pm and 6am local.
+ */
 [data-theme="cinematic"] {
-  --color-bg: #040308;
+  --color-bg: #02010a;
+  --color-bg-elevated: #07061a;
+  --color-surface: rgba(255, 255, 255, 0.025);
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.12);
+  --color-text-muted: #a3a6bf;
+  --color-text-faint: #565b73;
 }
 
 .aurora-text {

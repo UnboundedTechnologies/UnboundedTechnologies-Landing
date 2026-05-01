@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 import { Link } from '@/i18n/routing';
 import { LivePresence } from './live-presence';
+import { NavSearchButton } from './nav-search-button';
 
 export function TopNav() {
   const t = useTranslations('nav');
@@ -37,10 +38,11 @@ export function TopNav() {
             </Link>
           </li>
         </ul>
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-3">
           <Suspense fallback={null}>
             <LivePresence />
           </Suspense>
+          <NavSearchButton />
           <Link
             href="/contact"
             className="text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
@@ -48,12 +50,15 @@ export function TopNav() {
             {t('startProject')}
           </Link>
         </div>
-        <Link
-          href="/contact"
-          className="lg:hidden text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
-        >
-          {t('startProject')}
-        </Link>
+        <div className="lg:hidden flex items-center gap-1">
+          <NavSearchButton />
+          <Link
+            href="/contact"
+            className="text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
+          >
+            {t('startProject')}
+          </Link>
+        </div>
       </nav>
     </header>
   );
