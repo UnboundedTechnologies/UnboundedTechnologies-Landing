@@ -180,6 +180,42 @@ html[data-motion="reduce"] *::after {
 }
 
 /*
+ * Command palette mount/unmount animations (Phase 10.1 redesign).
+ * Hooks into Radix Dialog's data-state attribute so the content scales +
+ * fades in on open and reverses on close, giving the macOS Tahoe-style
+ * glassy snap. Backdrop gets a slower, simpler fade so the two layers
+ * don't fight visually.
+ */
+@keyframes palette-content-in {
+  from { opacity: 0; transform: translate(-50%, -8px) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, 0)    scale(1); }
+}
+@keyframes palette-content-out {
+  from { opacity: 1; transform: translate(-50%, 0)    scale(1); }
+  to   { opacity: 0; transform: translate(-50%, -8px) scale(0.96); }
+}
+@keyframes palette-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes palette-overlay-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+[data-palette-content][data-state="open"] {
+  animation: palette-content-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-palette-content][data-state="closed"] {
+  animation: palette-content-out 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-palette-overlay][data-state="open"] {
+  animation: palette-overlay-in 240ms ease-out;
+}
+[data-palette-overlay][data-state="closed"] {
+  animation: palette-overlay-out 180ms ease-out;
+}
+
+/*
  * EngagementTimeline (services /how-an-engagement-starts) ping ripple. Used
  * on the active step's number circle to draw the eye to the currently lit
  * node. Two of these are layered with a 750 ms offset so the ripple
