@@ -42,27 +42,30 @@ const TIMELINE_LABEL: Record<Lead['timeline'], string> = {
 export async function createLead(lead: Lead, meta: { qualified: boolean; score: number }) {
   if (!notion || !env.NOTION_LEADS_DB_ID) return null;
 
-  // Append hourly rate inline to the Description so the rate is captured
-  // somewhere in Notion. The database doesn't have a dedicated Hourly rate
-  // column (the spec was budget-tier-based originally; the slider arrived
-  // later and we keep the DB schema unchanged for v1.0).
-  const descriptionWithRate = `${lead.description}\n\nHourly rate: CAD $${lead.hourlyRate}/hr`;
-
-  return notion.pages.create({
-    parent: { database_id: env.NOTION_LEADS_DB_ID },
-    properties: {
-      Name: { title: [{ text: { content: lead.name } }] },
-      Email: { email: lead.email },
-      Company: { rich_text: [{ text: { content: lead.company } }] },
-      Industry: { select: { name: INDUSTRY_LABEL[lead.industry] } },
-      'Project type': {
-        multi_select: lead.projectTypes.map((n) => ({ name: PROJECT_TYPE_LABEL[n] })),
+  try {
+    return await notion.pages.create({
+      parent: { database_id: env.NOTION_LEADS_DB_ID },
+      properties: {
+        Name: { title: [{ text: { content: lead.name } }] },
+        Email: { email: lead.email },
+        Company: { rich_text: [{ text: { content: lead.company } }] },
+        Industry: { select: { name: INDUSTRY_LABEL[lead.industry] } },
+        'Project type': {
+          multi_select: lead.projectTypes.map((n) => ({ name: PROJECT_TYPE_LABEL[n] })),
+        },
+        // Budget column was originally a Select with 5 project-cost tiers; the
+        // form now uses an hourly-rate slider, so we expect the column to be
+        // converted to Number type and store the rate directly. If the column
+        // is still a Select, this write will silently fail (caught below).
+        Budget: { number: lead.hourlyRate },
+        Timeline: { select: { name: TIMELINE_LABEL[lead.timeline] } },
+        Description: { rich_text: [{ text: { content: lead.description } }] },
+        Status: { select: { name: 'New' } },
+        Score: { number: meta.score },
       },
-      Timeline: { select: { name: TIMELINE_LABEL[lead.timeline] } },
-      Description: { rich_text: [{ text: { content: descriptionWithRate } }] },
-      Score: { number: meta.score },
-      // Status is not set here - Notion's database default is "New" and the
-      // owner advances it manually as the lead progresses.
-    },
-  });
+    });
+  } catch (err) {
+    console.error('[notion.createLead] failed', err);
+    return null;
+  }
 }

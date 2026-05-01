@@ -23,7 +23,8 @@ declare global {
           'error-callback'?: () => void;
           'expired-callback'?: () => void;
           theme?: 'light' | 'dark' | 'auto';
-          size?: 'normal' | 'compact';
+          size?: 'normal' | 'compact' | 'flexible';
+          appearance?: 'always' | 'execute' | 'interaction-only';
         },
       ) => string;
       reset: (id?: string) => void;
@@ -85,7 +86,11 @@ export function TurnstileWidget({ siteKey, onToken }: Props) {
         'expired-callback': () => onToken(''),
         'error-callback': () => onToken(''),
         theme: 'dark',
-        size: 'normal',
+        size: 'flexible',
+        // Invisible-by-default: only renders interactive UI if Cloudflare's
+        // risk engine flags the request. Otherwise the widget element stays
+        // 0x0 and there's no visual gap in the form.
+        appearance: 'interaction-only',
       });
     };
 
@@ -105,5 +110,8 @@ export function TurnstileWidget({ siteKey, onToken }: Props) {
   }, [siteKey, onToken, containerId]);
 
   if (!siteKey) return null;
-  return <div id={containerId} className="min-h-[65px]" />;
+  // No min-height - with appearance: 'interaction-only' the widget element
+  // stays empty (0x0) for normal traffic, so reserving vertical space leaves
+  // a hole in the form layout. The challenge expands it on-demand if needed.
+  return <div id={containerId} />;
 }

@@ -233,9 +233,7 @@ export function QualificationForm({ onSuccess }: Props) {
         />
       </Field>
 
-      <div className="pt-2">
-        <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />
-      </div>
+      <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />
 
       {submitError && (
         <div
@@ -247,7 +245,11 @@ export function QualificationForm({ onSuccess }: Props) {
       )}
 
       <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-border">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted flex items-center gap-2">
+          <span
+            aria-hidden
+            className="inline-block w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse"
+          />
           {t('replyTime')}
         </p>
         <button

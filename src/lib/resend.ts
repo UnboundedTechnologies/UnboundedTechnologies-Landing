@@ -13,12 +13,31 @@ import { env } from './env';
 // still resolves successfully so local form testing works without secrets.
 const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
 
+async function send(params: Parameters<NonNullable<typeof resend>['emails']['send']>[0]) {
+  if (!resend) return null;
+  try {
+    const result = await resend.emails.send(params);
+    if ((result as { error?: unknown }).error) {
+      console.error('[resend] send failed', {
+        params: { to: params.to, from: params.from, subject: params.subject },
+        error: (result as { error: unknown }).error,
+      });
+    }
+    return result;
+  } catch (err) {
+    console.error('[resend] send threw', {
+      params: { to: params.to, from: params.from, subject: params.subject },
+      err,
+    });
+    return null;
+  }
+}
+
 export async function sendLeadNotification(
   lead: Lead,
   meta: { qualified: boolean; score: number },
 ) {
-  if (!resend) return null;
-  return resend.emails.send({
+  return send({
     from: env.RESEND_FROM_EMAIL,
     to: env.RESEND_TO_EMAIL,
     replyTo: lead.email,
@@ -28,8 +47,7 @@ export async function sendLeadNotification(
 }
 
 export async function sendQualifiedConfirmation(lead: Lead) {
-  if (!resend) return null;
-  return resend.emails.send({
+  return send({
     from: env.RESEND_FROM_EMAIL,
     to: lead.email,
     subject: 'Thanks - next step at Unbounded Technologies',
@@ -38,8 +56,7 @@ export async function sendQualifiedConfirmation(lead: Lead) {
 }
 
 export async function sendExploratoryConfirmation(lead: Lead) {
-  if (!resend) return null;
-  return resend.emails.send({
+  return send({
     from: env.RESEND_FROM_EMAIL,
     to: lead.email,
     subject: 'Thanks for reaching out',
