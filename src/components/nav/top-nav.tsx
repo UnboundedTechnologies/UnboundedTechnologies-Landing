@@ -1,12 +1,12 @@
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import { Suspense } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { LivePresence } from './live-presence';
+import { LanguageSwitcher } from './language-switcher';
 import { NavSearchButton } from './nav-search-button';
 
 export function TopNav() {
   const t = useTranslations('nav');
+  const locale = useLocale() as 'en' | 'fr';
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-bg/60 border-b border-border">
       <nav className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between gap-6">
@@ -38,23 +38,24 @@ export function TopNav() {
             </Link>
           </li>
         </ul>
-        <div className="hidden lg:flex items-center gap-3">
-          <Suspense fallback={null}>
-            <LivePresence />
-          </Suspense>
+        {/* Action cluster: search -> language -> CTA. Same order on
+            mobile, just with tighter spacing. */}
+        <div className="hidden lg:flex items-center gap-2">
           <NavSearchButton />
+          <LanguageSwitcher current={locale} />
           <Link
             href="/contact"
-            className="text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
+            className="ml-1 text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
           >
             {t('startProject')}
           </Link>
         </div>
         <div className="lg:hidden flex items-center gap-1">
           <NavSearchButton />
+          <LanguageSwitcher current={locale} />
           <Link
             href="/contact"
-            className="text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
+            className="ml-1 text-xs font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-purple text-white"
           >
             {t('startProject')}
           </Link>

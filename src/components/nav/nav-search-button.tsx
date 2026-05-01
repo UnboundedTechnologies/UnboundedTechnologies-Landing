@@ -21,12 +21,7 @@ export function NavSearchButton() {
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
         <title>Search</title>
         <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-        <path
-          d="M20 20 L16 16"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        <path d="M20 20 L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
       {/* Tooltip - simple positioned div, fades + lifts in on hover/focus.
           Skips a tooltip primitive to keep the bundle tiny. */}
