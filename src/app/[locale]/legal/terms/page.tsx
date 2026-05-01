@@ -2,8 +2,12 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import { Link } from '@/i18n/routing';
+import { accentSpotlight, type SolidAccent } from '@/lib/accents';
 import { cn } from '@/lib/utils';
+
+const ACCENT_CYCLE: ReadonlyArray<SolidAccent> = ['cyan', 'blue', 'purple'];
 
 // `/legal/terms` Terms of Service page (Phase 8.3).
 //
@@ -27,9 +31,13 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
 
   return (
     <>
-      {/* 1. Hero */}
-      <section className="relative overflow-hidden py-20 md:py-28">
+      {/* Hero + body share one continuous section so the atmosphere flows
+          from headline through the last card with no visible boundary. */}
+      <section className="relative overflow-hidden pt-20 md:pt-28 pb-16 md:pb-20">
         <SectionAtmosphere accent="cyan" position="top-right" intensity={0.7} />
+        <SectionAtmosphere accent="blue" position="bottom-left" intensity={0.5} />
+
+        {/* Hero: eyebrow, h1, effective-date, subhead. */}
         <div className="relative mx-auto max-w-3xl px-6">
           <Eyebrow>{t('eyebrow')}</Eyebrow>
           <h1 className="mt-6 text-4xl md:text-5xl font-semibold tracking-[-0.04em] leading-[1.05]">
@@ -42,42 +50,44 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
             {t('subhead')}
           </p>
         </div>
-      </section>
 
-      {/* 2. Body sections */}
-      <section className="relative overflow-hidden py-12 md:py-16">
-        <SectionAtmosphere accent="blue" position="top-left" intensity={0.6} />
-        <div className="relative mx-auto max-w-3xl px-6">
+        {/* Body cards: numbered sections, each carrying a brand-tinted
+            cursor spotlight that cycles through the three solid accents. */}
+        <div className="relative mx-auto max-w-3xl px-6 mt-16 md:mt-20">
           <ol className="space-y-6 md:space-y-8">
-            {SECTIONS.map((key, idx) => (
-              <li
-                key={key}
-                className={cn(
-                  'group relative rounded-xl border border-border bg-bg-elevated/40 backdrop-blur-sm',
-                  'p-6 md:p-8 transition-colors duration-[var(--duration-short)]',
-                  'hover:border-border-hover',
-                )}
-              >
-                <div
+            {SECTIONS.map((key, idx) => {
+              const accent = ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+              return (
+                <li
+                  key={key}
                   className={cn(
-                    'font-mono text-xs uppercase tracking-[0.18em] text-text-faint mb-3',
+                    'group relative overflow-hidden rounded-xl border border-border bg-bg-elevated/40 backdrop-blur-sm',
+                    'p-6 md:p-8 transition-colors duration-[var(--duration-short)]',
+                    'hover:border-border-hover',
                   )}
                 >
-                  {String(idx + 1).padStart(2, '0')}
-                </div>
-                <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-text mb-4">
-                  {t(`${key}Title`)}
-                </h2>
-                <div className="text-sm md:text-base text-text-muted leading-relaxed space-y-4 max-w-prose">
-                  {t(`${key}Body`)
-                    .split('\n\n')
-                    .map((para, pIdx) => (
-                      // biome-ignore lint/suspicious/noArrayIndexKey: paragraphs are stable within a translation string
-                      <p key={pIdx}>{para}</p>
-                    ))}
-                </div>
-              </li>
-            ))}
+                  <Spotlight color={accentSpotlight(accent)} />
+                  <div
+                    className={cn(
+                      'relative font-mono text-xs uppercase tracking-[0.18em] text-text-faint mb-3',
+                    )}
+                  >
+                    {String(idx + 1).padStart(2, '0')}
+                  </div>
+                  <h2 className="relative text-xl md:text-2xl font-semibold tracking-tight text-text mb-4">
+                    {t(`${key}Title`)}
+                  </h2>
+                  <div className="relative text-sm md:text-base text-text-muted leading-relaxed space-y-4 max-w-prose">
+                    {t(`${key}Body`)
+                      .split('\n\n')
+                      .map((para, pIdx) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: paragraphs are stable within a translation string
+                        <p key={pIdx}>{para}</p>
+                      ))}
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </div>
       </section>
