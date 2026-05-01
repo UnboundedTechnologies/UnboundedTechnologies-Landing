@@ -4,7 +4,6 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ParticleField } from '@/components/atmosphere/particle-field';
 import { CommandPaletteWrapper } from '@/components/command-palette/command-palette-wrapper';
 import { DevToolsGreeting } from '@/components/easter-egg/devtools-greeting';
-import { GitHubActivityStrip } from '@/components/github-strip/github-activity-strip';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
@@ -35,7 +34,6 @@ export default async function LocaleLayout({
         <div className="grain min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">{children}</main>
-          <GitHubActivityStrip />
           <Footer />
           <PersistentInfinityLogo />
         </div>

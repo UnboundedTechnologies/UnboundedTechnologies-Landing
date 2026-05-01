@@ -1,4 +1,5 @@
 import { setRequestLocale } from 'next-intl/server';
+import { GitHubActivityStrip } from '@/components/github-strip/github-activity-strip';
 import { GlobeSection } from '@/components/globe/globe-section';
 import { Hero } from '@/components/hero/hero';
 import { ImpactGraph } from '@/components/impact-graph/impact-graph';
@@ -17,6 +18,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <GlobeSection />
       <ServicesPillars />
       <ImpactGraph />
+      <GitHubActivityStrip />
     </>
   );
 }
