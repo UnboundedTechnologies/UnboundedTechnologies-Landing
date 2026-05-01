@@ -178,6 +178,14 @@
     "lastUpdated": "Last updated: May 1, 2026",
     "contactCta": "Questions? Get in touch ->"
   },
+  "contactPage": {
+    "eyebrow": "- Contact",
+    "headlineLead": "Start a",
+    "headlineAccent": "project conversation.",
+    "body1": "The qualified inquiry funnel ships in the next phase. Until then, the fastest way to start a conversation is by email. We respond within one business day.",
+    "body2": "Engagements run on a Master Service Agreement plus a per-project Statement of Work. Industries, budget ranges, and timelines are all welcome. If we are not the right fit, we will say so.",
+    "ctaLabel": "contact@unboundedtechnologies.com"
+  },
   "work": {
     "eyebrow": "- Selected work",
     "indexHeadlineLead": "From design",

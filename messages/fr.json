@@ -178,6 +178,14 @@
     "lastUpdated": "Dernière mise à jour: 1er mai 2026",
     "contactCta": "Une question? Écrivez-nous ->"
   },
+  "contactPage": {
+    "eyebrow": "- Contact",
+    "headlineLead": "Démarrer une",
+    "headlineAccent": "conversation projet.",
+    "body1": "Le formulaire de qualification arrive à la prochaine phase. En attendant, le plus simple est de nous écrire par courriel. Nous répondons sous un jour ouvrable.",
+    "body2": "Les missions sont encadrées par un Master Service Agreement plus un Statement of Work par projet. Tous les secteurs, tous les budgets et tous les calendriers sont les bienvenus. Si nous ne sommes pas la bonne équipe, nous le dirons.",
+    "ctaLabel": "contact@unboundedtechnologies.com"
+  },
   "work": {
     "eyebrow": "- Travaux sélectionnés",
     "indexHeadlineLead": "Du design",

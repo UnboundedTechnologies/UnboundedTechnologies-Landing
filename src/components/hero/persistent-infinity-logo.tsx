@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { CanvasErrorBoundary } from './canvas-error-boundary';
 import { InfinityLogo3D } from './infinity-logo-3d';
+import { InfinityLogoStatic } from './infinity-logo-static';
 
 // Layout-level WebGL Canvas owner. Mounted ONCE in [locale]/layout.tsx and
 // persists across every in-app navigation, so the Canvas never has to tear
@@ -94,7 +96,15 @@ export function PersistentInfinityLogo() {
         zIndex: 5,
       }}
     >
-      <InfinityLogo3D />
+      <CanvasErrorBoundary
+        fallback={
+          <div className="w-full h-full flex items-center justify-center">
+            <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+          </div>
+        }
+      >
+        <InfinityLogo3D />
+      </CanvasErrorBoundary>
     </div>
   );
 }
