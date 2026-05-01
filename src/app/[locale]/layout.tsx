@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { ParticleField } from '@/components/atmosphere/particle-field';
 import { CommandPaletteWrapper } from '@/components/command-palette/command-palette-wrapper';
 import { DevToolsGreeting } from '@/components/easter-egg/devtools-greeting';
-import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
 import { ThemeProvider } from '@/components/theme/theme-provider';
@@ -30,12 +28,10 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
         <DevToolsGreeting />
-        <ParticleField />
         <div className="grain min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">{children}</main>
           <Footer />
-          <PersistentInfinityLogo />
         </div>
         <CommandPaletteWrapper locale={locale as Locale} />
       </ThemeProvider>

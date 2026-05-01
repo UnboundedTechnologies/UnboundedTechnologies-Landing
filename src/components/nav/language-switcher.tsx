@@ -1,17 +1,21 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Link, usePathname } from '@/i18n/routing';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 
 // Planet-icon button in the top nav. Click opens a tiny popover with
-// the available locales; picking one navigates to the same path under
-// the new locale via next-intl's `<Link locale="...">` pattern.
+// the available locales; picking one swaps the locale via next-intl's
+// router while preserving the current route + dynamic params.
 //
-// Uses a simple click-outside + Esc handler instead of pulling in a
-// popover primitive, since the menu has only two items and we want to
-// keep the bundle slim. The trigger button visually mirrors the nav
-// search button so they sit cleanly next to each other.
+// Why useParams + an object href: next-intl's `usePathname()` returns
+// the unlocalized route pattern (e.g. '/work/[slug]'), not the resolved
+// path. Passing that string straight to the router with a locale switch
+// gives '/fr/work/[slug]' literally - 404. We pull the actual params
+// from Next.js's `useParams()` and pass an object href so next-intl can
+// substitute placeholders AND apply the locale's pathname mapping
+// (e.g. /work/[slug] -> /travaux/[slug] in FR).
 
 const LOCALES = [
   { code: 'en' as const, label: 'English', short: 'EN' },
@@ -24,6 +28,8 @@ type Props = {
 
 export function LanguageSwitcher({ current }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams<{ slug?: string }>();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +49,25 @@ export function LanguageSwitcher({ current }: Props) {
       document.removeEventListener('keydown', onKey);
     };
   }, [open]);
+
+  const switchLocale = (loc: 'en' | 'fr') => {
+    setOpen(false);
+    if (loc === current) return;
+    // Build a route descriptor next-intl can localize. If the current
+    // pathname has a [slug] dynamic segment and useParams gave us a
+    // value, pass both so the router can substitute it. Otherwise the
+    // string pathname is enough.
+    if (pathname.includes('[slug]') && params.slug) {
+      router.replace(
+        // biome-ignore lint/suspicious/noExplicitAny: next-intl typed pathnames are strict; the cast lets us pass a runtime-resolved pattern
+        { pathname: pathname as any, params: { slug: params.slug } },
+        { locale: loc },
+      );
+    } else {
+      // biome-ignore lint/suspicious/noExplicitAny: same reason
+      router.replace(pathname as any, { locale: loc });
+    }
+  };
 
   return (
     <div ref={containerRef} className="relative">
@@ -91,15 +116,14 @@ export function LanguageSwitcher({ current }: Props) {
           {LOCALES.map((l) => {
             const isActive = l.code === current;
             return (
-              <Link
+              <button
                 key={l.code}
+                type="button"
                 role="menuitemradio"
                 aria-checked={isActive}
-                href={pathname as Parameters<typeof Link>[0]['href']}
-                locale={l.code}
-                onClick={() => setOpen(false)}
+                onClick={() => switchLocale(l.code)}
                 className={cn(
-                  'flex items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-sm cursor-pointer',
+                  'w-full flex items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-sm cursor-pointer',
                   'transition-colors duration-150',
                   isActive
                     ? 'bg-brand-blue/10 text-text'
@@ -115,7 +139,7 @@ export function LanguageSwitcher({ current }: Props) {
                     ✓
                   </span>
                 )}
-              </Link>
+              </button>
             );
           })}
         </div>

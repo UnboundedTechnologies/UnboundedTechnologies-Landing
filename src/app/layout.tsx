@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { ParticleField } from '@/components/atmosphere/particle-field';
+import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { THEME_BOOT_SCRIPT } from '@/components/theme/theme-provider';
 import './globals.css';
 
@@ -43,6 +45,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body className="bg-bg text-text font-sans antialiased" suppressHydrationWarning>
+        {/* These two own heavy WebGL/canvas resources. Mounted at the
+            root layout (instead of [locale]/layout) so they survive
+            locale switches: navigating /en -> /fr changes the [locale]
+            param and re-runs that layout, but the root layout sees no
+            change and these stay alive. */}
+        <ParticleField />
+        <PersistentInfinityLogo />
         {children}
       </body>
     </html>
