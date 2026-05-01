@@ -1,23 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 // Magnifying-glass button in the top nav. Click dispatches the global
-// 'palette:open' event that the CommandPalette listens for; keyboard
-// shortcut (⌘K / Ctrl+K) is shown in the tooltip on hover. The shortcut
-// label is platform-aware so Mac users see ⌘ and everyone else sees Ctrl.
+// 'palette:open' event that the CommandPalette listens for; tooltip on
+// hover always shows BOTH ⌘K (Mac) and Ctrl+K (Win/Linux) so a Mac user
+// reading on a Windows machine (or vice versa) sees their own shortcut
+// regardless of what we'd guess from navigator.platform.
 
 export function NavSearchButton() {
-  const [isMac, setIsMac] = useState(false);
-
-  useEffect(() => {
-    if (typeof navigator !== 'undefined') {
-      setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
-    }
-  }, []);
-
-  const shortcut = isMac ? '⌘K' : 'Ctrl+K';
-
   const open = () => {
     window.dispatchEvent(new Event('palette:open'));
   };
@@ -26,7 +15,7 @@ export function NavSearchButton() {
     <button
       type="button"
       onClick={open}
-      aria-label={`Search (${shortcut})`}
+      aria-label="Search (⌘K or Ctrl+K)"
       className="group relative inline-flex h-9 w-9 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
@@ -54,9 +43,15 @@ export function NavSearchButton() {
         ].join(' ')}
       >
         <span>Search</span>
-        <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text">
-          {shortcut}
-        </kbd>
+        <span className="flex items-center gap-1.5">
+          <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text">
+            ⌘K
+          </kbd>
+          <span className="text-text-faint">/</span>
+          <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text">
+            Ctrl+K
+          </kbd>
+        </span>
       </span>
     </button>
   );
