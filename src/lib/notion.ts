@@ -20,7 +20,7 @@ export async function createLead(lead: Lead, meta: { qualified: boolean; score: 
       'Project type': { multi_select: lead.projectTypes.map((n) => ({ name: n })) },
       'Hourly rate (CAD)': { number: lead.hourlyRate },
       Timeline: { select: { name: lead.timeline } },
-      Description: { rich_text: [{ text: { content: lead.description ?? '' } }] },
+      Description: { rich_text: [{ text: { content: lead.description } }] },
       Status: { select: { name: meta.qualified ? 'Qualified' : 'Exploratory' } },
       Score: { number: meta.score },
     },

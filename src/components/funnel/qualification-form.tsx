@@ -214,7 +214,15 @@ export function QualificationForm({ onSuccess }: Props) {
       <Field
         label={t('descriptionLabel')}
         hint={t('descriptionHint', { count: description.length })}
-        error={errors.description && t('errorMax')}
+        error={
+          errors.description?.type === 'too_small'
+            ? t('errorMin')
+            : errors.description?.type === 'too_big'
+              ? t('errorMax')
+              : errors.description
+                ? t('errorRequired')
+                : undefined
+        }
       >
         <textarea
           {...register('description')}

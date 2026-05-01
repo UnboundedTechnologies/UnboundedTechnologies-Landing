@@ -40,15 +40,11 @@ export function LeadNotificationEmail({ lead, qualified, score }: Props) {
             <Row label="Hourly rate" value={`CAD $${lead.hourlyRate} / hr + HST`} />
             <Row label="Timeline" value={lead.timeline} />
           </Section>
-          {lead.description && (
-            <>
-              <Hr style={hrStyle} />
-              <Heading as="h2" style={subheadingStyle}>
-                Description
-              </Heading>
-              <Text style={descStyle}>{lead.description}</Text>
-            </>
-          )}
+          <Hr style={hrStyle} />
+          <Heading as="h2" style={subheadingStyle}>
+            Description
+          </Heading>
+          <Text style={descStyle}>{lead.description}</Text>
         </Container>
       </Body>
     </Html>

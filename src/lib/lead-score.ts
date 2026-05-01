@@ -14,6 +14,6 @@ export function scoreLead(lead: Lead): { qualified: boolean; score: number } {
   const rateOk = lead.hourlyRate >= HOURLY_RATE_QUALIFIED_THRESHOLD;
   const timelineOk = ['asap', '1-3mo', '3-6mo', '1y+'].includes(lead.timeline);
   const qualified = rateOk && timelineOk;
-  const score = (rateOk ? 50 : 0) + (timelineOk ? 30 : 0) + (lead.description?.length ? 20 : 0);
+  const score = (rateOk ? 50 : 0) + (timelineOk ? 30 : 0) + (lead.description.length >= 100 ? 20 : 0);
   return { qualified, score };
 }
