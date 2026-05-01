@@ -27,7 +27,7 @@ export function NavSearchButton() {
       type="button"
       onClick={open}
       aria-label={`Search (${shortcut})`}
-      className="group relative inline-flex h-9 w-9 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+      className="group relative inline-flex h-9 w-9 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
         <title>Search</title>
