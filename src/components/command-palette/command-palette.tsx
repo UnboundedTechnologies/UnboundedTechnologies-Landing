@@ -68,6 +68,22 @@ export function CommandPalette({ caseStudies }: Props) {
     };
   }, []);
 
+  // Warm Next.js's route cache for every destination the palette can
+  // jump to. Without this, picking an item triggers the route fetch on
+  // click, so the palette closes and the user stares at a blank delay
+  // before the new page paints. Prefetching lets us jump to an already-
+  // cached route the instant they pick. Idempotent inside the router
+  // so re-running on locale change is fine.
+  useEffect(() => {
+    const routes = ['/', '/services', '/work', '/about', '/contact'];
+    for (const r of routes) {
+      router.prefetch(r as Parameters<typeof router.prefetch>[0]);
+    }
+    for (const cs of caseStudies) {
+      router.prefetch(`/work/${cs.slug}` as Parameters<typeof router.prefetch>[0]);
+    }
+  }, [router, caseStudies]);
+
   // Hydrate recent commands.
   useEffect(() => {
     try {
@@ -95,8 +111,12 @@ export function CommandPalette({ caseStudies }: Props) {
   };
 
   const navigate = (href: string) => {
-    setOpen(false);
+    // Kick off navigation BEFORE closing the palette so the prefetched
+    // route starts hydrating immediately. The dialog close animation
+    // then runs in parallel and the user sees the new page paint
+    // without a visible gap.
     router.push(href as Parameters<typeof router.push>[0]);
+    setOpen(false);
   };
 
   const actions: Action[] = [
