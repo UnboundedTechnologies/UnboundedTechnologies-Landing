@@ -30,7 +30,12 @@ export async function GET(): Promise<Response> {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename="unbounded-capability-statement.pdf"',
+      // attachment (not inline) so modern browsers trigger a download instead
+      // of rendering the PDF in the new tab. Combined with target="_blank" on
+      // the calling anchor, the user's current view never changes: a new tab
+      // briefly opens, the download fires, and Chrome/Firefox auto-close the
+      // empty tab.
+      'Content-Disposition': 'attachment; filename="unbounded-capability-statement.pdf"',
       'Content-Length': String(bytes.byteLength),
       // Edge / CDN cache hint: 24h fresh, then stale-while-revalidate for
       // another 24h. Mirrors the inner `cacheLife('days')` so any layer in

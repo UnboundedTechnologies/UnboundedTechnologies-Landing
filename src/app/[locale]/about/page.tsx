@@ -211,6 +211,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <div className="mx-auto max-w-7xl px-6">
           <a
             href="/cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            download="unbounded-capability-statement.pdf"
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors"
           >
             {t('capabilityLink')}

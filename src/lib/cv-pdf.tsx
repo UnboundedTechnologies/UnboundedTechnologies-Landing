@@ -13,9 +13,7 @@ import enMessages from '../../messages/en.json';
 // avoids OS-specific path-resolution quirks (Windows backslashes, .next/server
 // CWD differences, etc.). The transparent variant reads cleanly on the white
 // PDF background where the dark-bg banner used in the nav would not.
-const BANNER_BUFFER = readFileSync(
-  path.resolve(process.cwd(), 'public/ut-banner-transparent.png'),
-);
+const BANNER_BUFFER = readFileSync(path.resolve(process.cwd(), 'public/ut-banner-transparent.png'));
 
 // Build-time-rendered Capability Statement PDF served at /cv.pdf.
 //
