@@ -1,11 +1,46 @@
 import { cn } from '@/lib/utils';
 
+// Layered hero atmosphere:
+//   - Slow morphing tri-tone nebula behind everything (B3 from the design
+//     plan): a large blurred conic-ish wash that rotates over 60s, giving
+//     the hero an organic sense of "alive" beyond what the two discrete
+//     orbs alone provide.
+//   - Two original aurora orbs on top of the nebula: blue (top-left,
+//     14s drift) and purple (bottom-right, 18s drift), kept at the same
+//     opacities so existing pages don't look different in their mid-state.
+//
+// The nebula is a fragment of CSS, no JS, no canvas. prefers-reduced-motion
+// disables all three animations.
+
 export function AuroraOrbs({ className }: { className?: string }) {
   return (
     <div
       className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}
       aria-hidden
     >
+      {/* Mesh nebula. Two layered conic-style washes rotating opposite
+          directions at very different speeds keep the cloud from ever
+          repeating its visible state on a comfortable scroll. Heavy blur
+          smudges the edges into a cloud rather than a disc. */}
+      <div
+        className="absolute -inset-1/4 opacity-40 mix-blend-screen"
+        style={{
+          background:
+            'conic-gradient(from 0deg at 50% 50%, rgba(93,111,255,0.55), rgba(163,93,255,0.55), rgba(93,199,255,0.55), rgba(93,111,255,0.55))',
+          filter: 'blur(80px)',
+          animation: 'aurora-nebula-spin 60s linear infinite',
+        }}
+      />
+      <div
+        className="absolute -inset-1/4 opacity-25 mix-blend-screen"
+        style={{
+          background:
+            'conic-gradient(from 180deg at 50% 50%, rgba(93,199,255,0.5), rgba(93,111,255,0.5), rgba(163,93,255,0.5), rgba(93,199,255,0.5))',
+          filter: 'blur(100px)',
+          animation: 'aurora-nebula-spin-reverse 90s linear infinite',
+        }}
+      />
+      {/* Original two aurora orbs, on top of the nebula. */}
       <div
         className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full opacity-60"
         style={{
@@ -23,7 +58,11 @@ export function AuroraOrbs({ className }: { className?: string }) {
       <style>{`
         @keyframes orb-drift-a { from { transform: translate(0,0) scale(1); } to { transform: translate(80px, 60px) scale(1.1); } }
         @keyframes orb-drift-b { from { transform: translate(0,0) scale(1); } to { transform: translate(-100px, -40px) scale(0.95); } }
-        @media (prefers-reduced-motion: reduce) { div[style*="orb-drift"] { animation: none !important; } }
+        @keyframes aurora-nebula-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes aurora-nebula-spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @media (prefers-reduced-motion: reduce) {
+          div[style*="orb-drift"], div[style*="aurora-nebula-spin"] { animation: none !important; }
+        }
       `}</style>
     </div>
   );
