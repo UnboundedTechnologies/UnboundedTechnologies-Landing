@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
-import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Spotlight } from '@/components/primitives/spotlight';
 import { Link } from '@/i18n/routing';
 import { type Accent, accentBorderColor, accentSpotlight } from '@/lib/accents';
@@ -24,7 +23,7 @@ export default async function NotFound() {
     <section className="relative overflow-hidden flex-1 flex flex-col">
       <AuroraOrbs />
 
-      <div className="relative mx-auto max-w-5xl w-full px-6 py-14 md:py-24 flex-1 flex flex-col items-center text-center">
+      <div className="relative mx-auto max-w-5xl w-full px-6 py-16 md:py-28 flex-1 flex flex-col items-center text-center">
         <Image
           src="/ut-banner.png"
           alt="Unbounded Technologies Inc."
@@ -35,16 +34,21 @@ export default async function NotFound() {
           className="h-20 sm:h-24 md:h-32 lg:h-40 w-auto max-w-full"
         />
 
+        {/* Huge aurora-gradient 404 treatment. Reads as a deliberate hero
+            element instead of an afterthought, and the gradient inherits
+            the same brand identity as the homepage headline. */}
         <div
           aria-hidden
-          className="mt-10 md:mt-14 font-mono text-[11px] md:text-xs uppercase tracking-[0.32em] text-text-faint"
+          className="mt-12 md:mt-16 aurora-text font-mono font-bold tracking-[-0.04em] leading-none text-[7rem] sm:text-[9rem] md:text-[11rem] lg:text-[13rem] select-none"
         >
           {t('code')}
         </div>
 
-        <Eyebrow className="mt-4 text-brand-purple">{t('eyebrow')}</Eyebrow>
+        <div className="mt-2 md:mt-4 font-mono text-xs md:text-sm uppercase tracking-[0.32em] text-brand-purple">
+          {t('eyebrow')}
+        </div>
 
-        <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.04em] leading-[1.05] max-w-3xl">
+        <h1 className="mt-8 md:mt-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-[-0.04em] leading-[1.1] max-w-3xl">
           {t('headlineLead')} <span className="aurora-text">{t('headlineAccent')}</span>
           <br />
           <span className="text-text-muted">{t('headlineTrail')}</span>
@@ -54,8 +58,8 @@ export default async function NotFound() {
           {t('body')}
         </p>
 
-        <div className="mt-14 md:mt-20 w-full">
-          <div className="font-mono text-xs uppercase tracking-[0.18em] text-text-faint mb-6">
+        <div className="mt-16 md:mt-24 w-full">
+          <div className="font-mono text-xs uppercase tracking-[0.18em] text-brand-blue mb-8">
             {t('destinationsEyebrow')}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-left">
@@ -63,7 +67,7 @@ export default async function NotFound() {
               <Link
                 key={d.key}
                 href={d.href}
-                className="group relative block overflow-hidden rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md p-5 md:p-6 transition-colors duration-[var(--duration-short)] hover:border-border-hover hover:bg-bg-elevated/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-within:-translate-y-0.5 hover:-translate-y-0.5 active:-translate-y-0"
+                className="group relative block overflow-hidden rounded-2xl border border-border bg-bg-elevated/60 backdrop-blur-md p-6 md:p-7 transition-all duration-[var(--duration-short)] hover:border-border-hover hover:bg-bg-elevated/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 focus-within:-translate-y-0.5 hover:-translate-y-0.5 active:-translate-y-0"
                 style={{
                   boxShadow: `inset 3px 0 0 0 ${accentBorderColor(d.accent)}`,
                 }}
@@ -72,15 +76,15 @@ export default async function NotFound() {
                 <div className="relative font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint">
                   {String(DESTINATIONS.indexOf(d) + 1).padStart(2, '0')}
                 </div>
-                <div className="relative mt-2 text-base md:text-lg font-semibold text-text">
+                <div className="relative mt-3 text-lg md:text-xl font-semibold text-text leading-tight">
                   {t(`destinations.${d.key}.label`)}
                 </div>
-                <div className="relative mt-1 text-xs md:text-sm text-text-muted">
+                <div className="relative mt-2 text-sm text-text-muted">
                   {t(`destinations.${d.key}.blurb`)}
                 </div>
                 <span
                   aria-hidden
-                  className="absolute top-5 right-5 md:top-6 md:right-6 text-text-faint transition-transform duration-[var(--duration-short)] group-hover:translate-x-1 group-hover:text-text"
+                  className="absolute top-6 right-6 md:top-7 md:right-7 text-text-faint transition-transform duration-[var(--duration-short)] group-hover:translate-x-1 group-hover:text-text"
                 >
                   →
                 </span>
@@ -89,14 +93,19 @@ export default async function NotFound() {
           </div>
         </div>
 
-        <div className="mt-14 md:mt-20 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-          <div className="font-mono text-xs uppercase tracking-[0.18em] text-text-faint flex items-center gap-2">
+        {/* Palette hint chip + back link. The chip carries its own border
+            and backdrop so the keys don't read as floating grey text on a
+            dark page. */}
+        <div className="mt-16 md:mt-24 flex flex-col items-center gap-6">
+          <div className="inline-flex items-center gap-3 rounded-full border border-border bg-bg-elevated/60 backdrop-blur-md px-5 py-2.5 text-sm text-text-muted">
             <span>{t('paletteHint')}</span>
-            <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text">
+            <kbd className="inline-flex items-center rounded-md border border-border bg-surface px-2 py-0.5 font-mono text-xs text-text">
               ⌘K
             </kbd>
-            <span aria-hidden>·</span>
-            <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text">
+            <span aria-hidden className="text-text-faint">
+              ·
+            </span>
+            <kbd className="inline-flex items-center rounded-md border border-border bg-surface px-2 py-0.5 font-mono text-xs text-text">
               Ctrl+K
             </kbd>
             <span>{t('paletteHintTrail')}</span>
@@ -104,7 +113,7 @@ export default async function NotFound() {
 
           <Link
             href="/"
-            className="font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors duration-[var(--duration-short)]"
+            className="font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors duration-[var(--duration-short)] flex items-center gap-2"
           >
             <span aria-hidden>←</span> {t('homeLink')}
           </Link>
