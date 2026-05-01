@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from 'react';
 import { BRAND_HEX, type SolidAccent } from '@/lib/accents';
 import { cn } from '@/lib/utils';
 
-// Engagement-timeline interactive cascade.
+// Engagement-timeline interactive walkthrough.
 //
-// On hover (or focus) of any of the six steps we kick off an auto-advancing
-// chain: the hovered step lights up first, then every subsequent step lights
-// in order with a glowing aurora-fill bar growing from the start of the row
-// to the currently active step. After step 6 finishes we hold for a beat
-// and fade back to idle.
+// Hovering or focusing a step lights it up and grows the aurora fill bar
+// from the start of the row to that step's position. The fill never auto-
+// advances on its own; it only moves when the user explicitly hovers /
+// focuses the next node. Leaving the timeline entirely fades the fill
+// back to idle.
 //
 // Layers (decoration is aria-hidden):
 //   1. Static base connector line (the thin grey gradient).
@@ -46,8 +46,9 @@ const STEPS: ReadonlyArray<Step> = [
 ];
 
 const TOTAL_STEPS = STEPS.length;
-const STEP_DURATION = 1800;
-const PAUSE_AT_END = 2400;
+// Duration of the fill-bar transition when the user moves between nodes.
+// Used by the CSS `transition` property on the fill width and head position.
+const FILL_TRANSITION_MS = 1100;
 
 // In a 6-column grid, the column centers sit at (k - 0.5) / 6 of the row
 // width for k = 1..6. Step 1 -> 8.333 %, step 6 -> 91.667 %.
@@ -59,7 +60,6 @@ export function EngagementTimeline() {
   const t = useTranslations('servicesPage');
   const [activeStep, setActiveStep] = useState<number>(0);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -70,33 +70,16 @@ export function EngagementTimeline() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const clearTimer = () => {
-    if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  };
-
-  const startChain = (from: number) => {
-    clearTimer();
-    setActiveStep(from);
-    if (reducedMotion) return;
-    if (from < TOTAL_STEPS) {
-      timeoutRef.current = window.setTimeout(() => startChain(from + 1), STEP_DURATION);
-    } else {
-      timeoutRef.current = window.setTimeout(() => setActiveStep(0), PAUSE_AT_END);
-    }
-  };
-
-  useEffect(() => () => clearTimer(), []);
-
   const fillRatio = activeStep === 0 ? 0 : (activeStep - 1) / (TOTAL_STEPS - 1);
   const fillWidth = CONNECTOR_SPAN * fillRatio;
   const headAccent = activeStep > 0 ? STEPS[activeStep - 1].accent : 'blue';
   const headHex = BRAND_HEX[headAccent];
 
   return (
-    <ol className="grid grid-cols-1 md:grid-cols-6 gap-10 md:gap-4 relative">
+    <ol
+      className="grid grid-cols-1 md:grid-cols-6 gap-10 md:gap-4 relative"
+      onMouseLeave={() => setActiveStep(0)}
+    >
       {/* 1. Static base connector */}
       <div
         aria-hidden
@@ -114,7 +97,7 @@ export function EngagementTimeline() {
           background: 'linear-gradient(to right, #5d6fff, #a35dff, #5dc7ff)',
           boxShadow: activeStep > 0 ? `0 0 8px ${headHex}cc` : undefined,
           opacity: activeStep > 0 ? 1 : 0,
-          transition: `width ${STEP_DURATION}ms cubic-bezier(0.65, 0, 0.35, 1), opacity 400ms ease-out, box-shadow 400ms ease-out`,
+          transition: `width ${FILL_TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1), opacity 400ms ease-out, box-shadow 400ms ease-out`,
         }}
       />
 
@@ -130,7 +113,7 @@ export function EngagementTimeline() {
             background: `radial-gradient(circle, ${headHex} 0%, transparent 65%)`,
             opacity: 0.85,
             filter: 'blur(2px)',
-            transition: `left ${STEP_DURATION}ms cubic-bezier(0.65, 0, 0.35, 1)`,
+            transition: `left ${FILL_TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
           }}
         />
       )}
@@ -145,8 +128,8 @@ export function EngagementTimeline() {
           <li
             key={step.titleKey}
             className="relative flex flex-col items-start md:items-center"
-            onMouseEnter={() => startChain(num)}
-            onFocus={() => startChain(num)}
+            onMouseEnter={() => setActiveStep(num)}
+            onFocus={() => setActiveStep(num)}
             tabIndex={0}
           >
             {/* 4. Number circle */}
