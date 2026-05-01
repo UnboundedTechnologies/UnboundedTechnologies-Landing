@@ -57,7 +57,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   return (
     <>
       {/* 1. Hero */}
-      <section className="relative overflow-hidden py-28 md:py-36">
+      <section className="relative overflow-hidden py-20 md:py-36">
         <AuroraOrbs />
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 md:gap-12 items-center">
@@ -100,7 +100,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 2. The story */}
-      <section className="relative overflow-hidden py-20 md:py-24">
+      <section className="relative overflow-hidden py-14 md:py-24">
         <SectionAtmosphere accent="purple" position="top-left" />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-10">{t('storyEyebrow')}</Eyebrow>
@@ -112,11 +112,11 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 3. Operating model */}
-      <section className="relative overflow-hidden py-20 md:py-24">
+      <section className="relative overflow-hidden py-14 md:py-24">
         <SectionAtmosphere accent="cyan" position="top-right" />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('operatingEyebrow')}</Eyebrow>
-          <ul className="space-y-4 max-w-4xl">
+          <ul className="space-y-3 md:space-y-4 max-w-4xl">
             {OPERATING_BULLETS.map((bullet, idx) => {
               const accentClass = ACCENT_TEXT_CLASS[bullet.accent];
               return (
@@ -156,11 +156,11 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 4. Stats row (By the numbers) */}
-      <section className="relative overflow-hidden py-20 md:py-24">
+      <section className="relative overflow-hidden py-14 md:py-24">
         <SectionAtmosphere accent="blue" position="bottom-left" />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('statsEyebrow')}</Eyebrow>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {STATS.map((s) => {
               const accentClass = ACCENT_TEXT_CLASS[s.accent];
               return (
@@ -189,7 +189,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       {/* 5. Capability statement link */}
       {/* PDF asset shipped in Phase 13 (CV PDF / OG / 404). Until then this link 404s. */}
-      <section className="py-24 md:py-32">
+      <section className="py-16 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <a
             href="/capability-statement.pdf"

@@ -22,7 +22,7 @@ export function Hero() {
       <div className="relative mx-auto max-w-7xl w-full px-6 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <Eyebrow>{t('eyebrow')}</Eyebrow>
-          <h1 className="mt-6 text-5xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.04em] leading-[1.02]">
+          <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-[-0.04em] leading-[1.02]">
             {t('headlineLead')}
             <br />
             <span className="aurora-text">{t('headlineAccent')}</span>

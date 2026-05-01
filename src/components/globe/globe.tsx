@@ -5,6 +5,7 @@ import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { useTranslations } from 'next-intl';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { useIsTouch } from '@/lib/hooks/use-is-touch';
 import { CloudsSphere } from './clouds-sphere';
 import { EarthSphere } from './earth-sphere';
 import { HubLabel } from './hub-label';
@@ -190,11 +191,18 @@ function Scene() {
 }
 
 export function Globe() {
+  // Skip the bloom postprocessing pass on touch devices. Bloom is GPU-
+  // expensive and on iPhone 8 / iPad 6 it can either tank framerate or
+  // outright fail to allocate the framebuffer. The globe still looks
+  // good without it - just slightly less glow on the brightest pixels.
+  const isTouch = useIsTouch();
   return (
     <Canvas
       camera={{ position: [0, 0, 3.2], fov: 45 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
+      // Cap DPR more aggressively on mobile to keep the canvas size
+      // and shader fill rate under control on small high-density screens.
+      dpr={isTouch ? [1, 1.5] : [1, 2]}
+      gl={{ antialias: !isTouch, alpha: true, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);
       }}
@@ -219,9 +227,11 @@ export function Globe() {
           autoRotate={false}
           makeDefault
         />
-        <EffectComposer>
-          <Bloom intensity={0.6} luminanceThreshold={0.62} luminanceSmoothing={0.6} mipmapBlur />
-        </EffectComposer>
+        {!isTouch && (
+          <EffectComposer>
+            <Bloom intensity={0.6} luminanceThreshold={0.62} luminanceSmoothing={0.6} mipmapBlur />
+          </EffectComposer>
+        )}
       </Suspense>
     </Canvas>
   );

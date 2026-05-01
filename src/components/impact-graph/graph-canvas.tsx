@@ -78,10 +78,13 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
   const uniqueCategoryCount = new Set(nodes.map((n) => n.category)).size;
   const colsClass = GRID_COLS_CLASS[uniqueCategoryCount] ?? 'md:grid-cols-3';
 
+  // Horizontal gaps drop to 0 on mobile (single-column stack - the x-gap
+  // is wasted) and vertical gaps tighten so the column doesn't run on
+  // forever. md+ restores the original spacious 2D layout.
   const spacing =
     variant === 'page'
-      ? 'mt-28 md:mt-36 gap-y-20 md:gap-y-48 gap-x-12 md:gap-x-40'
-      : 'mt-32 md:mt-52 mb-12 md:mb-20 gap-y-12 md:gap-y-24 gap-x-8 md:gap-x-24';
+      ? 'mt-20 md:mt-36 gap-y-12 md:gap-y-48 gap-x-0 md:gap-x-40'
+      : 'mt-24 md:mt-52 mb-10 md:mb-20 gap-y-8 md:gap-y-24 gap-x-0 md:gap-x-24';
 
   return (
     <div

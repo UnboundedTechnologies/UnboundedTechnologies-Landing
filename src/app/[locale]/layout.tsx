@@ -57,7 +57,10 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
         <DevToolsGreeting />
-        <div className="grain min-h-screen flex flex-col">
+        {/* min-h-[100svh] (small viewport units) avoids iOS Safari's
+            quirk where min-h-screen includes the address bar and the
+            layout reflows when the bar collapses on scroll. */}
+        <div className="grain min-h-[100svh] flex flex-col">
           <TopNav />
           <main className="flex-1">{children}</main>
           <Footer />

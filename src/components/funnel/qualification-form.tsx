@@ -109,8 +109,8 @@ export function QualificationForm({ onSuccess }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 md:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <Field label={t('nameLabel')} error={errors.name && t('errorRequired')}>
           <input
             {...register('name')}

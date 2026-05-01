@@ -93,7 +93,7 @@ export function OutcomeRibbon() {
                 />
                 <Spotlight color={o.spotlightColor} />
                 <div
-                  className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}
+                  className={`relative font-mono text-3xl md:text-4xl font-semibold tracking-tight ${o.statClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}
                 >
                   {t(o.statKey)}
                 </div>

@@ -16,7 +16,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const t = await getTranslations('contactPage');
 
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="relative overflow-hidden py-16 md:py-32">
       <AuroraOrbs />
       <div className="relative mx-auto max-w-3xl px-6">
         <div className="text-center">

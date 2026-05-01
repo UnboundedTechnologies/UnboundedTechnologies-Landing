@@ -75,7 +75,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
   return (
     <>
       {/* 1. Hero */}
-      <section className="relative overflow-hidden py-28 md:py-36">
+      <section className="relative overflow-hidden py-20 md:py-36">
         <AuroraOrbs />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow>{t('eyebrow')}</Eyebrow>
@@ -91,7 +91,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 2. Three engagement-model cards */}
-      <section aria-label={t('eyebrow')} className="relative overflow-hidden py-16 md:py-20">
+      <section aria-label={t('eyebrow')} className="relative overflow-hidden py-12 md:py-20">
         <SectionAtmosphere accent="blue" position="top-right" />
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -102,7 +102,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                   key={e.titleKey}
                   className={cn(
                     'group relative overflow-hidden bg-bg-elevated border border-border rounded-xl',
-                    'p-8 min-h-[320px] flex flex-col',
+                    'p-6 md:p-8 min-h-[260px] md:min-h-[320px] flex flex-col',
                     'transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
                     'hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]',
                     // Touch + keyboard fallback: tapping/active gives a
@@ -169,7 +169,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           EngagementTimeline (client component): hovering any step starts an
           auto-advancing chain that lights subsequent steps with an aurora
           fill bar growing left-to-right. */}
-      <section className="relative overflow-hidden py-20 md:py-24">
+      <section className="relative overflow-hidden py-14 md:py-24">
         <SectionAtmosphere accent="purple" position="top-left" />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('timelineEyebrow')}</Eyebrow>
@@ -178,7 +178,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 4. "What we bring" / "What we don't do" honesty list */}
-      <section className="relative overflow-hidden py-20 md:py-24">
+      <section className="relative overflow-hidden py-14 md:py-24">
         <SectionAtmosphere accent="cyan" position="top-right" />
         <div className="relative mx-auto max-w-7xl px-6">
           <HonestyList />
@@ -186,7 +186,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       {/* 5. Closer CTA */}
-      <section className="relative overflow-hidden py-24 md:py-32">
+      <section className="relative overflow-hidden py-16 md:py-32">
         <SectionAtmosphere accent="mixed" position="center" intensity={1.2} />
         <div className="relative mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.03em] leading-tight">

@@ -52,7 +52,7 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
       <div
         className={cn(
           'group relative overflow-hidden rounded-2xl border border-border bg-bg-elevated',
-          'p-10 md:p-14 text-center',
+          'p-6 md:p-14 text-center',
           'transition-[opacity,transform] duration-[520ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
           animate ? 'opacity-100 scale-100' : reducedMotion ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.96]',
         )}
