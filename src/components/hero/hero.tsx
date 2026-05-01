@@ -1,6 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
+import { HeroAtmosphere } from '@/components/atmosphere/hero-atmosphere';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { InfinityLogoStatic } from './infinity-logo-static';
@@ -18,7 +18,7 @@ export function Hero() {
 
   return (
     <section className="relative -mt-16 min-h-[100svh] flex items-center overflow-hidden">
-      <AuroraOrbs />
+      <HeroAtmosphere />
       <div className="relative mx-auto max-w-7xl w-full px-6 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <Eyebrow>{t('eyebrow')}</Eyebrow>
