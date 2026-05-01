@@ -40,15 +40,6 @@ test.describe('Homepage', () => {
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        // The "Read case study" hover affordance on outcome-ribbon
-        // cards is intentionally low-contrast at rest (opacity-70 +
-        // text-text-faint) and brightens on hover. The card's
-        // accessible name already covers the entire link via the
-        // stat + unit + context content, so the affordance is
-        // decorative for assistive tech. Excluded so an unrelated
-        // design choice doesn't fail the suite; tracked separately
-        // for a future contrast review.
-        .exclude('a[href*="/work/"] .opacity-70')
         .analyze();
 
       expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);

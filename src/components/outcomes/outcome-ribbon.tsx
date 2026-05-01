@@ -99,12 +99,12 @@ export function OutcomeRibbon() {
                 </div>
                 <div className="relative mt-2 text-text font-medium">{t(o.unitKey)}</div>
                 <div className="relative mt-3 text-sm text-text-muted">{t(o.contextKey)}</div>
-                <div className="relative mt-5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint opacity-70 group-hover:opacity-100 transition-opacity duration-[var(--duration-short)]">
+                <div
+                  aria-hidden
+                  className="relative mt-5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted group-hover:text-text transition-colors duration-[var(--duration-short)]"
+                >
                   <span>{tWork('readCaseStudy')}</span>
-                  <span
-                    aria-hidden
-                    className="transition-transform duration-[var(--duration-short)] group-hover:translate-x-1"
-                  >
+                  <span className="transition-transform duration-[var(--duration-short)] group-hover:translate-x-1">
                     →
                   </span>
                 </div>

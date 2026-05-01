@@ -65,8 +65,6 @@ test.describe('Reduce-motion preferences', () => {
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      // See homepage.spec.ts for rationale.
-      .exclude('a[href*="/work/"] .opacity-70')
       .analyze();
 
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
