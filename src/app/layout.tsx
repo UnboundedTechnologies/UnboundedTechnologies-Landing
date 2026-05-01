@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { THEME_BOOT_SCRIPT } from '@/components/theme/theme-provider';
 import './globals.css';
 
 const inter = Inter({
@@ -35,6 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           extensions (e.g. ColorZilla's `cz-shortcut-listen`, Grammarly's `data-gramm`,
           translation extensions, etc.) which would otherwise produce hydration mismatch
           warnings in DevTools. The attributes are not in our control. */}
+      <head>
+        {/* Apply theme + motion preferences synchronously before React
+            hydrates so there is no flash of the wrong palette. */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: trusted constant from our own module */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body className="bg-bg text-text font-sans antialiased" suppressHydrationWarning>
         {children}
       </body>

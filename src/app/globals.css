@@ -46,6 +46,31 @@
   }
 }
 
+/*
+ * Manual motion-preference override (Phase 10.7). When the user toggles
+ * "Reduce motion" in the command palette we set [data-motion="reduce"]
+ * on <html> and the same animation-killing rules apply, regardless of
+ * the OS setting. [data-motion="full"] forces full motion even if the
+ * OS prefers-reduced-motion is on.
+ */
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion="full"] *,
+  html[data-motion="full"] *::before,
+  html[data-motion="full"] *::after {
+    animation-duration: revert !important;
+    animation-iteration-count: revert !important;
+    transition-duration: revert !important;
+  }
+}
+
 [data-theme="cinematic"] {
   --color-bg: #040308;
 }

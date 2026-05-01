@@ -178,6 +178,32 @@
     "lastUpdated": "Last updated: May 1, 2026",
     "contactCta": "Questions? Get in touch ->"
   },
+  "githubStrip": {
+    "eyebrow": "- Recently from the workshop"
+  },
+  "palette": {
+    "label": "Command Menu",
+    "placeholder": "Type a command or search...",
+    "empty": "No results.",
+    "groupRecent": "Recent",
+    "groupNavigation": "Navigation",
+    "groupCaseStudies": "Case studies",
+    "groupTheme": "Theme",
+    "groupMotion": "Motion",
+    "home": "Home",
+    "services": "Services",
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact",
+    "themeDark": "Dark",
+    "themeCinematic": "Cinematic",
+    "themeAuto": "Auto (time of day)",
+    "motionSystem": "Motion: follow system",
+    "motionReduce": "Motion: reduce",
+    "motionFull": "Motion: full",
+    "hint": "Press ⌘K or Ctrl+K to open",
+    "toClose": "to close"
+  },
   "contactPage": {
     "eyebrow": "- Contact",
     "headlineLead": "Start a",

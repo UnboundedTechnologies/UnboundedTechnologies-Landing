@@ -2,9 +2,14 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ParticleField } from '@/components/atmosphere/particle-field';
+import { CommandPaletteWrapper } from '@/components/command-palette/command-palette-wrapper';
+import { CursorTrail } from '@/components/cursor-trail/cursor-trail';
+import { DevToolsGreeting } from '@/components/easter-egg/devtools-greeting';
+import { GitHubActivityStrip } from '@/components/github-strip/github-activity-strip';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 import { type Locale, routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
@@ -25,13 +30,19 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <ParticleField />
-      <div className="grain min-h-screen flex flex-col">
-        <TopNav />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <PersistentInfinityLogo />
-      </div>
+      <ThemeProvider>
+        <DevToolsGreeting />
+        <ParticleField />
+        <CursorTrail />
+        <div className="grain min-h-screen flex flex-col">
+          <TopNav />
+          <main className="flex-1">{children}</main>
+          <GitHubActivityStrip />
+          <Footer />
+          <PersistentInfinityLogo />
+        </div>
+        <CommandPaletteWrapper locale={locale as Locale} />
+      </ThemeProvider>
     </NextIntlClientProvider>
   );
 }

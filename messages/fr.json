@@ -178,6 +178,32 @@
     "lastUpdated": "Dernière mise à jour: 1er mai 2026",
     "contactCta": "Une question? Écrivez-nous ->"
   },
+  "githubStrip": {
+    "eyebrow": "- Sortie récente de l'atelier"
+  },
+  "palette": {
+    "label": "Menu de commandes",
+    "placeholder": "Tapez une commande ou recherchez...",
+    "empty": "Aucun résultat.",
+    "groupRecent": "Récent",
+    "groupNavigation": "Navigation",
+    "groupCaseStudies": "Études de cas",
+    "groupTheme": "Thème",
+    "groupMotion": "Animation",
+    "home": "Accueil",
+    "services": "Services",
+    "work": "Travaux",
+    "about": "Profil",
+    "contact": "Contact",
+    "themeDark": "Sombre",
+    "themeCinematic": "Cinéma",
+    "themeAuto": "Auto (selon l'heure)",
+    "motionSystem": "Animation: système",
+    "motionReduce": "Animation: réduite",
+    "motionFull": "Animation: complète",
+    "hint": "Appuyez sur ⌘K ou Ctrl+K pour ouvrir",
+    "toClose": "pour fermer"
+  },
   "contactPage": {
     "eyebrow": "- Contact",
     "headlineLead": "Démarrer une",

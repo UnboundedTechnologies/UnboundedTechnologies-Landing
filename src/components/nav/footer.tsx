@@ -1,3 +1,4 @@
+import { PerfScorecard } from '@/components/perf-scorecard/perf-scorecard';
 import { Link } from '@/i18n/routing';
 
 export function Footer() {
@@ -90,8 +91,9 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border py-6 text-center text-xs font-mono text-text-faint">
-        © 2026 Unbounded Technologies Inc.
+      <div className="border-t border-border py-6 px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono text-text-faint">
+        <span>© 2026 Unbounded Technologies Inc.</span>
+        <PerfScorecard />
       </div>
     </footer>
   );

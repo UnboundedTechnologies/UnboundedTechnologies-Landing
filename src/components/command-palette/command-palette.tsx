@@ -1,0 +1,344 @@
+'use client';
+
+import { Command } from 'cmdk';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { useTheme } from '@/components/theme/theme-provider';
+import { useRouter } from '@/i18n/routing';
+import { cn } from '@/lib/utils';
+
+// Cmd/Ctrl-K command palette built on `cmdk`. Categories:
+//   Navigation: jump to /, /work, /services, /about, /contact
+//   Case studies: jump to each /work/[slug]
+//   Theme: switch between Dark / Cinematic / Auto (current is checkmarked)
+//   Motion: toggle reduce-motion override (current is checkmarked)
+//
+// Recent commands persist to localStorage so the palette opens with a
+// recency-sorted list of the user's last 5 actions. Selecting a command
+// closes the palette automatically.
+
+const RECENT_KEY = 'ut-cmdk-recent';
+const RECENT_MAX = 5;
+
+type Action = {
+  id: string;
+  label: string;
+  group: string;
+  keywords?: string[];
+  perform: () => void;
+};
+
+type Props = {
+  caseStudies: ReadonlyArray<{ slug: string; title: string }>;
+};
+
+export function CommandPalette({ caseStudies }: Props) {
+  const t = useTranslations('palette');
+  const router = useRouter();
+  const { theme, setTheme, motion, setMotion } = useTheme();
+  const [open, setOpen] = useState(false);
+  const [recent, setRecent] = useState<string[]>([]);
+
+  // Bind ⌘K + Ctrl-K globally.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Hydrate recent commands.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed))
+          setRecent(parsed.filter((x): x is string => typeof x === 'string'));
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const recordRecent = (id: string) => {
+    setRecent((prev) => {
+      const next = [id, ...prev.filter((x) => x !== id)].slice(0, RECENT_MAX);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  const navigate = (href: string) => {
+    setOpen(false);
+    router.push(href as Parameters<typeof router.push>[0]);
+  };
+
+  const actions: Action[] = [
+    // Navigation
+    {
+      id: 'nav-home',
+      group: t('groupNavigation'),
+      label: t('home'),
+      keywords: ['home', 'accueil', 'index'],
+      perform: () => navigate('/'),
+    },
+    {
+      id: 'nav-services',
+      group: t('groupNavigation'),
+      label: t('services'),
+      perform: () => navigate('/services'),
+    },
+    {
+      id: 'nav-work',
+      group: t('groupNavigation'),
+      label: t('work'),
+      keywords: ['cases', 'projects', 'travaux'],
+      perform: () => navigate('/work'),
+    },
+    {
+      id: 'nav-about',
+      group: t('groupNavigation'),
+      label: t('about'),
+      keywords: ['profil', 'company', 'who'],
+      perform: () => navigate('/about'),
+    },
+    {
+      id: 'nav-contact',
+      group: t('groupNavigation'),
+      label: t('contact'),
+      keywords: ['hire', 'email', 'reach'],
+      perform: () => navigate('/contact'),
+    },
+
+    // Case studies
+    ...caseStudies.map((cs) => ({
+      id: `case-${cs.slug}`,
+      group: t('groupCaseStudies'),
+      label: cs.title,
+      keywords: ['case study', cs.slug],
+      perform: () => navigate(`/work/${cs.slug}`),
+    })),
+
+    // Theme
+    {
+      id: 'theme-dark',
+      group: t('groupTheme'),
+      label: t('themeDark'),
+      keywords: ['dark', 'sombre'],
+      perform: () => {
+        setTheme('dark');
+        setOpen(false);
+      },
+    },
+    {
+      id: 'theme-cinematic',
+      group: t('groupTheme'),
+      label: t('themeCinematic'),
+      keywords: ['cinematic', 'cinéma', 'oled'],
+      perform: () => {
+        setTheme('cinematic');
+        setOpen(false);
+      },
+    },
+    {
+      id: 'theme-auto',
+      group: t('groupTheme'),
+      label: t('themeAuto'),
+      keywords: ['auto', 'system', 'time'],
+      perform: () => {
+        setTheme('auto');
+        setOpen(false);
+      },
+    },
+
+    // Motion
+    {
+      id: 'motion-system',
+      group: t('groupMotion'),
+      label: t('motionSystem'),
+      keywords: ['motion', 'system'],
+      perform: () => {
+        setMotion('system');
+        setOpen(false);
+      },
+    },
+    {
+      id: 'motion-reduce',
+      group: t('groupMotion'),
+      label: t('motionReduce'),
+      keywords: ['reduce', 'less', 'animation'],
+      perform: () => {
+        setMotion('reduce');
+        setOpen(false);
+      },
+    },
+    {
+      id: 'motion-full',
+      group: t('groupMotion'),
+      label: t('motionFull'),
+      keywords: ['full', 'all'],
+      perform: () => {
+        setMotion('full');
+        setOpen(false);
+      },
+    },
+  ];
+
+  // Render order: recent first (if any), then everything by group.
+  const recentActions = recent
+    .map((id) => actions.find((a) => a.id === id))
+    .filter((a): a is Action => !!a);
+
+  const seenInRecent = new Set(recentActions.map((a) => a.id));
+  const groupedActions = new Map<string, Action[]>();
+  for (const a of actions) {
+    if (seenInRecent.has(a.id)) continue;
+    const arr = groupedActions.get(a.group) ?? [];
+    arr.push(a);
+    groupedActions.set(a.group, arr);
+  }
+
+  return (
+    <Command.Dialog
+      open={open}
+      onOpenChange={setOpen}
+      label={t('label')}
+      className={cn(
+        'fixed inset-0 z-[200] flex items-start justify-center pt-[18vh]',
+        'data-[state=open]:animate-in data-[state=closed]:animate-out',
+      )}
+      overlayClassName="fixed inset-0 z-[199] bg-bg/70 backdrop-blur-md"
+      contentClassName={cn(
+        'relative z-[200] w-full max-w-xl mx-4',
+        'rounded-2xl border border-border bg-bg-elevated/95 backdrop-blur-xl',
+        'shadow-2xl shadow-black/40',
+        'overflow-hidden',
+      )}
+    >
+      <div className="border-b border-border">
+        <Command.Input
+          placeholder={t('placeholder')}
+          className={cn(
+            'w-full bg-transparent px-5 py-4 text-base text-text placeholder:text-text-faint',
+            'focus:outline-none',
+          )}
+        />
+      </div>
+
+      <Command.List className="max-h-[50vh] overflow-y-auto p-2">
+        <Command.Empty className="px-5 py-8 text-center text-sm text-text-muted">
+          {t('empty')}
+        </Command.Empty>
+
+        {recentActions.length > 0 && (
+          <Command.Group
+            heading={t('groupRecent')}
+            className="text-text-faint [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.18em]"
+          >
+            {recentActions.map((a) => (
+              <PaletteItem
+                key={`r-${a.id}`}
+                action={a}
+                onPick={() => {
+                  recordRecent(a.id);
+                  a.perform();
+                }}
+                rightTag={a.group}
+                checked={isCheckedFor(a.id, theme, motion)}
+              />
+            ))}
+          </Command.Group>
+        )}
+
+        {Array.from(groupedActions.entries()).map(([group, items]) => (
+          <Command.Group
+            key={group}
+            heading={group}
+            className="text-text-faint [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.18em]"
+          >
+            {items.map((a) => (
+              <PaletteItem
+                key={a.id}
+                action={a}
+                onPick={() => {
+                  recordRecent(a.id);
+                  a.perform();
+                }}
+                checked={isCheckedFor(a.id, theme, motion)}
+              />
+            ))}
+          </Command.Group>
+        ))}
+      </Command.List>
+
+      <div className="flex items-center justify-between border-t border-border px-4 py-2.5 text-[11px] text-text-faint font-mono">
+        <span>{t('hint')}</span>
+        <span className="flex items-center gap-1">
+          <Kbd>esc</Kbd>
+          <span>{t('toClose')}</span>
+        </span>
+      </div>
+    </Command.Dialog>
+  );
+}
+
+function PaletteItem({
+  action,
+  onPick,
+  rightTag,
+  checked,
+}: {
+  action: Action;
+  onPick: () => void;
+  rightTag?: string;
+  checked?: boolean;
+}) {
+  return (
+    <Command.Item
+      value={`${action.label} ${(action.keywords ?? []).join(' ')}`}
+      onSelect={onPick}
+      className={cn(
+        'flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-text cursor-pointer',
+        'data-[selected=true]:bg-surface-hover data-[selected=true]:text-text',
+        'transition-colors duration-100',
+      )}
+    >
+      <span className="flex items-center gap-2.5">
+        {checked && (
+          <span aria-hidden className="text-brand-blue">
+            ✓
+          </span>
+        )}
+        <span>{action.label}</span>
+      </span>
+      {rightTag && (
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint">
+          {rightTag}
+        </span>
+      )}
+    </Command.Item>
+  );
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text-muted">
+      {children}
+    </kbd>
+  );
+}
+
+function isCheckedFor(id: string, theme: string, motion: string): boolean {
+  if (id === `theme-${theme}`) return true;
+  if (id === `motion-${motion}`) return true;
+  return false;
+}
