@@ -3,7 +3,6 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ParticleField } from '@/components/atmosphere/particle-field';
 import { CommandPaletteWrapper } from '@/components/command-palette/command-palette-wrapper';
-import { CursorTrail } from '@/components/cursor-trail/cursor-trail';
 import { DevToolsGreeting } from '@/components/easter-egg/devtools-greeting';
 import { GitHubActivityStrip } from '@/components/github-strip/github-activity-strip';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
@@ -33,7 +32,6 @@ export default async function LocaleLayout({
       <ThemeProvider>
         <DevToolsGreeting />
         <ParticleField />
-        <CursorTrail />
         <div className="grain min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">{children}</main>
