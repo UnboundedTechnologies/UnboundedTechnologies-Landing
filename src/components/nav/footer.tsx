@@ -91,9 +91,14 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border py-6 px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono text-text-faint">
+      <div className="relative border-t border-border py-6 px-6 text-center text-xs font-mono text-text-faint">
         <span>© 2026 Unbounded Technologies Inc.</span>
-        <PerfScorecard />
+        {/* Perf chip floats to the right but doesn't push the centered
+            copyright off-axis. Stacks below on mobile so it doesn't
+            overlap the copyright text on narrow viewports. */}
+        <div className="mt-3 flex justify-center md:mt-0 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2">
+          <PerfScorecard />
+        </div>
       </div>
     </footer>
   );
