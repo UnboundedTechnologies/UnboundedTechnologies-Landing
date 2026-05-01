@@ -53,14 +53,18 @@ export function LanguageSwitcher({ current }: Props) {
   const switchLocale = (loc: 'en' | 'fr') => {
     setOpen(false);
     if (loc === current) return;
-    // Build a route descriptor next-intl can localize. If the current
-    // pathname has a [slug] dynamic segment and useParams gave us a
-    // value, pass both so the router can substitute it. Otherwise the
-    // string pathname is enough.
-    if (pathname.includes('[slug]') && params.slug) {
+
+    // We can't trust `usePathname()` to consistently return the route
+    // pattern on every render (it sometimes resolves to the literal path
+    // after a few navigations, depending on router cache state). Trust
+    // useParams instead: if a slug is present, we KNOW we're on the only
+    // dynamic route we have today (/work/[slug]), so build the descriptor
+    // explicitly. For static routes the string pathname is fine because
+    // next-intl's pathnames mapping handles them deterministically.
+    if (params.slug) {
       router.replace(
-        // biome-ignore lint/suspicious/noExplicitAny: next-intl typed pathnames are strict; the cast lets us pass a runtime-resolved pattern
-        { pathname: pathname as any, params: { slug: params.slug } },
+        // biome-ignore lint/suspicious/noExplicitAny: typed pathnames union is too narrow for runtime descriptors
+        { pathname: '/work/[slug]' as any, params: { slug: params.slug } },
         { locale: loc },
       );
     } else {
