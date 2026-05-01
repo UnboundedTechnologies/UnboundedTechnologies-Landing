@@ -140,6 +140,20 @@
   to { stroke-dashoffset: -100; }
 }
 
+/*
+ * EngagementTimeline (services /how-an-engagement-starts) ping ripple. Used
+ * on the active step's number circle to draw the eye to the currently lit
+ * node. Two of these are layered with a 750 ms offset so the ripple
+ * effect reads as continuous rather than pulsing.
+ */
+@keyframes engagement-step-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [class*="engagement-step-ping"] { animation: none !important; }
+}
+
 .graph-energy-line {
   stroke-dasharray: 6 14;
   animation: graph-energy 1.6s linear infinite;

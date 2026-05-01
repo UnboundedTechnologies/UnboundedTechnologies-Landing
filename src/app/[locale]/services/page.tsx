@@ -4,6 +4,7 @@ import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Spotlight } from '@/components/primitives/spotlight';
+import { EngagementTimeline } from '@/components/services/engagement-timeline';
 import {
   ACCENT_TEXT_CLASS,
   accentGlowColor,
@@ -64,15 +65,6 @@ const ENGAGEMENTS: ReadonlyArray<Engagement> = [
     tagKeys: ['embeddedTag1', 'embeddedTag2', 'embeddedTag3'],
   },
 ];
-
-const TIMELINE_STEPS = [
-  { titleKey: 'step1Title', bodyKey: 'step1Body' },
-  { titleKey: 'step2Title', bodyKey: 'step2Body' },
-  { titleKey: 'step3Title', bodyKey: 'step3Body' },
-  { titleKey: 'step4Title', bodyKey: 'step4Body' },
-  { titleKey: 'step5Title', bodyKey: 'step5Body' },
-  { titleKey: 'step6Title', bodyKey: 'step6Body' },
-] as const;
 
 const BRING_ITEMS = ['bringItem1', 'bringItem2', 'bringItem3', 'bringItem4', 'bringItem5'] as const;
 const DONT_DO_ITEMS = ['dontDoItem1', 'dontDoItem2', 'dontDoItem3'] as const;
@@ -171,39 +163,15 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         </div>
       </section>
 
-      {/* 3. "How an engagement starts" timeline */}
+      {/* 3. "How an engagement starts" timeline. Interactive cascade lives in
+          EngagementTimeline (client component): hovering any step starts an
+          auto-advancing chain that lights subsequent steps with an aurora
+          fill bar growing left-to-right. */}
       <section className="relative overflow-hidden py-20 md:py-24">
         <SectionAtmosphere accent="purple" position="top-left" />
         <div className="relative mx-auto max-w-7xl px-6">
           <Eyebrow className="mb-12">{t('timelineEyebrow')}</Eyebrow>
-          <ol className="grid grid-cols-1 md:grid-cols-6 gap-10 md:gap-4 relative">
-            {/* Connecting line on md+ behind the number circles. */}
-            <div
-              aria-hidden
-              className="hidden md:block absolute top-5 left-[8.333%] right-[8.333%] h-px bg-gradient-to-r from-transparent via-border to-transparent"
-            />
-            {TIMELINE_STEPS.map((step, idx) => (
-              <li
-                key={step.titleKey}
-                className="relative flex flex-col items-start md:items-center"
-              >
-                <div
-                  className={cn(
-                    'relative z-10 flex h-10 w-10 items-center justify-center rounded-full',
-                    'border border-border bg-bg-elevated font-mono text-xs tracking-widest text-brand-blue',
-                  )}
-                >
-                  {String(idx + 1).padStart(2, '0')}
-                </div>
-                <h3 className="mt-4 md:text-center text-sm md:text-base font-semibold text-text leading-snug">
-                  {t(step.titleKey)}
-                </h3>
-                <p className="mt-2 md:text-center text-xs md:text-sm text-text-muted leading-relaxed max-w-[16rem]">
-                  {t(step.bodyKey)}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <EngagementTimeline />
         </div>
       </section>
 
