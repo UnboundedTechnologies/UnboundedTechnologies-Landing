@@ -1,9 +1,18 @@
 import 'server-only';
 
-import { Document, Page, renderToBuffer, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { Document, Image, Page, renderToBuffer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { cacheLife } from 'next/cache';
 import { type CaseStudy, getAllCaseStudies } from '@/lib/case-studies';
 import enMessages from '../../messages/en.json';
+
+// Read the UT banner PNG into a Buffer at module load. React-PDF's <Image>
+// accepts a `{ data, format }` shape that bypasses its async URL/path loader;
+// passing a raw Buffer is the most reliable way to embed a local asset and
+// avoids OS-specific path-resolution quirks (Windows backslashes, .next/server
+// CWD differences, etc.).
+const BANNER_BUFFER = readFileSync(path.resolve(process.cwd(), 'public/ut-banner.png'));
 
 // Build-time-rendered Capability Statement PDF served at /cv.pdf.
 //
@@ -70,16 +79,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 6,
   },
-  // Title page brand wordmark.
-  wordmark: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 28,
-    letterSpacing: -0.6,
-    color: COLOR.text,
-    marginBottom: 8,
-  },
-  wordmarkAccent: {
-    color: COLOR.purple,
+  // Title page brand banner image.
+  bannerImage: {
+    width: 280,
+    height: 'auto',
+    marginBottom: 28,
   },
   titleSubtitle: {
     fontFamily: 'Helvetica',
@@ -164,6 +168,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     fontSize: 30,
     letterSpacing: -0.6,
+    // Lock line-height to 1.0 so the number's loose bold ascent doesn't bleed
+    // into the label below it. Without this the page-level `lineHeight: 1.5`
+    // pads the number's box by ~15px and the label visually crashes into it.
+    lineHeight: 1,
   },
   statLabel: {
     fontFamily: 'Courier',
@@ -171,7 +179,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
     textTransform: 'uppercase',
     color: COLOR.textMuted,
-    marginTop: 8,
+    marginTop: 18,
+    lineHeight: 1.4,
   },
   // Case-study meta strip.
   metaStrip: {
@@ -252,16 +261,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     fontSize: 14,
     letterSpacing: -0.4,
+    lineHeight: 1.1,
   },
   calloutUnit: {
     fontSize: 8.5,
     color: COLOR.text,
-    marginTop: 2,
+    marginTop: 8,
+    lineHeight: 1.4,
   },
   calloutContext: {
     fontSize: 7.5,
     color: COLOR.textMuted,
-    marginTop: 2,
+    marginTop: 6,
+    lineHeight: 1.45,
   },
   // Footer / page number rendered on every page.
   pageFooter: {
@@ -521,10 +533,10 @@ export function CvDocument({
     >
       {/* Page 1: title page */}
       <Page size="LETTER" style={styles.titlePage}>
+        {/* Brand banner. Native size 1266x284 = 4.46:1 aspect; rendered at
+            280px wide it lands at ~63px tall, dominant but not loud. */}
+        <Image src={{ data: BANNER_BUFFER, format: 'png' }} style={styles.bannerImage} />
         <Text style={[styles.eyebrowAccent, { color: COLOR.blue }]}>Capability Statement</Text>
-        <Text style={styles.wordmark}>
-          Unbounded Technologies <Text style={styles.wordmarkAccent}>Inc.</Text>
-        </Text>
         <Text style={styles.titleSubtitle}>
           Senior cloud and CPaaS engineering for enterprises that can&apos;t afford to fail.
         </Text>
