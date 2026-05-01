@@ -28,6 +28,7 @@ Thumbs.db
 coverage/
 playwright-report/
 test-results/
+lighthouse-output/
 .nyc_output/
 
 # Internal artifacts (NEVER commit to public repo)
