@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -75,6 +77,11 @@ export default async function LocaleLayout({
           <Footer />
         </div>
         <CommandPaletteWrapper locale={locale as Locale} />
+        {/* Vercel Analytics + Speed Insights only ship when deployed on
+            Vercel (the SDKs no-op outside the Vercel runtime). Both inject
+            their own scripts; the CSP allows them via 'self'. */}
+        <Analytics />
+        <SpeedInsights />
       </ThemeProvider>
     </NextIntlClientProvider>
   );
