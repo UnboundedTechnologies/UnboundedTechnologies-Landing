@@ -42,6 +42,7 @@ const HDR_BOOST = 1.55;
 const SQRT2_INV = 1 / Math.SQRT2;
 
 class InfinityCurveClass extends THREE.Curve<THREE.Vector3> {
+  // biome-ignore lint/complexity/noUselessConstructor: widens THREE.Curve's protected constructor to public for `new InfinityCurveClass()`
   public constructor() {
     super();
   }

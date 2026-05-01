@@ -157,9 +157,7 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
         <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24 space-y-16 md:space-y-24">
           {sections.map((s) => (
             <section key={s.label}>
-              <div
-                className={cn('font-mono text-xs uppercase tracking-[0.18em]', s.eyebrowClass)}
-              >
+              <div className={cn('font-mono text-xs uppercase tracking-[0.18em]', s.eyebrowClass)}>
                 {s.label}
               </div>
               <div className="mt-6 max-w-prose text-base md:text-lg leading-relaxed text-text-muted prose-invert space-y-5">

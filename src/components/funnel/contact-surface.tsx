@@ -32,6 +32,7 @@ export function ContactSurface({ calendlyUrl }: Props) {
   // Reset on every pathname change (covers client-side nav away + back).
   // Submitting the form doesn't touch pathname so the thank-you state
   // sticks while the user remains on /contact.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the trigger, not a read value
   useEffect(() => {
     setStatus(null);
   }, [pathname]);

@@ -29,16 +29,12 @@ export function MobileGraphBreak({ nextHref }: Props) {
   const label = SLUG_LABEL[slug] ?? slug.replace(/-/g, ' ');
 
   return (
-    <div
-      className="md:hidden flex items-center gap-3 my-8"
-      role="separator"
-      aria-label={`Next case study: ${label}`}
-    >
-      <span className="flex-1 h-px bg-border" />
+    <div className="md:hidden flex items-center gap-3 my-8">
+      <span aria-hidden className="flex-1 h-px bg-border" />
       <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint whitespace-nowrap">
         {label}
       </span>
-      <span className="flex-1 h-px bg-border" />
+      <span aria-hidden className="flex-1 h-px bg-border" />
     </div>
   );
 }

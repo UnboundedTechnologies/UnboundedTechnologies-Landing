@@ -23,15 +23,7 @@ type Props = {
   suffix: string;
 };
 
-export function HourlyRateSlider({
-  value,
-  onChange,
-  min,
-  max,
-  step,
-  ariaLabel,
-  suffix,
-}: Props) {
+export function HourlyRateSlider({ value, onChange, min, max, step, ariaLabel, suffix }: Props) {
   const id = useId();
   const fillPct = ((value - min) / (max - min)) * 100;
 

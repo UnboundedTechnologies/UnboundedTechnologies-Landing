@@ -59,9 +59,9 @@ export function ParticleField({ className }: { className?: string }) {
       aria-hidden
       className={cn('fixed inset-0 pointer-events-none overflow-hidden z-0', className)}
     >
-      {PARTICLES.map((p, i) => (
+      {PARTICLES.map((p) => (
         <span
-          key={i}
+          key={`${p.x}-${p.y}-${p.variant}`}
           className={`particle particle-v${p.variant}`}
           style={{
             left: `${p.x}%`,

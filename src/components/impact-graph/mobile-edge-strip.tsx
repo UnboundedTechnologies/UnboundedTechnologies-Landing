@@ -63,10 +63,7 @@ export function MobileEdgeStrip({ nodes, edges, sourceIndex }: Props) {
       {/* Pill body. Wrapper carries graph-pill class + --pill-glow so the
           pulse animation in globals.css picks it up; inner div is the
           actual visual surface (mirrors the desktop graph-pill structure). */}
-      <div
-        className="graph-pill"
-        style={{ ['--pill-glow' as string]: `${accent}cc` }}
-      >
+      <div className="graph-pill" style={{ ['--pill-glow' as string]: `${accent}cc` }}>
         <div
           className="inline-flex items-center gap-2 rounded-full border bg-bg-elevated/70 backdrop-blur-md px-3 py-1.5"
           style={{ borderColor: `${accent}40` }}

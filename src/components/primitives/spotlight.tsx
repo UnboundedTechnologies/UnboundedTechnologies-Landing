@@ -26,11 +26,7 @@ type Props = {
   className?: string;
 };
 
-export function Spotlight({
-  color = 'rgba(93, 111, 255, 0.22)',
-  size = 280,
-  className,
-}: Props) {
+export function Spotlight({ color = 'rgba(93, 111, 255, 0.22)', size = 280, className }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const isTouch = useIsTouch();
 
@@ -65,7 +61,9 @@ export function Spotlight({
         // Hover-driven path: invisible until the parent's :hover puts
         // the cursor near the gradient origin. Touch path: ambient,
         // always visible at reduced opacity, animated via keyframes.
-        isTouch ? 'spotlight-touch' : 'opacity-0 transition-opacity duration-300 group-hover:opacity-100',
+        isTouch
+          ? 'spotlight-touch'
+          : 'opacity-0 transition-opacity duration-300 group-hover:opacity-100',
         className,
       )}
       style={{

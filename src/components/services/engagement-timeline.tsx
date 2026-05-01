@@ -170,6 +170,7 @@ export function EngagementTimeline() {
             className="relative flex flex-col items-start md:items-center"
             onMouseEnter={() => setActiveStep(num)}
             onFocus={() => setActiveStep(num)}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable region for keyboard hover cascade; no click action, contains heading + body so cannot be a button
             tabIndex={0}
           >
             {/* 4. Number circle */}

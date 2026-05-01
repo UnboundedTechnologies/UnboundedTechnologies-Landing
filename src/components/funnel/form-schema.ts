@@ -28,11 +28,7 @@ export const leadSchema = z.object({
   company: z.string().min(2).max(100),
   industry: z.enum(industries),
   projectTypes: z.array(z.enum(projectTypes)).min(1),
-  hourlyRate: z
-    .number()
-    .int()
-    .min(HOURLY_RATE_MIN)
-    .max(HOURLY_RATE_MAX),
+  hourlyRate: z.number().int().min(HOURLY_RATE_MIN).max(HOURLY_RATE_MAX),
   timeline: z.enum(timelines),
   description: z.string().min(30).max(2000),
   turnstileToken: z.string().min(1),

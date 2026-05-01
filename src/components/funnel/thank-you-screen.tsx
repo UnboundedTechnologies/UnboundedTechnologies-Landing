@@ -54,7 +54,11 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
           'group relative overflow-hidden rounded-2xl border border-border bg-bg-elevated',
           'p-6 md:p-14 text-center',
           'transition-[opacity,transform] duration-[520ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
-          animate ? 'opacity-100 scale-100' : reducedMotion ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.96]',
+          animate
+            ? 'opacity-100 scale-100'
+            : reducedMotion
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-[0.96]',
         )}
       >
         <Spotlight color="rgba(93, 111, 255, 0.22)" size={320} />
@@ -124,7 +128,11 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
         <div
           className={cn(
             'transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
-            animate ? 'opacity-100 translate-y-0' : reducedMotion ? 'opacity-100' : 'opacity-0 translate-y-2',
+            animate
+              ? 'opacity-100 translate-y-0'
+              : reducedMotion
+                ? 'opacity-100'
+                : 'opacity-0 translate-y-2',
           )}
           style={{ transitionDelay: animate ? '700ms' : '0ms' }}
         >
@@ -138,7 +146,11 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
           className={cn(
             'mt-5 text-2xl md:text-3xl font-semibold tracking-[-0.03em] leading-tight',
             'transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
-            animate ? 'opacity-100 translate-y-0' : reducedMotion ? 'opacity-100' : 'opacity-0 translate-y-2',
+            animate
+              ? 'opacity-100 translate-y-0'
+              : reducedMotion
+                ? 'opacity-100'
+                : 'opacity-0 translate-y-2',
           )}
           style={{ transitionDelay: animate ? '790ms' : '0ms' }}
         >
@@ -150,7 +162,11 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
           className={cn(
             'mx-auto mt-4 max-w-md text-sm md:text-base text-text-muted leading-relaxed',
             'transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
-            animate ? 'opacity-100 translate-y-0' : reducedMotion ? 'opacity-100' : 'opacity-0 translate-y-2',
+            animate
+              ? 'opacity-100 translate-y-0'
+              : reducedMotion
+                ? 'opacity-100'
+                : 'opacity-0 translate-y-2',
           )}
           style={{ transitionDelay: animate ? '880ms' : '0ms' }}
         >

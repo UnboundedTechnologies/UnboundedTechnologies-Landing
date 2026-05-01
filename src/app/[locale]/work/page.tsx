@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { Link, workHref } from '@/i18n/routing';
 import { Spotlight } from '@/components/primitives/spotlight';
+import { Link, workHref } from '@/i18n/routing';
 import { ACCENT_TEXT_CLASS, accentSpotlight } from '@/lib/accents';
 import { getAllCaseStudies, type Locale } from '@/lib/case-studies';
 import { cn } from '@/lib/utils';

@@ -23,7 +23,9 @@ export function generateStaticParams() {
 // every route under [locale].
 export async function generateMetadata({
   params,
-}: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   return {
     alternates: {
