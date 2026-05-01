@@ -155,6 +155,19 @@ export function accentSpotlight(accent: Accent): string {
 }
 
 /**
+ * `rgba(...)` value for tinted chip backgrounds (e.g. case-study Stack
+ * pills, anywhere a small chip wants to inherit the case's accent color).
+ * ~20 % alpha keeps the chip text legible against the page background.
+ * `mixed` falls back to brand-purple.
+ */
+export function accentChipBg(accent: Accent): string {
+  if (accent === 'mixed') {
+    return `rgba(${BRAND_RGB.purple.replace(/\s+/g, '')},0.20)`;
+  }
+  return `rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.20)`;
+}
+
+/**
  * Translucent brand-color value for the brightened border on a hovered
  * card (e.g. work-index cards, engagement cards). ~55% alpha.
  */

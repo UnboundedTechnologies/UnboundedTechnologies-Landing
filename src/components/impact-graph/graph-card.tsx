@@ -1,7 +1,9 @@
 'use client';
 import { motion } from 'motion/react';
 import { type ForwardedRef, forwardRef } from 'react';
+import { Spotlight } from '@/components/primitives/spotlight';
 import { Link, workHref } from '@/i18n/routing';
+import { accentSpotlight } from '@/lib/accents';
 import { cn } from '@/lib/utils';
 import { COLOR_HEX, type GraphCategory, type GraphColor } from './graph-data';
 
@@ -62,7 +64,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       transition={{ duration: 0.5, delay: 0.08 * index, ease: [0.16, 1, 0.3, 1] }}
       viewport={{ once: true, margin: '-80px' }}
       className={cn(
-        'relative rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
+        'group relative overflow-hidden rounded-xl border border-border bg-bg-elevated/60 backdrop-blur-md',
         'min-h-[132px]',
         isLinked &&
           'transition-colors duration-300 hover:bg-bg-elevated/85 hover:border-border-hover',
@@ -70,6 +72,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       style={{ boxShadow: `inset 3px 0 0 0 ${accent}` }}
       aria-current={isLinked ? undefined : 'page'}
     >
+      <Spotlight color={accentSpotlight(color)} />
       {isLinked ? (
         <Link
           href={workHref(href.replace(/^\/work\//, ''))}

@@ -6,6 +6,7 @@ import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
 import {
   accentBorderColor,
+  accentChipBg,
   accentGlowColor,
   accentNumberClass,
   heroGradient,
@@ -137,7 +138,8 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
               {study.stack.map((item) => (
                 <span
                   key={item}
-                  className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] text-text-muted"
+                  className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] text-text"
+                  style={{ backgroundColor: accentChipBg(study.accent) }}
                 >
                   {item}
                 </span>
