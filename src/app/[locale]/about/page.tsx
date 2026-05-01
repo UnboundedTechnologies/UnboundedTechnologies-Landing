@@ -188,11 +188,12 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       {/* 5. Capability statement link */}
-      {/* PDF asset shipped in Phase 13 (CV PDF / OG / 404). Until then this link 404s. */}
+      {/* The PDF is build-time-rendered at /cv.pdf (Phase 13.1). Locale-agnostic
+          path: FR users still download the EN PDF for v1.0. */}
       <section className="py-16 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <a
-            href="/capability-statement.pdf"
+            href="/cv.pdf"
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-text-muted hover:text-text transition-colors"
           >
             {t('capabilityLink')}
