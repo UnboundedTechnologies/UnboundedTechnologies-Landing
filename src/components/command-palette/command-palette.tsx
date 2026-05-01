@@ -1,5 +1,6 @@
 'use client';
 
+import * as Dialog from '@radix-ui/react-dialog';
 import { Command } from 'cmdk';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -212,18 +213,19 @@ export function CommandPalette({ caseStudies }: Props) {
       open={open}
       onOpenChange={setOpen}
       label={t('label')}
-      className={cn(
-        'fixed inset-0 z-[200] flex items-start justify-center pt-[18vh]',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out',
-      )}
       overlayClassName="fixed inset-0 z-[199] bg-bg/70 backdrop-blur-md"
       contentClassName={cn(
-        'relative z-[200] w-full max-w-xl mx-4',
+        'fixed top-[15vh] left-1/2 -translate-x-1/2 z-[200]',
+        'w-[min(640px,calc(100vw-2rem))]',
         'rounded-2xl border border-border bg-bg-elevated/95 backdrop-blur-xl',
-        'shadow-2xl shadow-black/40',
-        'overflow-hidden',
+        'shadow-2xl shadow-black/40 overflow-hidden',
       )}
     >
+      {/* Radix Dialog requires a Title for screen readers. Visually
+          hidden via Tailwind's sr-only so the palette UI isn't disturbed
+          but assistive tech still announces the dialog purpose. */}
+      <Dialog.Title className="sr-only">{t('label')}</Dialog.Title>
+      <Dialog.Description className="sr-only">{t('placeholder')}</Dialog.Description>
       <div className="border-b border-border">
         <Command.Input
           placeholder={t('placeholder')}
