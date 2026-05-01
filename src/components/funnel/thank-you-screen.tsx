@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { CalendlyEmbed } from './calendly-embed';
@@ -50,12 +51,13 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
     <div className="mx-auto max-w-2xl">
       <div
         className={cn(
-          'relative overflow-hidden rounded-2xl border border-border bg-bg-elevated',
+          'group relative overflow-hidden rounded-2xl border border-border bg-bg-elevated',
           'p-10 md:p-14 text-center',
           'transition-[opacity,transform] duration-[520ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
           animate ? 'opacity-100 scale-100' : reducedMotion ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.96]',
         )}
       >
+        <Spotlight color="rgba(93, 111, 255, 0.22)" size={320} />
         {/* Soft brand-blue glow drifting in the top-right corner. */}
         <div
           aria-hidden
