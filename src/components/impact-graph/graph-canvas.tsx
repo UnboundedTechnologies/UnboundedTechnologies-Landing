@@ -104,9 +104,16 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
         const next = isLast ? null : nodes[i + 1];
         const hasEdgeToNext =
           next !== null && edges.some((e) => e.from === n.id && e.to === next.id);
-        const isGraphBreak = next !== null && !hasEdgeToNext && n.href !== next.href;
+        // Every graph group on mobile gets a labeled header so the user
+        // sees the case-study name (e.g. "AWS · Customer Reach") above
+        // its first card. A group starts at i=0 or whenever the case-
+        // study href changes vs the previous card. The header doubles as
+        // the visual "break" between groups - no separate inter-card
+        // divider needed since every new group already declares itself.
+        const isGraphStart = i === 0 || nodes[i - 1].href !== n.href;
         return (
           <Fragment key={n.id}>
+            {isGraphStart && <MobileGraphBreak nextHref={n.href} />}
             <GraphCard
               ref={register(n.id)}
               label={n.label}
@@ -116,21 +123,11 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
               category={n.category}
               index={i}
             />
-            {/* Between-cards mobile renderer. Three cases:
-                - Edge between this card and the next: animated connector
-                  pill (MobileEdgeStrip) sits flush against both cards.
-                - No edge AND different case study: MobileGraphBreak
-                  signals the new graph deliberately so the empty space
-                  doesn't read as a missing connector.
-                - No edge AND same case study (rare in current data):
-                  render nothing.
-                Hidden md+ where the GraphEdges SVG overlay owns this
-                whole layer. */}
+            {/* Animated connector between this card and the next when an
+                edge exists (always within a single graph). Hidden md+
+                where the SVG overlay owns this layer. */}
             {!isLast && hasEdgeToNext && (
               <MobileEdgeStrip nodes={nodes} edges={edges} sourceIndex={i} />
-            )}
-            {!isLast && !hasEdgeToNext && isGraphBreak && next && (
-              <MobileGraphBreak nextHref={next.href} />
             )}
           </Fragment>
         );
