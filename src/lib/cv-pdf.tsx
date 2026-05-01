@@ -11,8 +11,11 @@ import enMessages from '../../messages/en.json';
 // accepts a `{ data, format }` shape that bypasses its async URL/path loader;
 // passing a raw Buffer is the most reliable way to embed a local asset and
 // avoids OS-specific path-resolution quirks (Windows backslashes, .next/server
-// CWD differences, etc.).
-const BANNER_BUFFER = readFileSync(path.resolve(process.cwd(), 'public/ut-banner.png'));
+// CWD differences, etc.). The transparent variant reads cleanly on the white
+// PDF background where the dark-bg banner used in the nav would not.
+const BANNER_BUFFER = readFileSync(
+  path.resolve(process.cwd(), 'public/ut-banner-transparent.png'),
+);
 
 // Build-time-rendered Capability Statement PDF served at /cv.pdf.
 //
