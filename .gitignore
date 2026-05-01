@@ -40,3 +40,4 @@ docs/superpowers/
 public/lighthouse.json.tmp
 .contentlayer/
 tsconfig.tsbuildinfo
+docs/translation-en-fr.csv
