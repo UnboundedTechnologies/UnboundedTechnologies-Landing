@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { GraphCard } from './graph-card';
 import type { Edge, Node } from './graph-data';
 import { GraphEdges } from './graph-edges';
+import { MobileEdgeStrip } from './mobile-edge-strip';
 import { useCardPositions } from './use-card-positions';
 
 type Variant = 'page' | 'inline';
@@ -94,17 +95,24 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
     >
       {nodes.map((n, i) => {
         const isSelf = activeSlug !== undefined && n.href.replace(/^\/work\//, '') === activeSlug;
+        const isLast = i === nodes.length - 1;
         return (
-          <GraphCard
-            key={n.id}
-            ref={register(n.id)}
-            label={n.label}
-            sub={n.sub}
-            href={isSelf ? undefined : n.href}
-            color={n.color}
-            category={n.category}
-            index={i}
-          />
+          <Fragment key={n.id}>
+            <GraphCard
+              ref={register(n.id)}
+              label={n.label}
+              sub={n.sub}
+              href={isSelf ? undefined : n.href}
+              color={n.color}
+              category={n.category}
+              index={i}
+            />
+            {/* Mobile-only connector strip between this card and the next.
+                Renders the edge's primary + secondary text as a pill so
+                mobile readers see the same stats desktop gets via the
+                SVG overlay. Hidden md+ where the GraphEdges SVG owns it. */}
+            {!isLast && <MobileEdgeStrip nodes={nodes} edges={edges} sourceIndex={i} />}
+          </Fragment>
         );
       })}
       <div className="hidden md:block">

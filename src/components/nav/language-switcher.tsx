@@ -24,9 +24,16 @@ const LOCALES = [
 
 type Props = {
   current: 'en' | 'fr';
+  /**
+   * 'down' (default) opens the dropdown below the button (top-nav usage).
+   * 'up' opens it above (mobile-menu usage, where the button sits at the
+   * bottom of a Dialog with overflow:hidden and a downward dropdown
+   * would be clipped by the dialog's lower edge).
+   */
+  direction?: 'down' | 'up';
 };
 
-export function LanguageSwitcher({ current }: Props) {
+export function LanguageSwitcher({ current, direction = 'down' }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams<{ slug?: string }>();
@@ -110,10 +117,14 @@ export function LanguageSwitcher({ current }: Props) {
           role="menu"
           aria-label="Language"
           className={cn(
-            // right-2 on mobile so the menu doesn't clip past the screen
-            // edge when the trigger sits flush right; right-0 on md+
-            // where the nav has more breathing room.
-            'absolute right-2 md:right-0 top-full mt-2 z-50 w-[180px] max-w-[calc(100vw-1rem)] origin-top-right',
+            // Opens above OR below depending on the trigger's context.
+            // Mobile-menu usage anchors the trigger at the bottom of a
+            // dialog that has overflow:hidden, so a downward menu would
+            // be clipped; the parent passes direction="up" to flip.
+            direction === 'up'
+              ? 'left-0 bottom-full mb-2 origin-bottom-left'
+              : 'right-2 md:right-0 top-full mt-2 origin-top-right',
+            'absolute z-50 w-[180px] max-w-[calc(100vw-1rem)]',
             'rounded-xl border border-white/[0.08] bg-bg-elevated/90 backdrop-blur-2xl',
             '[box-shadow:0_18px_48px_-12px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]',
             'p-1.5',

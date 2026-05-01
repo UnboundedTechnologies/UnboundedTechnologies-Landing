@@ -127,9 +127,11 @@ export function MobileMenu({ current }: Props) {
             ))}
           </ul>
 
-          {/* Footer row: language switcher + CTA */}
+          {/* Footer row: language switcher + CTA. Switcher uses direction="up"
+              so its dropdown opens above the trigger - the dialog has
+              overflow:hidden and a downward dropdown gets clipped. */}
           <div className="px-6 pb-6 pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
-            <LanguageSwitcher current={current} />
+            <LanguageSwitcher current={current} direction="up" />
             <Link
               href="/contact"
               onClick={() => setOpen(false)}

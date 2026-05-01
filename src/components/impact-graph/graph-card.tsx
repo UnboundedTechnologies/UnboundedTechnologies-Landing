@@ -73,6 +73,27 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
       aria-current={isLinked ? undefined : 'page'}
     >
       <Spotlight color={accentSpotlight(color)} />
+      {/* Mobile-only "tappable" affordance: a small arrow in the top-right
+          corner so a phone user knows the card is a link. Desktop uses
+          hover states + the cursor change for the same signal, so we
+          hide this at md+. */}
+      {isLinked && (
+        <span
+          aria-hidden
+          className="md:hidden absolute top-3 right-3 z-10 text-text-faint pointer-events-none"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
+            <title>Open</title>
+            <path
+              d="M5 11 L11 5 M11 5 H6.5 M11 5 V9.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      )}
       {isLinked ? (
         <Link
           href={workHref(href.replace(/^\/work\//, ''))}
