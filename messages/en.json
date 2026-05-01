@@ -182,9 +182,72 @@
     "eyebrow": "- Contact",
     "headlineLead": "Start a",
     "headlineAccent": "project conversation.",
-    "body1": "The qualified inquiry funnel ships in the next phase. Until then, the fastest way to start a conversation is by email. We respond within one business day.",
-    "body2": "Engagements run on a Master Service Agreement plus a per-project Statement of Work. Industries, budget ranges, and timelines are all welcome. If we are not the right fit, we will say so.",
-    "ctaLabel": "contact@unboundedtechnologies.com"
+    "intro": "Tell us a little about the work. Qualified leads get a direct calendar slot on the next screen; everyone else hears back by email within one business day.",
+    "form": {
+      "nameLabel": "Your name",
+      "namePlaceholder": "Jane Doe",
+      "emailLabel": "Work email",
+      "emailPlaceholder": "jane@company.com",
+      "companyLabel": "Company",
+      "companyPlaceholder": "Company Inc.",
+      "industryLabel": "Industry",
+      "industryPlaceholder": "Choose an industry",
+      "industry": {
+        "finance": "Finance",
+        "technology": "Technology",
+        "telecom": "Telecom",
+        "construction": "Construction",
+        "media": "Media",
+        "automotive": "Automotive",
+        "government": "Government",
+        "other": "Other"
+      },
+      "projectTypeLabel": "Project type",
+      "projectTypeHint": "Pick one or more.",
+      "projectType": {
+        "cloud-architecture": "Cloud architecture",
+        "ccaas-connect": "CCaaS / Amazon Connect",
+        "serverless": "Serverless platform",
+        "other": "Other"
+      },
+      "budgetLabel": "Budget",
+      "budgetPlaceholder": "Choose a range",
+      "budget": {
+        "<25k": "Under 25k CAD",
+        "25k-100k": "25k - 100k CAD",
+        "100k-500k": "100k - 500k CAD",
+        "500k+": "500k+ CAD",
+        "not-sure": "Not sure yet"
+      },
+      "timelineLabel": "Timeline",
+      "timelinePlaceholder": "Choose a horizon",
+      "timeline": {
+        "asap": "ASAP",
+        "1-3mo": "1-3 months",
+        "3-6mo": "3-6 months",
+        "exploring": "Exploring"
+      },
+      "descriptionLabel": "Briefly, what are you trying to solve?",
+      "descriptionPlaceholder": "A few lines is plenty - the constraint, the goal, anything we should know.",
+      "descriptionHint": "Optional. {count}/500 characters.",
+      "submit": "Send",
+      "submitting": "Sending...",
+      "errorRequired": "Required.",
+      "errorEmail": "Please enter a valid email.",
+      "errorMin": "Too short.",
+      "errorMax": "Too long.",
+      "errorTurnstile": "Anti-bot check did not pass. Please reload and try again.",
+      "errorRateLimit": "Too many submissions. Please try again in an hour.",
+      "errorGeneric": "Something went wrong sending the form. Please try again or email contact@unboundedtechnologies.com directly."
+    },
+    "thankYou": {
+      "qualifiedHeadline": "Thanks - here is the next step.",
+      "qualifiedBody": "Your project clears the budget and timeline gates. Grab a 30-minute slot directly below; you will get a calendar invite by email.",
+      "qualifiedCalendlyEyebrow": "- Book a call",
+      "exploratoryHeadline": "Thanks - we will be in touch.",
+      "exploratoryBody": "We have your note and will reply by email within a few business days. If your situation changes, you can update us at contact@unboundedtechnologies.com.",
+      "backLabel": "Back to home"
+    }
   },
   "work": {
     "eyebrow": "- Selected work",

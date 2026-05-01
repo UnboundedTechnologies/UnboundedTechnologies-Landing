@@ -182,9 +182,72 @@
     "eyebrow": "- Contact",
     "headlineLead": "Démarrer une",
     "headlineAccent": "conversation projet.",
-    "body1": "Le formulaire de qualification arrive à la prochaine phase. En attendant, le plus simple est de nous écrire par courriel. Nous répondons sous un jour ouvrable.",
-    "body2": "Les missions sont encadrées par un Master Service Agreement plus un Statement of Work par projet. Tous les secteurs, tous les budgets et tous les calendriers sont les bienvenus. Si nous ne sommes pas la bonne équipe, nous le dirons.",
-    "ctaLabel": "contact@unboundedtechnologies.com"
+    "intro": "Parlez-nous brièvement du projet. Les pistes qualifiées obtiennent un créneau direct dans le calendrier à l'écran suivant; pour les autres, nous répondons par courriel sous un jour ouvrable.",
+    "form": {
+      "nameLabel": "Votre nom",
+      "namePlaceholder": "Jeanne Dupont",
+      "emailLabel": "Courriel professionnel",
+      "emailPlaceholder": "jeanne@entreprise.com",
+      "companyLabel": "Entreprise",
+      "companyPlaceholder": "Entreprise Inc.",
+      "industryLabel": "Secteur",
+      "industryPlaceholder": "Choisir un secteur",
+      "industry": {
+        "finance": "Finance",
+        "technology": "Technologie",
+        "telecom": "Télécoms",
+        "construction": "Construction",
+        "media": "Médias",
+        "automotive": "Automobile",
+        "government": "Secteur public",
+        "other": "Autre"
+      },
+      "projectTypeLabel": "Type de projet",
+      "projectTypeHint": "Choisissez une ou plusieurs options.",
+      "projectType": {
+        "cloud-architecture": "Architecture cloud",
+        "ccaas-connect": "CCaaS / Amazon Connect",
+        "serverless": "Plateforme serverless",
+        "other": "Autre"
+      },
+      "budgetLabel": "Budget",
+      "budgetPlaceholder": "Choisir une fourchette",
+      "budget": {
+        "<25k": "Moins de 25k CAD",
+        "25k-100k": "25k - 100k CAD",
+        "100k-500k": "100k - 500k CAD",
+        "500k+": "500k+ CAD",
+        "not-sure": "Pas encore sûr"
+      },
+      "timelineLabel": "Échéance",
+      "timelinePlaceholder": "Choisir un horizon",
+      "timeline": {
+        "asap": "ASAP",
+        "1-3mo": "1-3 mois",
+        "3-6mo": "3-6 mois",
+        "exploring": "En exploration"
+      },
+      "descriptionLabel": "En quelques mots, que cherchez-vous à résoudre?",
+      "descriptionPlaceholder": "Quelques lignes suffisent: la contrainte, l'objectif, ce qu'il est utile de savoir.",
+      "descriptionHint": "Optionnel. {count}/500 caractères.",
+      "submit": "Envoyer",
+      "submitting": "Envoi...",
+      "errorRequired": "Requis.",
+      "errorEmail": "Adresse courriel invalide.",
+      "errorMin": "Trop court.",
+      "errorMax": "Trop long.",
+      "errorTurnstile": "La vérification anti-bot a échoué. Veuillez recharger et réessayer.",
+      "errorRateLimit": "Trop de soumissions. Réessayez dans une heure.",
+      "errorGeneric": "L'envoi du formulaire a échoué. Réessayez ou écrivez directement à contact@unboundedtechnologies.com."
+    },
+    "thankYou": {
+      "qualifiedHeadline": "Merci - voici la suite.",
+      "qualifiedBody": "Votre projet passe les seuils de budget et d'échéance. Réservez un créneau de 30 minutes ci-dessous; vous recevrez l'invitation par courriel.",
+      "qualifiedCalendlyEyebrow": "- Réserver un appel",
+      "exploratoryHeadline": "Merci - nous reviendrons vers vous.",
+      "exploratoryBody": "Nous avons reçu votre note et répondrons par courriel sous quelques jours ouvrables. Si la situation évolue, écrivez-nous à contact@unboundedtechnologies.com.",
+      "backLabel": "Retour à l'accueil"
+    }
   },
   "work": {
     "eyebrow": "- Travaux sélectionnés",
