@@ -3,12 +3,14 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { GraphCanvas } from '@/components/impact-graph/graph-canvas';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import { Link, workHref } from '@/i18n/routing';
 import {
   accentBorderColor,
   accentChipBg,
   accentGlowColor,
   accentNumberClass,
+  accentSpotlight,
   heroGradient,
   sectionEyebrowClass,
 } from '@/lib/accents';
@@ -208,6 +210,7 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
                       animationDelay: `${i * 1500}ms`,
                     }}
                   />
+                  <Spotlight color={accentSpotlight(study.accent)} />
                   <div
                     className={cn(
                       'relative font-mono text-4xl font-semibold tracking-tight',
