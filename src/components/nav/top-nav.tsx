@@ -17,7 +17,7 @@ export function TopNav() {
             height={284}
             priority
             sizes="(min-width: 768px) 12rem, 9rem"
-            className="h-9 md:h-10 w-auto"
+            className="h-7 md:h-8 w-auto"
           />
         </Link>
         <ul className="hidden md:flex items-center gap-6 text-sm text-text-muted">
