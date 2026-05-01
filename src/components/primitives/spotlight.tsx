@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useIsTouch } from '@/lib/hooks/use-is-touch';
 import { cn } from '@/lib/utils';
 
 // Cursor-tracking spotlight overlay. Drop inside any positioned parent
@@ -8,11 +9,13 @@ import { cn } from '@/lib/utils';
 // listens for mousemove on the parent, writing the cursor's local
 // coordinates into CSS custom properties that the radial-gradient consumes.
 //
-// The overlay is opacity:0 by default and fades in via `group-hover` so
-// the highlight only appears when the user is over the card. border-radius
-// is inherited from the parent so the spotlight clips to the card's
-// rounded corners. Pointer-events are off so the overlay never blocks
-// clicks on the card content.
+// On a coarse-pointer device (touch), there's no cursor to track, so we
+// fall back to a slow auto-orbit animation defined in globals.css. The
+// gradient still reads as the same brand-warm card surface; mobile just
+// gets it driven by CSS keyframes instead of mouse position.
+//
+// Pointer-events are off so the overlay never blocks clicks on the card
+// content.
 
 type Props = {
   /** rgba spotlight color. Use a brand-tinted ~22% alpha; see accentSpotlight(). */
@@ -29,8 +32,12 @@ export function Spotlight({
   className,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const isTouch = useIsTouch();
 
   useEffect(() => {
+    // Touch devices use the CSS-driven orbit; no listeners needed.
+    if (isTouch) return;
+
     const el = ref.current;
     if (!el) return;
     const parent = el.parentElement;
@@ -47,15 +54,18 @@ export function Spotlight({
     return () => {
       parent.removeEventListener('mousemove', onMove);
     };
-  }, []);
+  }, [isTouch]);
 
   return (
     <div
       ref={ref}
       aria-hidden
       className={cn(
-        'absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300',
-        'group-hover:opacity-100',
+        'absolute inset-0 pointer-events-none',
+        // Hover-driven path: invisible until the parent's :hover puts
+        // the cursor near the gradient origin. Touch path: ambient,
+        // always visible at reduced opacity, animated via keyframes.
+        isTouch ? 'spotlight-touch' : 'opacity-0 transition-opacity duration-300 group-hover:opacity-100',
         className,
       )}
       style={{

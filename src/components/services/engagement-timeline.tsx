@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { BRAND_HEX, type SolidAccent } from '@/lib/accents';
+import { useIsTouch } from '@/lib/hooks/use-is-touch';
 import { cn } from '@/lib/utils';
 
 // Engagement-timeline interactive walkthrough.
@@ -60,6 +61,8 @@ export function EngagementTimeline() {
   const t = useTranslations('servicesPage');
   const [activeStep, setActiveStep] = useState<number>(0);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const isTouch = useIsTouch();
+  const olRef = useRef<HTMLOListElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -70,6 +73,40 @@ export function EngagementTimeline() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // Mobile auto-cascade: when the timeline scrolls into view on a touch
+  // device, light up each step in sequence so mobile users see the same
+  // animation desktop users get from hover. Triggers once.
+  useEffect(() => {
+    if (!isTouch || reducedMotion) return;
+    const el = olRef.current;
+    if (!el) return;
+    let cancelled = false;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          obs.disconnect();
+          // Walk through 1 -> TOTAL_STEPS with a steady cadence. Each
+          // step lights up for FILL_TRANSITION_MS / 1.6 ms before the
+          // next one starts so the aurora fill bar has time to draw.
+          const stepDelay = Math.round(FILL_TRANSITION_MS / 1.6);
+          for (let i = 1; i <= TOTAL_STEPS; i++) {
+            setTimeout(() => {
+              if (!cancelled) setActiveStep(i);
+            }, i * stepDelay);
+          }
+          return;
+        }
+      },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => {
+      cancelled = true;
+      obs.disconnect();
+    };
+  }, [isTouch, reducedMotion]);
+
   const fillRatio = activeStep === 0 ? 0 : (activeStep - 1) / (TOTAL_STEPS - 1);
   const fillWidth = CONNECTOR_SPAN * fillRatio;
   const headAccent = activeStep > 0 ? STEPS[activeStep - 1].accent : 'blue';
@@ -77,8 +114,11 @@ export function EngagementTimeline() {
 
   return (
     <ol
+      ref={olRef}
       className="grid grid-cols-1 md:grid-cols-6 gap-10 md:gap-4 relative"
-      onMouseLeave={() => setActiveStep(0)}
+      // Mouse-leave only resets on desktop. On mobile we want the auto-
+      // cascade's final state to stick so the user sees the lit-up trail.
+      onMouseLeave={isTouch ? undefined : () => setActiveStep(0)}
     >
       {/* 1. Static base connector */}
       <div

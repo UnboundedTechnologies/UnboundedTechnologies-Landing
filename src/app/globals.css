@@ -238,6 +238,62 @@ html[data-motion="reduce"] *::after {
 }
 
 /*
+ * Touch-device fallback for the cursor-following Spotlight halo. On
+ * desktop the halo follows the mouse; on touch there's no cursor, so
+ * we orbit the same gradient slowly inside the card via a CSS-driven
+ * animation. The result reads as the same brand-warm card surface,
+ * just animated automatically rather than driven by hover.
+ *
+ * The element opts in by setting `--mx` and `--my` via a keyframe and
+ * leaving the radial-gradient logic identical to the mouse path.
+ */
+@keyframes spotlight-orbit {
+  0%   { --mx: 25%;  --my: 30%; }
+  25%  { --mx: 75%;  --my: 35%; }
+  50%  { --mx: 80%;  --my: 75%; }
+  75%  { --mx: 30%;  --my: 80%; }
+  100% { --mx: 25%;  --my: 30%; }
+}
+.spotlight-touch {
+  opacity: 0.65;
+  animation: spotlight-orbit 18s ease-in-out infinite;
+}
+
+/*
+ * Subtle nudge animation for the work-index card arrows on touch.
+ * Desktop already animates them on hover, but on a phone the arrow
+ * sits static otherwise. This breathes ~3 px to the right and back so
+ * the affordance reads as "tappable, leads somewhere" without being
+ * distracting. Only fires on coarse pointer devices; desktop hover
+ * still wins thanks to the higher specificity of the hover class.
+ */
+@keyframes work-card-arrow-hint {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(3px); }
+}
+@media (pointer: coarse) {
+  .work-card-arrow {
+    animation: work-card-arrow-hint 3.2s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-card-arrow { animation: none; }
+}
+@property --mx {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@property --my {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-touch { animation: none; opacity: 0.45; }
+}
+
+/*
  * EngagementTimeline (services /how-an-engagement-starts) ping ripple. Used
  * on the active step's number circle to draw the eye to the currently lit
  * node. Two of these are layered with a 750 ms offset so the ripple

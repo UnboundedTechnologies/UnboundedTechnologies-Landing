@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { useIsTouch } from '@/lib/hooks/use-is-touch';
 import { cn } from '@/lib/utils';
 
 // "What we bring" list. Single-column commitment list (the previous
@@ -41,6 +42,7 @@ export function HonestyList() {
   const t = useTranslations('servicesPage');
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const isTouch = useIsTouch();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export function HonestyList() {
             inView={inView}
             delay={idx * STAGGER_MS}
             reducedMotion={reducedMotion}
+            autoUnderline={isTouch}
           />
         ))}
       </ul>
@@ -92,9 +95,13 @@ type ItemProps = {
   inView: boolean;
   delay: number;
   reducedMotion: boolean;
+  /** When true, the underline draws automatically as part of the
+   * enter-view animation instead of waiting for hover. Used on touch
+   * devices where there's no hover state to trigger it. */
+  autoUnderline?: boolean;
 };
 
-function BringItem({ text, inView, delay, reducedMotion }: ItemProps) {
+function BringItem({ text, inView, delay, reducedMotion, autoUnderline = false }: ItemProps) {
   const fadeStyle: React.CSSProperties = reducedMotion
     ? { opacity: 1 }
     : {
@@ -144,15 +151,26 @@ function BringItem({ text, inView, delay, reducedMotion }: ItemProps) {
 
       <span className="relative flex-1 font-mono text-sm leading-relaxed text-text">
         {text}
+        {/* Underline: on desktop draws on hover/focus; on touch (no
+            hover) draws automatically as part of the enter-view sequence
+            once the icon stroke has finished, giving the same visual
+            beat without requiring user interaction. */}
         <span
           aria-hidden
           className={cn(
             'absolute left-0 right-0 -bottom-0.5 h-[1px] bg-brand-cyan/60 origin-left',
             'transition-transform duration-500 ease-out',
-            reducedMotion
-              ? 'scale-x-0'
-              : 'scale-x-0 group-hover:scale-x-100 group-focus-within:scale-x-100',
+            reducedMotion && 'scale-x-0',
+            !reducedMotion && autoUnderline && (inView ? 'scale-x-100' : 'scale-x-0'),
+            !reducedMotion &&
+              !autoUnderline &&
+              'scale-x-0 group-hover:scale-x-100 group-focus-within:scale-x-100',
           )}
+          style={
+            !reducedMotion && autoUnderline
+              ? { transitionDelay: `${delay + ICON_START_OFFSET_MS + ICON_DRAW_MS}ms` }
+              : undefined
+          }
         />
       </span>
     </li>

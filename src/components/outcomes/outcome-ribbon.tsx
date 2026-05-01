@@ -78,7 +78,7 @@ export function OutcomeRibbon() {
               <Link
                 key={o.contextKey}
                 href={workHref(o.slug)}
-                className="group relative overflow-hidden block bg-bg-elevated border border-border rounded-xl p-8 transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="group relative overflow-hidden block bg-bg-elevated border border-border rounded-xl p-8 transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] active:-translate-y-0.5 focus-visible:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
                 style={
                   {
                     ['--card-hover-border' as string]: o.hoverBorderColor,

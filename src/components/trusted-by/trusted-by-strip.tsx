@@ -45,7 +45,7 @@ export function TrustedByStrip() {
           {CLIENTS.map((c, i) => (
             <li
               key={c.name}
-              className="trusted-by-logo flex items-center justify-center transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105"
+              className="trusted-by-logo flex items-center justify-center transition-transform duration-[var(--duration-short)] hover:-translate-y-1 hover:scale-105 active:scale-95"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               {c.kind === 'wordmark' ? (

@@ -105,6 +105,10 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                     'p-8 min-h-[320px] flex flex-col',
                     'transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
                     'hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]',
+                    // Touch + keyboard fallback: tapping/active gives a
+                    // smaller lift so the surface acknowledges contact;
+                    // focus-visible mirrors hover for keyboard users.
+                    'active:-translate-y-0.5 focus-within:-translate-y-1',
                   )}
                   style={
                     {

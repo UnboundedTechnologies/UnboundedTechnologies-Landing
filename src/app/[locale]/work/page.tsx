@@ -42,6 +42,7 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                     'p-8 md:p-10 min-h-[260px] flex flex-col',
                     'transition-all duration-[var(--duration-short)]',
                     'hover:border-border-hover hover:bg-bg-elevated/85 hover:-translate-y-1',
+                    'active:-translate-y-0.5 focus-visible:-translate-y-1',
                     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue',
                   )}
                 >
@@ -59,7 +60,11 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                   </div>
                   <span
                     aria-hidden
-                    className="absolute top-8 right-8 md:top-10 md:right-10 text-text-faint transition-transform duration-[var(--duration-short)] group-hover:translate-x-1 group-hover:text-text"
+                    // Desktop: nudges right on hover. Mobile: gently
+                    // breathes via the work-card-arrow-hint keyframe in
+                    // globals.css so the affordance is visible without
+                    // hover. Reduced-motion users get a static arrow.
+                    className="absolute top-8 right-8 md:top-10 md:right-10 text-text-faint transition-transform duration-[var(--duration-short)] group-hover:translate-x-1 group-hover:text-text work-card-arrow"
                   >
                     →
                   </span>
