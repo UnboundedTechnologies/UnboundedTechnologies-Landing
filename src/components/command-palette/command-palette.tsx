@@ -93,14 +93,23 @@ export function CommandPalette({ caseStudies }: Props) {
     };
   }, []);
 
-  // Hydrate recent commands.
+  // Hydrate recent commands. Filter out anything that isn't a tracked
+  // prefix (nav- or case-) so stale theme/motion entries saved by an
+  // earlier build are dropped on first load and rewritten without them.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(RECENT_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed))
-          setRecent(parsed.filter((x): x is string => typeof x === 'string'));
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed
+            .filter((x): x is string => typeof x === 'string')
+            .filter((id) => TRACK_RECENT_PREFIXES.some((p) => id.startsWith(p)));
+          setRecent(cleaned);
+          if (cleaned.length !== parsed.length) {
+            localStorage.setItem(RECENT_KEY, JSON.stringify(cleaned));
+          }
+        }
       }
     } catch {
       /* ignore */
