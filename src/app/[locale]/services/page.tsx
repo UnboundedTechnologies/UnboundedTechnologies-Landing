@@ -3,11 +3,13 @@ import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import {
   ACCENT_TEXT_CLASS,
   accentGlowColor,
   accentHoverBorder,
   accentHoverShadow,
+  accentSpotlight,
   type SolidAccent,
 } from '@/lib/accents';
 import { cn } from '@/lib/utils';
@@ -130,6 +132,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                       animationDelay: `${i * 1500}ms`,
                     }}
                   />
+                  <Spotlight color={accentSpotlight(e.accent)} />
                   <div
                     className={cn(
                       'relative font-mono text-xs tracking-[0.18em] mb-4',

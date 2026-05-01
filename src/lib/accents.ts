@@ -141,6 +141,20 @@ export function accentGlowColor(accent: Accent, index: number): string {
 }
 
 /**
+ * `rgba(...)` value for the cursor-spotlight overlay on hover-aware cards.
+ * Same `BRAND_RGB` lookup as the other accent helpers, at ~22 % alpha so
+ * the spotlight reads as a soft brand-tinted halo rather than a solid
+ * highlight. For `mixed`, falls back to brand-purple (the visual midpoint
+ * of the aurora gradient).
+ */
+export function accentSpotlight(accent: Accent): string {
+  if (accent === 'mixed') {
+    return `rgba(${BRAND_RGB.purple.replace(/\s+/g, '')},0.22)`;
+  }
+  return `rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.22)`;
+}
+
+/**
  * Translucent brand-color value for the brightened border on a hovered
  * card (e.g. work-index cards, engagement cards). ~55% alpha.
  */

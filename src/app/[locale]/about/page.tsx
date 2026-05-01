@@ -3,7 +3,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import { ACCENT_TEXT_CLASS, accentGlowColor, type SolidAccent } from '@/lib/accents';
+import { Spotlight } from '@/components/primitives/spotlight';
+import {
+  ACCENT_TEXT_CLASS,
+  accentGlowColor,
+  accentSpotlight,
+  type SolidAccent,
+} from '@/lib/accents';
 import { cn } from '@/lib/utils';
 
 // `/about` Saïd & Unbounded page (Phase 8.2).
@@ -129,6 +135,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                       animationDelay: `${idx * 1200}ms`,
                     }}
                   />
+                  <Spotlight color={accentSpotlight(bullet.accent)} size={220} />
                   <span
                     className={cn(
                       'relative flex-shrink-0 font-mono text-xs tracking-[0.18em]',
@@ -157,16 +164,20 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             {STATS.map((s) => {
               const accentClass = ACCENT_TEXT_CLASS[s.accent];
               return (
-                <div key={s.numKey} className="border border-border rounded-xl p-6 bg-bg-elevated">
+                <div
+                  key={s.numKey}
+                  className="group relative overflow-hidden border border-border rounded-xl p-6 bg-bg-elevated"
+                >
+                  <Spotlight color={accentSpotlight(s.accent)} size={220} />
                   <div
                     className={cn(
-                      'font-mono text-4xl md:text-5xl font-semibold tracking-tight',
+                      'relative font-mono text-4xl md:text-5xl font-semibold tracking-tight',
                       accentClass,
                     )}
                   >
                     {t(s.numKey)}
                   </div>
-                  <div className="mt-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] text-text-muted leading-relaxed">
+                  <div className="relative mt-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] text-text-muted leading-relaxed">
                     {t(s.labelKey)}
                   </div>
                 </div>

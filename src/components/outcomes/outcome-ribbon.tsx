@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import { Link, workHref } from '@/i18n/routing';
 
 // Three quantified-outcome cards. Each card has a brand-color stat number, a
@@ -23,6 +24,7 @@ type Outcome = {
   glowColor: string;
   hoverBorderColor: string;
   hoverShadow: string;
+  spotlightColor: string;
 };
 
 const OUTCOMES: ReadonlyArray<Outcome> = [
@@ -35,6 +37,7 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     glowColor: 'rgba(93,111,255,0.3)',
     hoverBorderColor: 'rgba(93,111,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
+    spotlightColor: 'rgba(93,111,255,0.22)',
   },
   {
     slug: 'etba-erp',
@@ -45,6 +48,7 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     glowColor: 'rgba(163,93,255,0.3)',
     hoverBorderColor: 'rgba(163,93,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
+    spotlightColor: 'rgba(163,93,255,0.22)',
   },
   {
     slug: 'renault-forex',
@@ -55,6 +59,7 @@ const OUTCOMES: ReadonlyArray<Outcome> = [
     glowColor: 'rgba(93,199,255,0.3)',
     hoverBorderColor: 'rgba(93,199,255,0.55)',
     hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
+    spotlightColor: 'rgba(93,199,255,0.22)',
   },
 ];
 
@@ -86,6 +91,7 @@ export function OutcomeRibbon() {
                   className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
                   style={{ background: o.glowColor, animationDelay: `${i * 1500}ms` }}
                 />
+                <Spotlight color={o.spotlightColor} />
                 <div
                   className={`relative font-mono text-4xl font-semibold tracking-tight ${o.statClass} transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}
                 >

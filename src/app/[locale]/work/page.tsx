@@ -2,7 +2,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link, workHref } from '@/i18n/routing';
-import { ACCENT_TEXT_CLASS } from '@/lib/accents';
+import { Spotlight } from '@/components/primitives/spotlight';
+import { ACCENT_TEXT_CLASS, accentSpotlight } from '@/lib/accents';
 import { getAllCaseStudies, type Locale } from '@/lib/case-studies';
 import { cn } from '@/lib/utils';
 
@@ -44,7 +45,8 @@ export default async function WorkIndexPage({ params }: { params: Promise<{ loca
                     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue',
                   )}
                 >
-                  <div className={cn('font-mono text-xs tracking-[0.18em]', numberClass)}>
+                  <Spotlight color={accentSpotlight(study.accent)} />
+                  <div className={cn('relative font-mono text-xs tracking-[0.18em]', numberClass)}>
                     {number}
                   </div>
                   <h2 className="mt-6 text-xl md:text-2xl font-semibold text-text leading-snug">

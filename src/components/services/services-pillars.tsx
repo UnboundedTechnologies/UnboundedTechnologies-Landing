@@ -1,11 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import { Spotlight } from '@/components/primitives/spotlight';
 import {
   ACCENT_TEXT_CLASS,
   accentGlowColor,
   accentHoverBorder,
   accentHoverShadow,
+  accentSpotlight,
   type SolidAccent,
 } from '@/lib/accents';
 
@@ -82,6 +84,7 @@ export function ServicesPillars() {
                     animationDelay: `${i * 1500}ms`,
                   }}
                 />
+                <Spotlight color={accentSpotlight(p.accent)} />
                 <div
                   className={`relative font-mono text-xs tracking-widest ${accentClass} mb-4 transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:tracking-[0.3em]`}
                 >
