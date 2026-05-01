@@ -97,6 +97,40 @@
   100% { transform: translate(48px, -48px) scale(1); opacity: 1; }
 }
 
+/*
+ * Particle / stardust drift loops. Three variants so the field never feels
+ * synchronized; per-particle duration and negative delay (set inline on each
+ * span by ParticleField) further desync them. Reduced motion users get
+ * static dots.
+ */
+@keyframes particle-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(18px, -22px); }
+}
+@keyframes particle-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-16px, 14px); }
+}
+@keyframes particle-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(12px, 20px); }
+  66% { transform: translate(-14px, -10px); }
+}
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  will-change: transform;
+}
+.particle-v1 { animation: particle-drift-1 var(--duration, 30s) ease-in-out infinite; }
+.particle-v2 { animation: particle-drift-2 var(--duration, 30s) ease-in-out infinite; }
+.particle-v3 { animation: particle-drift-3 var(--duration, 30s) ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .particle, .particle-v1, .particle-v2, .particle-v3 {
+    animation: none;
+  }
+}
+
 .services-orb {
   animation: services-orb-drift 8s var(--ease-out) infinite;
 }

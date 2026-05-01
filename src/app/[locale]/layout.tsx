@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
+import { ParticleField } from '@/components/atmosphere/particle-field';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
 import { Footer } from '@/components/nav/footer';
 import { TopNav } from '@/components/nav/top-nav';
@@ -24,6 +25,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <ParticleField />
       <div className="grain min-h-screen flex flex-col">
         <TopNav />
         <main className="flex-1">{children}</main>
