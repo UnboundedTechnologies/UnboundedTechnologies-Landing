@@ -298,27 +298,21 @@ export function CommandPalette({ caseStudies }: Props) {
       open={open}
       onOpenChange={setOpen}
       label={t('label')}
-      overlayClassName={cn(
-        'fixed inset-0 z-[199] bg-bg/60 backdrop-blur-md',
-        '[&]:[data-palette-overlay]',
-      )}
+      overlayClassName="fixed inset-0 z-[199] bg-bg/60 backdrop-blur-md"
       contentClassName={cn(
-        'fixed top-[14vh] left-1/2 -translate-x-1/2 z-[200]',
+        // Center via static layout (inset-x-0 + mx-auto), NOT via
+        // transform - so the mount keyframe is free to animate
+        // translateY/scale without ever clobbering horizontal position.
+        // This is what fixes the brief "left side then centers" jump.
+        'fixed top-[14vh] inset-x-0 mx-auto z-[200]',
         'w-[min(720px,calc(100vw-2rem))]',
         'group rounded-3xl overflow-hidden',
         'border border-white/[0.08]',
         'bg-bg-elevated/70 backdrop-blur-3xl',
         // Multi-layer shadow: depth + brand glow + inset bevel.
-        'shadow-[0_32px_80px_-20px_rgba(0,0,0,0.6),0_0_60px_rgba(93,111,255,0.12)]',
         '[box-shadow:0_32px_80px_-20px_rgba(0,0,0,0.6),0_0_60px_rgba(93,111,255,0.12),inset_0_1px_0_rgba(255,255,255,0.06)]',
       )}
     >
-      {/* Trick: target the rendered Radix Overlay/Content with attributes
-          for the keyframe selectors in globals.css. cmdk forwards
-          unknown DOM attrs through to the elements via the className
-          path - so we use plain data attributes via inline scripts. */}
-      <PaletteAttributes />
-
       {/* Cursor halo inside for that "alive" feel. */}
       <Spotlight color="rgba(93, 111, 255, 0.18)" size={420} />
 
@@ -407,22 +401,6 @@ export function CommandPalette({ caseStudies }: Props) {
       </div>
     </Command.Dialog>
   );
-}
-
-/*
- * Tags the rendered Radix Overlay + Content with data attributes so the
- * keyframe rules in globals.css can hook into their data-state. Runs
- * only on the client, in an effect, so it's safe to ship as a tiny
- * helper component inside the dialog tree.
- */
-function PaletteAttributes() {
-  useEffect(() => {
-    const overlay = document.querySelector('[cmdk-overlay]');
-    if (overlay) overlay.setAttribute('data-palette-overlay', '');
-    const content = document.querySelector('[cmdk-dialog]');
-    if (content) content.setAttribute('data-palette-content', '');
-  }, []);
-  return null;
 }
 
 function Section({
