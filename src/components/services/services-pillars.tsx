@@ -1,61 +1,51 @@
 import { useTranslations } from 'next-intl';
 import { Eyebrow } from '@/components/primitives/eyebrow';
+import {
+  ACCENT_TEXT_CLASS,
+  accentGlowColor,
+  accentHoverBorder,
+  accentHoverShadow,
+  type SolidAccent,
+} from '@/lib/accents';
 
 // Three service-pillar cards: Cloud Architecture (blue glow), Contact Center
 // Modernization (purple glow), Serverless & Event-Driven (cyan glow). Each
 // card has a corner radial-gradient overlay in the brand color, an eyebrow
 // number/label, a heading, a body paragraph, and a row of tag chips.
 //
-// All Tailwind color classes are LITERAL strings so the v4 oxide compiler can
-// detect them at build time; the brand color per card is also baked into a
-// LITERAL inline style for the corner glow (interpolated CSS color values are
-// safe; only Tailwind class strings need to be static).
+// Per-card brand metadata (text class, glow color, hover border, hover shadow)
+// comes from `src/lib/accents.ts` so this component stays in lockstep with
+// the `/services` engagement-card surface.
 
 type Pillar = {
+  accent: SolidAccent;
   numKey: string;
   titleKey: string;
   bodyKey: string;
-  glowColor: string;
-  numClass: string;
-  tagClass: string;
   tags: ReadonlyArray<string>;
-  hoverBorderColor: string;
-  hoverShadow: string;
 };
 
 const PILLARS: ReadonlyArray<Pillar> = [
   {
+    accent: 'blue',
     numKey: 'p1Num',
     titleKey: 'p1Title',
     bodyKey: 'p1Body',
-    glowColor: 'rgba(93,111,255,0.3)',
-    numClass: 'text-brand-blue',
-    tagClass: 'text-brand-blue',
     tags: ['AWS', 'Terraform', 'GCP', 'Azure'],
-    hoverBorderColor: 'rgba(93,111,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
   },
   {
+    accent: 'purple',
     numKey: 'p2Num',
     titleKey: 'p2Title',
     bodyKey: 'p2Body',
-    glowColor: 'rgba(163,93,255,0.3)',
-    numClass: 'text-brand-purple',
-    tagClass: 'text-brand-purple',
     tags: ['Amazon Connect', 'End-User Messaging', 'Pinpoint'],
-    hoverBorderColor: 'rgba(163,93,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
   },
   {
+    accent: 'cyan',
     numKey: 'p3Num',
     titleKey: 'p3Title',
     bodyKey: 'p3Body',
-    glowColor: 'rgba(93,199,255,0.3)',
-    numClass: 'text-brand-cyan',
-    tagClass: 'text-brand-cyan',
     tags: ['Lambda', 'DynamoDB', 'API GW'],
-    hoverBorderColor: 'rgba(93,199,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
   },
 ];
 
@@ -67,47 +57,53 @@ export function ServicesPillars() {
       <div className="mx-auto max-w-7xl px-6">
         <Eyebrow className="mb-10">{t('eyebrow')}</Eyebrow>
         <div className="grid md:grid-cols-3 gap-6">
-          {PILLARS.map((p, i) => (
-            <div
-              key={p.titleKey}
-              className="group relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]"
-              style={
-                {
-                  ['--card-hover-border' as string]: p.hoverBorderColor,
-                  ['--card-hover-shadow' as string]: p.hoverShadow,
-                } as React.CSSProperties
-              }
-            >
-              {/* Corner glow overlay. Inline style for the brand color so each
-                  card has its own; sizing/positioning kept in Tailwind. */}
+          {PILLARS.map((p, i) => {
+            const accentClass = ACCENT_TEXT_CLASS[p.accent];
+            return (
               <div
-                aria-hidden
-                className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
-                style={{ background: p.glowColor, animationDelay: `${i * 1500}ms` }}
-              />
-              <div
-                className={`relative font-mono text-xs tracking-widest ${p.numClass} mb-4 transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:tracking-[0.3em]`}
+                key={p.titleKey}
+                className="group relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]"
+                style={
+                  {
+                    ['--card-hover-border' as string]: accentHoverBorder(p.accent),
+                    ['--card-hover-shadow' as string]: accentHoverShadow(p.accent),
+                  } as React.CSSProperties
+                }
               >
-                {t(p.numKey)}
+                {/* Corner glow overlay. Inline style for the brand color so each
+                    card has its own; sizing/positioning kept in Tailwind. */}
+                <div
+                  aria-hidden
+                  className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                  style={{
+                    background: accentGlowColor(p.accent, 0),
+                    animationDelay: `${i * 1500}ms`,
+                  }}
+                />
+                <div
+                  className={`relative font-mono text-xs tracking-widest ${accentClass} mb-4 transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:tracking-[0.3em]`}
+                >
+                  {t(p.numKey)}
+                </div>
+                <h3 className="relative text-xl font-semibold tracking-tight mb-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+                  {t(p.titleKey)}
+                </h3>
+                <p className="relative text-sm text-text-muted leading-relaxed mb-5">
+                  {t(p.bodyKey)}
+                </p>
+                <div className="relative flex flex-wrap gap-2 mt-auto">
+                  {p.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className={`font-mono text-[10px] px-2 py-1 rounded ${accentClass} bg-surface transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:bg-surface-hover`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <h3 className="relative text-xl font-semibold tracking-tight mb-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
-                {t(p.titleKey)}
-              </h3>
-              <p className="relative text-sm text-text-muted leading-relaxed mb-5">
-                {t(p.bodyKey)}
-              </p>
-              <div className="relative flex flex-wrap gap-2 mt-auto">
-                {p.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`font-mono text-[10px] px-2 py-1 rounded ${p.tagClass} bg-surface transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:bg-surface-hover`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -2,7 +2,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuroraOrbs } from '@/components/atmosphere/aurora-orbs';
 import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
-import type { SolidAccent } from '@/lib/accents';
+import {
+  ACCENT_TEXT_CLASS,
+  accentGlowColor,
+  accentHoverBorder,
+  accentHoverShadow,
+  type SolidAccent,
+} from '@/lib/accents';
 import { cn } from '@/lib/utils';
 
 // `/services` Engagement Models page (Phase 8.1).
@@ -20,24 +26,16 @@ import { cn } from '@/lib/utils';
 //      check / x markers and mono labels.
 //   5. Closer CTA (centered headline + gradient ButtonLink to /contact).
 //
-// All accent class names are LITERAL strings so the Tailwind v4 oxide
-// compiler can detect them at build time. Brand colors used inside
-// inline styles (rgba glow / hover border / hover shadow) are baked
-// per-card in the ENGAGEMENTS array below.
+// Per-card brand metadata (text class, glow color, hover border, hover shadow)
+// comes from `src/lib/accents.ts` so this surface stays in lockstep with the
+// homepage `services-pillars` component.
 
 type Engagement = {
   accent: SolidAccent;
   numKey: string;
   titleKey: string;
   bodyKey: string;
-  tag1Key: string;
-  tag2Key: string;
-  tag3Key: string;
-  glowColor: string;
-  numClass: string;
-  tagClass: string;
-  hoverBorderColor: string;
-  hoverShadow: string;
+  tagKeys: readonly [string, string, string];
 };
 
 const ENGAGEMENTS: ReadonlyArray<Engagement> = [
@@ -46,42 +44,21 @@ const ENGAGEMENTS: ReadonlyArray<Engagement> = [
     numKey: 'sowNumber',
     titleKey: 'sowTitle',
     bodyKey: 'sowBody',
-    tag1Key: 'sowTag1',
-    tag2Key: 'sowTag2',
-    tag3Key: 'sowTag3',
-    glowColor: 'rgba(93,111,255,0.3)',
-    numClass: 'text-brand-blue',
-    tagClass: 'text-brand-blue',
-    hoverBorderColor: 'rgba(93,111,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(93,111,255,0.45)',
+    tagKeys: ['sowTag1', 'sowTag2', 'sowTag3'],
   },
   {
     accent: 'purple',
     numKey: 'retainerNumber',
     titleKey: 'retainerTitle',
     bodyKey: 'retainerBody',
-    tag1Key: 'retainerTag1',
-    tag2Key: 'retainerTag2',
-    tag3Key: 'retainerTag3',
-    glowColor: 'rgba(163,93,255,0.3)',
-    numClass: 'text-brand-purple',
-    tagClass: 'text-brand-purple',
-    hoverBorderColor: 'rgba(163,93,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(163,93,255,0.45)',
+    tagKeys: ['retainerTag1', 'retainerTag2', 'retainerTag3'],
   },
   {
     accent: 'cyan',
     numKey: 'embeddedNumber',
     titleKey: 'embeddedTitle',
     bodyKey: 'embeddedBody',
-    tag1Key: 'embeddedTag1',
-    tag2Key: 'embeddedTag2',
-    tag3Key: 'embeddedTag3',
-    glowColor: 'rgba(93,199,255,0.3)',
-    numClass: 'text-brand-cyan',
-    tagClass: 'text-brand-cyan',
-    hoverBorderColor: 'rgba(93,199,255,0.55)',
-    hoverShadow: '0 24px 60px -18px rgba(93,199,255,0.45)',
+    tagKeys: ['embeddedTag1', 'embeddedTag2', 'embeddedTag3'],
   },
 ];
 
@@ -100,7 +77,7 @@ const DONT_DO_ITEMS = ['dontDoItem1', 'dontDoItem2', 'dontDoItem3'] as const;
 export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('services-page');
+  const t = await getTranslations('servicesPage');
 
   return (
     <>
@@ -124,62 +101,67 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <section aria-label={t('eyebrow')} className="py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ENGAGEMENTS.map((e, i) => (
-              <article
-                key={e.titleKey}
-                data-accent={e.accent}
-                className={cn(
-                  'group relative overflow-hidden bg-bg-elevated border border-border rounded-xl',
-                  'p-8 min-h-[320px] flex flex-col',
-                  'transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
-                  'hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]',
-                )}
-                style={
-                  {
-                    ['--card-hover-border' as string]: e.hoverBorderColor,
-                    ['--card-hover-shadow' as string]: e.hoverShadow,
-                  } as React.CSSProperties
-                }
-              >
-                {/* Corner glow overlay. */}
-                <div
-                  aria-hidden
-                  className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
-                  style={{ background: e.glowColor, animationDelay: `${i * 1500}ms` }}
-                />
-                <div
+            {ENGAGEMENTS.map((e, i) => {
+              const accentClass = ACCENT_TEXT_CLASS[e.accent];
+              return (
+                <article
+                  key={e.titleKey}
                   className={cn(
-                    'relative font-mono text-xs tracking-[0.18em] mb-4',
-                    'transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
-                    'group-hover:tracking-[0.3em]',
-                    e.numClass,
+                    'group relative overflow-hidden bg-bg-elevated border border-border rounded-xl',
+                    'p-8 min-h-[320px] flex flex-col',
+                    'transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                    'hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]',
                   )}
+                  style={
+                    {
+                      ['--card-hover-border' as string]: accentHoverBorder(e.accent),
+                      ['--card-hover-shadow' as string]: accentHoverShadow(e.accent),
+                    } as React.CSSProperties
+                  }
                 >
-                  {t(e.numKey)}
-                </div>
-                <h3 className="relative text-xl md:text-2xl font-semibold tracking-tight mb-3">
-                  {t(e.titleKey)}
-                </h3>
-                <p className="relative text-sm md:text-base text-text-muted leading-relaxed mb-6">
-                  {t(e.bodyKey)}
-                </p>
-                <div className="relative flex flex-wrap gap-2 mt-auto">
-                  {[e.tag1Key, e.tag2Key, e.tag3Key].map((tagKey) => (
-                    <span
-                      key={tagKey}
-                      className={cn(
-                        'font-mono text-[10px] px-2 py-1 rounded bg-surface',
-                        'transition-[background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
-                        'group-hover:bg-surface-hover',
-                        e.tagClass,
-                      )}
-                    >
-                      {t(tagKey)}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
+                  {/* Corner glow overlay. */}
+                  <div
+                    aria-hidden
+                    className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                    style={{
+                      background: accentGlowColor(e.accent, 0),
+                      animationDelay: `${i * 1500}ms`,
+                    }}
+                  />
+                  <div
+                    className={cn(
+                      'relative font-mono text-xs tracking-[0.18em] mb-4',
+                      'transition-[letter-spacing] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                      'group-hover:tracking-[0.3em]',
+                      accentClass,
+                    )}
+                  >
+                    {t(e.numKey)}
+                  </div>
+                  <h3 className="relative text-xl md:text-2xl font-semibold tracking-tight mb-3">
+                    {t(e.titleKey)}
+                  </h3>
+                  <p className="relative text-sm md:text-base text-text-muted leading-relaxed mb-6">
+                    {t(e.bodyKey)}
+                  </p>
+                  <div className="relative flex flex-wrap gap-2 mt-auto">
+                    {e.tagKeys.map((tagKey) => (
+                      <span
+                        key={tagKey}
+                        className={cn(
+                          'font-mono text-[10px] px-2 py-1 rounded bg-surface',
+                          'transition-[background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                          'group-hover:bg-surface-hover',
+                          accentClass,
+                        )}
+                      >
+                        {t(tagKey)}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -139,3 +139,20 @@ export function accentGlowColor(accent: Accent, index: number): string {
   }
   return `rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.3)`;
 }
+
+/**
+ * Translucent brand-color value for the brightened border on a hovered
+ * card (e.g. work-index cards, engagement cards). ~55% alpha.
+ */
+export function accentHoverBorder(accent: SolidAccent): string {
+  return `rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.55)`;
+}
+
+/**
+ * Box-shadow value for the brand-tinted drop shadow on a hovered card.
+ * Pairs with accentHoverBorder() for the work-index and services-page
+ * engagement card hover treatment.
+ */
+export function accentHoverShadow(accent: SolidAccent): string {
+  return `0 24px 60px -18px rgba(${BRAND_RGB[accent].replace(/\s+/g, '')},0.45)`;
+}
