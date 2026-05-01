@@ -5,6 +5,7 @@ import { ButtonLink } from '@/components/primitives/button';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Spotlight } from '@/components/primitives/spotlight';
 import { EngagementTimeline } from '@/components/services/engagement-timeline';
+import { HonestyList } from '@/components/services/honesty-list';
 import {
   ACCENT_TEXT_CLASS,
   accentGlowColor,
@@ -65,9 +66,6 @@ const ENGAGEMENTS: ReadonlyArray<Engagement> = [
     tagKeys: ['embeddedTag1', 'embeddedTag2', 'embeddedTag3'],
   },
 ];
-
-const BRING_ITEMS = ['bringItem1', 'bringItem2', 'bringItem3', 'bringItem4', 'bringItem5'] as const;
-const DONT_DO_ITEMS = ['dontDoItem1', 'dontDoItem2', 'dontDoItem3'] as const;
 
 export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -179,40 +177,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <section className="relative overflow-hidden py-20 md:py-24">
         <SectionAtmosphere accent="cyan" position="top-right" />
         <div className="relative mx-auto max-w-7xl px-6">
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
-            <div>
-              <Eyebrow className="mb-8">{t('bringEyebrow')}</Eyebrow>
-              <ul className="space-y-4">
-                {BRING_ITEMS.map((key) => (
-                  <li key={key} className="flex items-start gap-3">
-                    <span
-                      aria-hidden
-                      className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-cyan/15 text-brand-cyan font-mono text-xs"
-                    >
-                      {'✓'}
-                    </span>
-                    <span className="font-mono text-sm text-text leading-relaxed">{t(key)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <Eyebrow className="mb-8 text-brand-purple">{t('dontDoEyebrow')}</Eyebrow>
-              <ul className="space-y-4">
-                {DONT_DO_ITEMS.map((key) => (
-                  <li key={key} className="flex items-start gap-3">
-                    <span
-                      aria-hidden
-                      className="mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-purple/15 text-brand-purple font-mono text-xs"
-                    >
-                      {'×'}
-                    </span>
-                    <span className="font-mono text-sm text-text leading-relaxed">{t(key)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <HonestyList />
         </div>
       </section>
 
