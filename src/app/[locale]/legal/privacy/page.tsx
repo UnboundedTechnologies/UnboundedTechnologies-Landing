@@ -1,5 +1,6 @@
 // LAWYER REVIEW REQUIRED before public launch
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { SectionAtmosphere } from '@/components/atmosphere/section-atmosphere';
 import { Eyebrow } from '@/components/primitives/eyebrow';
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -26,7 +27,8 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   return (
     <>
       {/* 1. Hero */}
-      <section className="relative py-20 md:py-28">
+      <section className="relative overflow-hidden py-20 md:py-28">
+        <SectionAtmosphere accent="blue" position="top-right" intensity={0.7} />
         <div className="relative mx-auto max-w-3xl px-6">
           <Eyebrow>{t('eyebrow')}</Eyebrow>
           <h1 className="mt-6 text-4xl md:text-5xl font-semibold tracking-[-0.04em] leading-[1.05]">
@@ -42,23 +44,30 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* 2. Body sections */}
-      <section className="py-12 md:py-16">
-        <div className="mx-auto max-w-3xl px-6">
-          <ol className="space-y-12 md:space-y-16">
+      <section className="relative overflow-hidden py-12 md:py-16">
+        <SectionAtmosphere accent="purple" position="top-left" intensity={0.6} />
+        <div className="relative mx-auto max-w-3xl px-6">
+          <ol className="space-y-6 md:space-y-8">
             {SECTIONS.map((key, idx) => (
-              <li key={key} className="prose prose-invert max-w-prose">
+              <li
+                key={key}
+                className={cn(
+                  'group relative rounded-xl border border-border bg-bg-elevated/40 backdrop-blur-sm',
+                  'p-6 md:p-8 transition-colors duration-[var(--duration-short)]',
+                  'hover:border-border-hover',
+                )}
+              >
                 <div
                   className={cn(
-                    'font-mono text-xs uppercase tracking-[0.18em] text-text-faint',
-                    'not-prose mb-3',
+                    'font-mono text-xs uppercase tracking-[0.18em] text-text-faint mb-3',
                   )}
                 >
                   {String(idx + 1).padStart(2, '0')}
                 </div>
-                <h2 className="not-prose text-xl md:text-2xl font-semibold tracking-tight text-text mb-4">
+                <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-text mb-4">
                   {t(`${key}Title`)}
                 </h2>
-                <div className="text-sm md:text-base text-text-muted leading-relaxed space-y-4">
+                <div className="text-sm md:text-base text-text-muted leading-relaxed space-y-4 max-w-prose">
                   {t(`${key}Body`)
                     .split('\n\n')
                     .map((para, pIdx) => (
