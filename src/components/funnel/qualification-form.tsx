@@ -220,7 +220,7 @@ export function QualificationForm({ onSuccess }: Props) {
           {...register('description')}
           rows={4}
           placeholder={t('descriptionPlaceholder')}
-          maxLength={500}
+          maxLength={2000}
           className={cn(inputClass(!!errors.description), 'resize-y min-h-[110px]')}
         />
       </Field>

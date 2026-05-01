@@ -34,7 +34,7 @@ export const leadSchema = z.object({
     .min(HOURLY_RATE_MIN)
     .max(HOURLY_RATE_MAX),
   timeline: z.enum(timelines),
-  description: z.string().max(500).optional(),
+  description: z.string().max(2000).optional(),
   turnstileToken: z.string().min(1),
 });
 

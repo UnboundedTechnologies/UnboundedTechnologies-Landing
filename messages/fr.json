@@ -222,7 +222,7 @@
       },
       "descriptionLabel": "En quelques mots, que cherchez-vous à résoudre?",
       "descriptionPlaceholder": "Quelques lignes suffisent: la contrainte, l'objectif, ce qu'il est utile de savoir.",
-      "descriptionHint": "Optionnel. {count}/500 caractères.",
+      "descriptionHint": "Optionnel. {count}/2000 caractères.",
       "submit": "Envoyer",
       "submitting": "Envoi...",
       "errorRequired": "Requis.",

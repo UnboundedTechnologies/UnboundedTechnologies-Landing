@@ -222,7 +222,7 @@
       },
       "descriptionLabel": "Briefly, what are you trying to solve?",
       "descriptionPlaceholder": "A few lines is plenty - the constraint, the goal, anything we should know.",
-      "descriptionHint": "Optional. {count}/500 characters.",
+      "descriptionHint": "Optional. {count}/2000 characters.",
       "submit": "Send",
       "submitting": "Sending...",
       "errorRequired": "Required.",
