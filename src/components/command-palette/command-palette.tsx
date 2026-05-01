@@ -244,17 +244,8 @@ export function CommandPalette({ caseStudies }: Props) {
       icon: <SunsetIcon />,
       perform: () => setTheme('auto'),
     },
-    // Motion
-    {
-      id: 'motion-system',
-      group: 'motion',
-      groupLabel: motionGroupLabel,
-      label: t('motionSystem'),
-      description: t('motionSystemDesc'),
-      keywords: ['motion', 'system'],
-      icon: <GearIcon />,
-      perform: () => setMotion('system'),
-    },
+    // Motion: order chosen so the user-actionable extremes appear first
+    // (Reduce -> Full) and the "let the OS decide" passive option is last.
     {
       id: 'motion-reduce',
       group: 'motion',
@@ -274,6 +265,16 @@ export function CommandPalette({ caseStudies }: Props) {
       keywords: ['full', 'all'],
       icon: <PlayIcon />,
       perform: () => setMotion('full'),
+    },
+    {
+      id: 'motion-system',
+      group: 'motion',
+      groupLabel: motionGroupLabel,
+      label: t('motionSystem'),
+      description: t('motionSystemDesc'),
+      keywords: ['motion', 'system'],
+      icon: <GearIcon />,
+      perform: () => setMotion('system'),
     },
   ];
 
