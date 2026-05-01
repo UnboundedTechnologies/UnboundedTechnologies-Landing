@@ -7,10 +7,10 @@ export const timelines = ['asap', '1-3mo', '3-6mo', 'exploring'] as const;
 // the display reads cleanly on the slider and in the email/Notion record.
 // HST is collected on top of the quoted rate; we don't store it separately
 // since it's a function of the rate and the buyer's province.
-export const HOURLY_RATE_MIN = 100;
+export const HOURLY_RATE_MIN = 70;
 export const HOURLY_RATE_MAX = 400;
-export const HOURLY_RATE_STEP = 25;
-export const HOURLY_RATE_DEFAULT = 200;
+export const HOURLY_RATE_STEP = 5;
+export const HOURLY_RATE_DEFAULT = 100;
 export const industries = [
   'finance',
   'technology',
