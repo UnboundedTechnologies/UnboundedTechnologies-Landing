@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
   },
   // Title page brand banner image.
   bannerImage: {
-    width: 280,
+    width: 420,
     height: 'auto',
-    marginBottom: 28,
+    marginBottom: 32,
   },
   titleSubtitle: {
     fontFamily: 'Helvetica',
