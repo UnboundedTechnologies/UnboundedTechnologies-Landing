@@ -182,7 +182,7 @@
     "eyebrow": "- Contact",
     "headlineLead": "Start a",
     "headlineAccent": "project conversation.",
-    "intro": "Tell us a little about the work. Qualified leads get a direct calendar slot on the next screen; everyone else hears back by email within one business day.",
+    "intro": "Share a few details about your project. We respond within one business day. Strong matches can book a call directly on the next screen.",
     "form": {
       "nameLabel": "Your name",
       "namePlaceholder": "Jane Doe",
@@ -235,11 +235,13 @@
       "errorGeneric": "Something went wrong sending the form. Please try again or email contact@unboundedtechnologies.com directly."
     },
     "thankYou": {
-      "qualifiedHeadline": "Thanks - here is the next step.",
-      "qualifiedBody": "Your project clears the budget and timeline gates. Grab a 30-minute slot directly below; you will get a calendar invite by email.",
+      "qualifiedEyebrow": "Submission received",
+      "qualifiedHeadline": "Thank you. We are excited to talk.",
+      "qualifiedBody": "Your project lines up well with what we do best. Pick a 30-minute slot below and you will receive a calendar invite by email right away.",
       "qualifiedCalendlyEyebrow": "- Book a call",
-      "exploratoryHeadline": "Thanks - we will be in touch.",
-      "exploratoryBody": "We have your note and will reply by email within a few business days. If your situation changes, you can update us at contact@unboundedtechnologies.com.",
+      "exploratoryEyebrow": "Submission received",
+      "exploratoryHeadline": "Thank you for reaching out.",
+      "exploratoryBody": "We have your note and will reply by email within a few business days. If anything changes in the meantime, write to contact@unboundedtechnologies.com.",
       "backLabel": "Back to home"
     }
   },

@@ -182,7 +182,7 @@
     "eyebrow": "- Contact",
     "headlineLead": "Démarrer une",
     "headlineAccent": "conversation projet.",
-    "intro": "Parlez-nous brièvement du projet. Les pistes qualifiées obtiennent un créneau direct dans le calendrier à l'écran suivant; pour les autres, nous répondons par courriel sous un jour ouvrable.",
+    "intro": "Partagez quelques détails sur votre projet. Nous répondons sous un jour ouvrable. Les profils alignés peuvent réserver un appel directement à l'écran suivant.",
     "form": {
       "nameLabel": "Votre nom",
       "namePlaceholder": "Jeanne Dupont",
@@ -235,11 +235,13 @@
       "errorGeneric": "L'envoi du formulaire a échoué. Réessayez ou écrivez directement à contact@unboundedtechnologies.com."
     },
     "thankYou": {
-      "qualifiedHeadline": "Merci - voici la suite.",
-      "qualifiedBody": "Votre projet passe les seuils de budget et d'échéance. Réservez un créneau de 30 minutes ci-dessous; vous recevrez l'invitation par courriel.",
+      "qualifiedEyebrow": "Soumission reçue",
+      "qualifiedHeadline": "Merci. Nous avons hâte d'échanger.",
+      "qualifiedBody": "Votre projet s'aligne avec ce que nous faisons de mieux. Choisissez un créneau de 30 minutes ci-dessous et vous recevrez l'invitation par courriel tout de suite.",
       "qualifiedCalendlyEyebrow": "- Réserver un appel",
-      "exploratoryHeadline": "Merci - nous reviendrons vers vous.",
-      "exploratoryBody": "Nous avons reçu votre note et répondrons par courriel sous quelques jours ouvrables. Si la situation évolue, écrivez-nous à contact@unboundedtechnologies.com.",
+      "exploratoryEyebrow": "Soumission reçue",
+      "exploratoryHeadline": "Merci de nous avoir contactés.",
+      "exploratoryBody": "Nous avons reçu votre message et répondrons par courriel sous quelques jours ouvrables. Si quelque chose évolue, écrivez-nous à contact@unboundedtechnologies.com.",
       "backLabel": "Retour à l'accueil"
     }
   },
