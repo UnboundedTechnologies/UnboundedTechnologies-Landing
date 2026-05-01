@@ -257,6 +257,7 @@
       "descriptionHint": "Required. Minimum 30 characters. {count}/2000.",
       "submit": "Send",
       "submitting": "Sending...",
+      "replyTime": "We respond within one business day",
       "errorRequired": "Required.",
       "errorEmail": "Please enter a valid email.",
       "errorMin": "A few more details, please.",

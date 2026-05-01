@@ -246,19 +246,24 @@ export function QualificationForm({ onSuccess }: Props) {
         </div>
       )}
 
-      <div className="flex items-center justify-end pt-2">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-border">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-faint">
+          {t('replyTime')}
+        </p>
         <button
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            'inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold cursor-pointer',
-            'bg-gradient-to-r from-brand-blue to-brand-purple text-white',
-            'transition-opacity duration-[var(--duration-short)]',
-            'hover:opacity-90 disabled:cursor-wait disabled:opacity-60',
+            'inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold cursor-pointer whitespace-nowrap',
+            'bg-gradient-to-r from-brand-blue to-brand-purple text-white shadow-lg shadow-brand-purple/20',
+            'transition-all duration-[var(--duration-short)]',
+            'hover:opacity-90 hover:shadow-xl hover:shadow-brand-purple/30 active:scale-[0.98]',
+            'disabled:cursor-wait disabled:opacity-60 disabled:hover:shadow-lg',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
           )}
         >
           {isSubmitting ? t('submitting') : t('submit')}
+          <span aria-hidden>→</span>
         </button>
       </div>
     </form>

@@ -257,6 +257,7 @@
       "descriptionHint": "Requis. Minimum 30 caractères. {count}/2000.",
       "submit": "Envoyer",
       "submitting": "Envoi...",
+      "replyTime": "Nous répondons sous un jour ouvrable",
       "errorRequired": "Requis.",
       "errorEmail": "Adresse courriel invalide.",
       "errorMin": "Quelques détails de plus, s'il vous plaît.",
