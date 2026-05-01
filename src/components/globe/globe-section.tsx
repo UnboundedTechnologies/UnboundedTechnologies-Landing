@@ -64,7 +64,13 @@ export function GlobeSection() {
             <LiveCounter />
           </div>
         </div>
-        <div className="relative aspect-square w-full mx-auto motion-reduce:contents">
+        {/* Centering: the grid cell stretches full-width, but capping the
+            globe at max-w-[420px] + justify-self-center on mobile makes
+            the canvas sit dead-center in the column instead of stretching
+            to a full-bleed square that the R3F renderer can position
+            inconsistently inside. md+ recovers the wider sizing inside
+            the 2-column layout. */}
+        <div className="relative aspect-square w-full max-w-[420px] md:max-w-none mx-auto justify-self-center motion-reduce:contents">
           <div className="hidden motion-reduce:block w-full h-full">
             <GlobeStatic />
           </div>
