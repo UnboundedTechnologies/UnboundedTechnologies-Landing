@@ -5,6 +5,7 @@ import { GraphCard } from './graph-card';
 import type { Edge, Node } from './graph-data';
 import { GraphEdges } from './graph-edges';
 import { MobileEdgeStrip } from './mobile-edge-strip';
+import { MobileGraphBreak } from './mobile-graph-break';
 import { useCardPositions } from './use-card-positions';
 
 type Variant = 'page' | 'inline';
@@ -79,13 +80,17 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
   const uniqueCategoryCount = new Set(nodes.map((n) => n.category)).size;
   const colsClass = GRID_COLS_CLASS[uniqueCategoryCount] ?? 'md:grid-cols-3';
 
-  // Horizontal gaps drop to 0 on mobile (single-column stack - the x-gap
-  // is wasted) and vertical gaps tighten so the column doesn't run on
-  // forever. md+ restores the original spacious 2D layout.
+  // On mobile the grid gap drops to 0 so card + connector sit flush
+  // (the connector strip's own padding provides breathing). This lets
+  // the dashed energy line actually touch the card edges rather than
+  // float in dead space. Where a graph break is needed (no edge between
+  // adjacent cards because they belong to different case studies) the
+  // MobileGraphBreak adds explicit my-8 to provide the visual gap.
+  // md+ restores the spacious 2D layout the desktop SVG path needs.
   const spacing =
     variant === 'page'
-      ? 'mt-20 md:mt-36 gap-y-12 md:gap-y-48 gap-x-0 md:gap-x-40'
-      : 'mt-24 md:mt-52 mb-10 md:mb-20 gap-y-8 md:gap-y-24 gap-x-0 md:gap-x-24';
+      ? 'mt-20 md:mt-36 gap-y-0 md:gap-y-48 gap-x-0 md:gap-x-40'
+      : 'mt-24 md:mt-52 mb-10 md:mb-20 gap-y-0 md:gap-y-24 gap-x-0 md:gap-x-24';
 
   return (
     <div
@@ -96,6 +101,10 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
       {nodes.map((n, i) => {
         const isSelf = activeSlug !== undefined && n.href.replace(/^\/work\//, '') === activeSlug;
         const isLast = i === nodes.length - 1;
+        const next = isLast ? null : nodes[i + 1];
+        const hasEdgeToNext =
+          next !== null && edges.some((e) => e.from === n.id && e.to === next.id);
+        const isGraphBreak = next !== null && !hasEdgeToNext && n.href !== next.href;
         return (
           <Fragment key={n.id}>
             <GraphCard
@@ -107,11 +116,22 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
               category={n.category}
               index={i}
             />
-            {/* Mobile-only connector strip between this card and the next.
-                Renders the edge's primary + secondary text as a pill so
-                mobile readers see the same stats desktop gets via the
-                SVG overlay. Hidden md+ where the GraphEdges SVG owns it. */}
-            {!isLast && <MobileEdgeStrip nodes={nodes} edges={edges} sourceIndex={i} />}
+            {/* Between-cards mobile renderer. Three cases:
+                - Edge between this card and the next: animated connector
+                  pill (MobileEdgeStrip) sits flush against both cards.
+                - No edge AND different case study: MobileGraphBreak
+                  signals the new graph deliberately so the empty space
+                  doesn't read as a missing connector.
+                - No edge AND same case study (rare in current data):
+                  render nothing.
+                Hidden md+ where the GraphEdges SVG overlay owns this
+                whole layer. */}
+            {!isLast && hasEdgeToNext && (
+              <MobileEdgeStrip nodes={nodes} edges={edges} sourceIndex={i} />
+            )}
+            {!isLast && !hasEdgeToNext && isGraphBreak && next && (
+              <MobileGraphBreak nextHref={next.href} />
+            )}
           </Fragment>
         );
       })}

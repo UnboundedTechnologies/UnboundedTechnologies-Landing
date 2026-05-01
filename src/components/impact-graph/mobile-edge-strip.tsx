@@ -27,7 +27,10 @@ type Props = {
   sourceIndex: number;
 };
 
-const LINE_HEIGHT = 22;
+// Lines are tall enough to read as a meaningful connector and span the
+// space between cards (the parent grid uses gap-y-0 on mobile so the
+// strip + card sit flush; the strip's own padding provides breathing).
+const LINE_HEIGHT = 32;
 
 export function MobileEdgeStrip({ nodes, edges, sourceIndex }: Props) {
   const source = nodes[sourceIndex];
@@ -40,7 +43,7 @@ export function MobileEdgeStrip({ nodes, edges, sourceIndex }: Props) {
   const accent = COLOR_HEX[edge.color];
 
   return (
-    <div className="md:hidden flex flex-col items-center gap-2 py-1" aria-hidden>
+    <div className="md:hidden flex flex-col items-center gap-2 py-3" aria-hidden>
       {/* Connector line above the pill - SVG so the energy-packet dash
           animation plays exactly like desktop edges. */}
       <svg width="2" height={LINE_HEIGHT} className="overflow-visible block" aria-hidden>
