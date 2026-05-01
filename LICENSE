@@ -1,0 +1,49 @@
+Proprietary Software License
+
+Copyright (c) 2026 Unbounded Technologies Inc.
+All rights reserved.
+
+This repository contains the source code and content for the official landing
+website of Unbounded Technologies Inc. (the "Software"). The Software is made
+publicly visible so that prospective clients, partners, and the broader
+engineering community can review the implementation. Public visibility does
+NOT grant any license to use, copy, modify, merge, publish, distribute,
+sublicense, or sell the Software, in whole or in part.
+
+Restrictions:
+
+  1. The Software is the exclusive intellectual property of Unbounded
+     Technologies Inc., a corporation incorporated in Ontario, Canada.
+
+  2. No license is granted to use, copy, modify, merge, publish, distribute,
+     sublicense, or create derivative works of the Software, in source or
+     binary form, except as expressly authorized in writing by an authorized
+     representative of Unbounded Technologies Inc.
+
+  3. The trademarks, service marks, trade names, brand names, banners, and
+     visual identity included in this repository (including but not limited
+     to the "Unbounded Technologies" name and the infinity wordmark) are
+     trademarks of Unbounded Technologies Inc. and may not be reproduced,
+     imitated, or used in any commercial or non-commercial context without
+     express written permission.
+
+  4. Bug reports, security disclosures, and questions about the Software are
+     welcome at contact@unboundedtechnologies.com. Pull requests will be
+     considered on a case-by-case basis but no contribution license is
+     implied; contributions, if accepted, are assigned to Unbounded
+     Technologies Inc.
+
+  5. Third-party dependencies declared in package.json retain their original
+     licenses (typically MIT, BSD, or Apache 2.0). This License does not
+     restrict the rights granted by those upstream licenses with respect to
+     those dependencies.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+UNBOUNDED TECHNOLOGIES INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+For licensing inquiries: contact@unboundedtechnologies.com
