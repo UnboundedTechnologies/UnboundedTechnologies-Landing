@@ -1,5 +1,5 @@
 {
-  "nav": { "work": "Travaux", "services": "Services", "about": "À propos", "contact": "Contact", "startProject": "Démarrer un projet" },
+  "nav": { "work": "Travaux", "services": "Services", "about": "À propos", "contact": "Contact", "startProject": "Démarrer un projet", "menuOpen": "Ouvrir le menu", "menuClose": "Fermer le menu" },
   "hero": {
     "eyebrow": "— Architecture cloud · Toronto",
     "headlineLead": "Le cloud à",

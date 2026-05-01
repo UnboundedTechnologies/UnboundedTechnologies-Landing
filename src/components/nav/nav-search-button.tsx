@@ -16,19 +16,19 @@ export function NavSearchButton() {
       type="button"
       onClick={open}
       aria-label="Search (⌘K or Ctrl+K)"
-      className="group relative inline-flex h-9 w-9 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+      className="group relative inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
         <title>Search</title>
         <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
         <path d="M20 20 L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
-      {/* Tooltip - simple positioned div, fades + lifts in on hover/focus.
-          Skips a tooltip primitive to keep the bundle tiny. */}
+      {/* Tooltip - desktop affordance only (hover never fires on touch).
+          Hidden below md: so we don't render dead nodes on mobile. */}
       <span
         role="tooltip"
         className={[
-          'pointer-events-none absolute top-full right-0 mt-2 z-50 flex items-center gap-2 whitespace-nowrap',
+          'pointer-events-none absolute top-full right-0 mt-2 z-50 hidden md:flex items-center gap-2 whitespace-nowrap',
           'rounded-md border border-border bg-bg-elevated/95 backdrop-blur-md px-3 py-1.5',
           'text-xs text-text-muted',
           'opacity-0 translate-y-1 transition-[opacity,transform] duration-200',

@@ -222,6 +222,22 @@ html[data-motion="reduce"] *::after {
 }
 
 /*
+ * Mobile menu drawer (Phase 1.1 of mobile responsiveness pass). Slides
+ * down from the top edge so the hamburger affordance feels physically
+ * connected to where the panel emerges from. Reuses the same opacity
+ * fade timing as the palette overlay to keep the two surfaces feeling
+ * like part of the same family.
+ */
+@keyframes mobile-menu-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes mobile-menu-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-12px); }
+}
+
+/*
  * EngagementTimeline (services /how-an-engagement-starts) ping ripple. Used
  * on the active step's number circle to draw the eye to the currently lit
  * node. Two of these are layered with a 750 ms offset so the ripple

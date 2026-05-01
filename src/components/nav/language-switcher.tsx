@@ -77,14 +77,14 @@ export function LanguageSwitcher({ current }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Language: ${current.toUpperCase()}`}
-        className="group relative inline-flex h-9 w-9 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+        className="group relative inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
       >
         <GlobeIcon className="h-4 w-4" />
-        {/* Tooltip - same visual language as the nav search tooltip. */}
+        {/* Tooltip - desktop affordance only; hidden on mobile. */}
         <span
           role="tooltip"
           className={cn(
-            'pointer-events-none absolute top-full right-0 mt-2 z-50 flex items-center gap-2 whitespace-nowrap',
+            'pointer-events-none absolute top-full right-0 mt-2 z-50 hidden md:flex items-center gap-2 whitespace-nowrap',
             'rounded-md border border-border bg-bg-elevated/95 backdrop-blur-md px-3 py-1.5',
             'text-xs text-text-muted',
             'opacity-0 translate-y-1 transition-[opacity,transform] duration-200',
@@ -106,7 +106,10 @@ export function LanguageSwitcher({ current }: Props) {
           role="menu"
           aria-label="Language"
           className={cn(
-            'absolute right-0 top-full mt-2 z-50 min-w-[160px] origin-top-right',
+            // right-2 on mobile so the menu doesn't clip past the screen
+            // edge when the trigger sits flush right; right-0 on md+
+            // where the nav has more breathing room.
+            'absolute right-2 md:right-0 top-full mt-2 z-50 w-[180px] max-w-[calc(100vw-1rem)] origin-top-right',
             'rounded-xl border border-white/[0.08] bg-bg-elevated/90 backdrop-blur-2xl',
             '[box-shadow:0_18px_48px_-12px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]',
             'p-1.5',

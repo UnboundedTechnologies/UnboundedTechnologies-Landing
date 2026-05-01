@@ -45,10 +45,13 @@ export function CalendlyEmbed({ url }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-bg-elevated">
+    // Wrapper drives the height responsively (560px on phones, 720px
+    // md+) since the InlineWidget styles prop wants a fixed pixel value.
+    // We let the iframe inherit 100% so it tracks the wrapper.
+    <div className="overflow-hidden rounded-xl border border-border bg-bg-elevated h-[560px] md:h-[720px]">
       <InlineWidget
         url={url}
-        styles={{ height: '720px', width: '100%' }}
+        styles={{ height: '100%', width: '100%' }}
         pageSettings={{
           backgroundColor: '0d0c16',
           textColor: 'f4f5fa',

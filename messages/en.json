@@ -1,5 +1,5 @@
 {
-  "nav": { "work": "Work", "services": "Services", "about": "About", "contact": "Contact", "startProject": "Start a project" },
+  "nav": { "work": "Work", "services": "Services", "about": "About", "contact": "Contact", "startProject": "Start a project", "menuOpen": "Open menu", "menuClose": "Close menu" },
   "hero": {
     "eyebrow": "— Cloud architecture · Toronto",
     "headlineLead": "Cloud at the",
