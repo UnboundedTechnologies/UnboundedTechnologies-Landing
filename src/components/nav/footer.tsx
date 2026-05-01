@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { PerfScorecard } from '@/components/perf-scorecard/perf-scorecard';
 import { Link } from '@/i18n/routing';
 
@@ -6,8 +7,23 @@ export function Footer() {
     <footer className="relative border-t border-border">
       <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-8 text-sm text-text-muted">
         <div>
-          <div className="font-semibold text-text">∞ Unbounded Technologies Inc.</div>
-          <div className="font-mono text-xs mt-3">Toronto · Ontario · Canada</div>
+          <div className="w-fit">
+            <Image
+              src="/ut-banner.png"
+              alt="Unbounded Technologies Inc."
+              width={1266}
+              height={284}
+              sizes="(min-width: 768px) 14rem, 11rem"
+              className="h-10 md:h-12 w-auto max-w-full"
+            />
+            <div className="font-mono text-xs mt-3 flex justify-between">
+              <span>Toronto</span>
+              <span aria-hidden>·</span>
+              <span>Ontario</span>
+              <span aria-hidden>·</span>
+              <span>Canada</span>
+            </div>
+          </div>
         </div>
         <div>
           <div className="font-mono uppercase text-xs tracking-widest text-text-faint mb-3">
