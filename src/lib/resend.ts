@@ -50,7 +50,7 @@ export async function sendQualifiedConfirmation(lead: Lead) {
   return send({
     from: env.RESEND_FROM_EMAIL,
     to: lead.email,
-    subject: 'Thanks - next step at Unbounded Technologies',
+    subject: 'Thanks - next step at Unbounded Technologies Inc.',
     react: QualifiedConfirmationEmail({ lead }),
   });
 }

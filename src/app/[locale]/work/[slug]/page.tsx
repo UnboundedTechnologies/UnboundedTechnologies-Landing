@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const study = await getCaseStudy(slug, locale as Locale);
   if (!study) {
-    return { title: 'Unbounded Technologies' };
+    return { title: 'Unbounded Technologies Inc.' };
   }
 
   // First non-empty paragraph from the body, capped at ~160 chars, used as the
@@ -45,7 +45,7 @@ export async function generateMetadata({
   const og = ogImageMetadata(locale as OgLocale, [segment, slug]);
 
   return {
-    title: `${study.title} | Unbounded Technologies`,
+    title: `${study.title} | Unbounded Technologies Inc.`,
     description,
     openGraph: {
       title: study.title,

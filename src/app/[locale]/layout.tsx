@@ -44,7 +44,7 @@ export async function generateMetadata({
       locale: locale === 'fr' ? 'fr_CA' : 'en_CA',
       alternateLocale: locale === 'fr' ? 'en_CA' : 'fr_CA',
       type: 'website',
-      siteName: 'Unbounded Technologies',
+      siteName: 'Unbounded Technologies Inc.',
       url: `${SITE_URL}/${locale}`,
       images: og.openGraph.images,
     },

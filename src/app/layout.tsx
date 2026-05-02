@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://unboundedtechnologies.com'),
-  title: { default: 'Unbounded Technologies Inc.', template: '%s · Unbounded Technologies' },
+  title: { default: 'Unbounded Technologies Inc.', template: '%s · Unbounded Technologies Inc.' },
   description: "Senior cloud and CPaaS engineering for enterprises that can't afford to fail.",
   authors: [{ name: 'Saïd Aïssani' }],
   creator: 'Unbounded Technologies Inc.',

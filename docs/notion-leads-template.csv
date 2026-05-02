@@ -1,0 +1,9 @@
+Name,Email,Company,Industry,Project type,Budget,Timeline,Description,Status,Score
+TEMPLATE 01 - delete after import,sample1@example.com,Acme Co,Finance,Cloud architecture,<$25k,ASAP,Seed row covering option set 1 - safe to delete once column types are set,New,50
+TEMPLATE 02 - delete after import,sample2@example.com,Acme Co,Technology,CCaaS / Connect,$25k-100k,1-3 months,Seed row covering option set 2,Contacted,70
+TEMPLATE 03 - delete after import,sample3@example.com,Acme Co,Telecom,Serverless,$100k-500k,3-6 months,Seed row covering option set 3,Qualified,80
+TEMPLATE 04 - delete after import,sample4@example.com,Acme Co,Construction,Other,$500k+,1 year+,Seed row covering option set 4,Closed Won,100
+TEMPLATE 05 - delete after import,sample5@example.com,Acme Co,Media,"Cloud architecture, Serverless",Not sure,Exploring,Seed row covering option set 5 with multi-select,Closed Lost,30
+TEMPLATE 06 - delete after import,sample6@example.com,Acme Co,Automotive,"CCaaS / Connect, Other",$25k-100k,ASAP,Seed row covering option set 6 with multi-select,New,40
+TEMPLATE 07 - delete after import,sample7@example.com,Acme Co,Government,Cloud architecture,<$25k,1-3 months,Seed row covering option set 7,New,60
+TEMPLATE 08 - delete after import,sample8@example.com,Acme Co,Other,Serverless,$100k-500k,3-6 months,Seed row covering option set 8,New,50

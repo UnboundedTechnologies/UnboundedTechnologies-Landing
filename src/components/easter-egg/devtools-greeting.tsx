@@ -45,7 +45,7 @@ export function DevToolsGreeting() {
       ].join(';'),
     );
     console.log(
-      '%cUnbounded Technologies %c·%c Senior cloud architecture, built to last.\n%cIf you read code in your free time, talk to us: contact@unboundedtechnologies.com',
+      '%cUnbounded Technologies Inc. %c·%c Senior cloud architecture, built to last.\n%cIf you read code in your free time, talk to us: contact@unboundedtechnologies.com',
       'color: #f4f5fa; font-weight: 600; font-size: 13px',
       'color: #666b80; padding: 0 6px',
       'color: #bcbed0; font-size: 13px',

@@ -525,12 +525,12 @@ export function CvDocument({
 
   return (
     <Document
-      title="Unbounded Technologies, Capability Statement"
+      title="Unbounded Technologies Inc., Capability Statement"
       author="Said Aissani"
       creator="Unbounded Technologies Inc."
       producer="Unbounded Technologies Inc."
       subject="Capability Statement"
-      keywords="cloud architecture, AWS, CPaaS, Toronto, Canada, Unbounded Technologies, capability statement"
+      keywords="cloud architecture, AWS, CPaaS, Toronto, Canada, Unbounded Technologies Inc., capability statement"
     >
       {/* Page 1: title page */}
       <Page size="LETTER" style={styles.titlePage}>

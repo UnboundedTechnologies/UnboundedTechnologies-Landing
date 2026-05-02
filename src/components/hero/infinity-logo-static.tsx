@@ -1,6 +1,6 @@
 export function InfinityLogoStatic({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 200 100" className={className} aria-label="Unbounded Technologies">
+    <svg viewBox="0 0 200 100" className={className} aria-label="Unbounded Technologies Inc.">
       <defs>
         <linearGradient id="ul-grad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#5d6fff" />

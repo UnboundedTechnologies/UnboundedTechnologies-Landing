@@ -73,7 +73,7 @@ export function QualifiedConfirmationEmail({ lead }: { lead: Lead }) {
           </Text>
           <Text style={phoneStyle}>+1 (438) 451-6007</Text>
           <Hr style={hrStyle} />
-          <Text style={signatureStyle}>Sa&iuml;d A&iuml;ssani - Unbounded Technologies</Text>
+          <Text style={signatureStyle}>Sa&iuml;d A&iuml;ssani - Unbounded Technologies Inc.</Text>
         </Container>
       </Body>
     </Html>
@@ -97,7 +97,7 @@ export function ExploratoryConfirmationEmail({ lead }: { lead: Lead }) {
             days once I have had a chance to review it properly.
           </Text>
           <Hr style={hrStyle} />
-          <Text style={signatureStyle}>Sa&iuml;d A&iuml;ssani - Unbounded Technologies</Text>
+          <Text style={signatureStyle}>Sa&iuml;d A&iuml;ssani - Unbounded Technologies Inc.</Text>
         </Container>
       </Body>
     </Html>
