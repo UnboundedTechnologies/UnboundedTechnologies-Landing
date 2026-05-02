@@ -87,6 +87,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </h1>
               <p className="mt-8 text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
                 {t('subhead')}
+                <br />
+                {t('subheadLocation')}
               </p>
             </div>
             <div className="relative h-[280px] md:h-[400px] mt-12 md:mt-0 flex items-center justify-center">
