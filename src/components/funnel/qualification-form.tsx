@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { type Control, Controller, useForm, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { ChipMultiSelect } from './chip-multi-select';
 import {
@@ -50,7 +50,6 @@ export function QualificationForm({ onSuccess }: Props) {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<Lead>({
     resolver: zodResolver(leadSchema),
@@ -67,8 +66,6 @@ export function QualificationForm({ onSuccess }: Props) {
     },
     mode: 'onBlur',
   });
-
-  const description = watch('description') ?? '';
 
   // Stable callback so the Turnstile widget's useEffect doesn't tear down
   // and recreate the challenge on every parent re-render (each keystroke in
@@ -213,7 +210,12 @@ export function QualificationForm({ onSuccess }: Props) {
 
       <Field
         label={t('descriptionLabel')}
-        hint={t('descriptionHint', { count: description.length })}
+        hint={
+          <DescriptionHint
+            control={control}
+            template={(vars) => t('descriptionHint', vars)}
+          />
+        }
         error={
           errors.description?.type === 'too_small'
             ? t('errorMin')
@@ -279,7 +281,7 @@ function Field({
   children,
 }: {
   label: string;
-  hint?: string;
+  hint?: React.ReactNode;
   error?: string;
   children: React.ReactNode;
 }) {
@@ -315,4 +317,19 @@ function inputClass(hasError: boolean): string {
       ? 'border-error/50 focus-visible:ring-error/30'
       : 'border-border hover:border-border-hover focus-visible:border-brand-blue/40',
   );
+}
+
+// Isolated re-render scope for the live character counter. Subscribing here
+// via useWatch keeps every keystroke from re-rendering the entire
+// QualificationForm (which previously did `watch('description')` at scope
+// and re-rendered all 14 children per character on iOS Safari).
+function DescriptionHint({
+  control,
+  template,
+}: {
+  control: Control<Lead>;
+  template: (vars: { count: number }) => string;
+}) {
+  const description = useWatch({ control, name: 'description' }) ?? '';
+  return <>{template({ count: description.length })}</>;
 }
