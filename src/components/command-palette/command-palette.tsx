@@ -332,107 +332,107 @@ export function CommandPalette({ caseStudies }: Props) {
             <Dialog.Title className="sr-only">{t('label')}</Dialog.Title>
             <Dialog.Description className="sr-only">{t('placeholder')}</Dialog.Description>
 
-      {/* Header: leading icon + input + trailing Esc kbd (desktop) /
+            {/* Header: leading icon + input + trailing Esc kbd (desktop) /
           close button (mobile). Touch users have no Esc key, and tapping
           the backdrop isn't discoverable, so we ship an explicit × on
           small screens. */}
-      <div className="relative flex items-center gap-3 border-b border-white/[0.06] px-5">
-        <SearchIcon className="h-4 w-4 flex-shrink-0 text-text-faint group-focus-within:text-brand-blue transition-colors" />
-        <Command.Input
-          autoFocus={!isTouch}
-          placeholder={t('placeholder')}
-          className={cn(
-            'flex-1 bg-transparent py-5 text-base text-text placeholder:text-text-faint',
-            'focus:outline-none',
-          )}
-        />
-        <Kbd className="flex-shrink-0 hidden sm:inline-flex">esc</Kbd>
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          aria-label="Close"
-          className="sm:hidden flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-surface-hover active:scale-95 transition-colors duration-150"
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
-            <title>Close</title>
-            <path
-              d="M6 6 L18 18 M18 6 L6 18"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <Command.List className="max-h-[55vh] overflow-y-auto p-2.5 space-y-1">
-        <Command.Empty className="px-5 py-10 text-center text-sm text-text-muted">
-          {t('empty')}
-        </Command.Empty>
-
-        {recentActions.length > 0 && (
-          <Section
-            label={t('groupRecent')}
-            color={GROUP_META.recent.color}
-            icon={GROUP_META.recent.icon}
-          >
-            {recentActions.map((a) => (
-              <PaletteRow
-                key={`r-${a.id}`}
-                action={a}
-                onPick={() => {
-                  recordRecent(a.id);
-                  a.perform();
-                }}
-                rightTag={a.groupLabel}
-                checked={isCheckedFor(a.id, theme, motion)}
+            <div className="relative flex items-center gap-3 border-b border-white/[0.06] px-5">
+              <SearchIcon className="h-4 w-4 flex-shrink-0 text-text-faint group-focus-within:text-brand-blue transition-colors" />
+              <Command.Input
+                autoFocus={!isTouch}
+                placeholder={t('placeholder')}
+                className={cn(
+                  'flex-1 bg-transparent py-5 text-base text-text placeholder:text-text-faint',
+                  'focus:outline-none',
+                )}
               />
-            ))}
-          </Section>
-        )}
+              <Kbd className="flex-shrink-0 hidden sm:inline-flex">esc</Kbd>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                className="sm:hidden flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-surface-hover active:scale-95 transition-colors duration-150"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
+                  <title>Close</title>
+                  <path
+                    d="M6 6 L18 18 M18 6 L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
 
-        {groupOrder.map((g) => {
-          const items = grouped.get(g) ?? [];
-          if (items.length === 0) return null;
-          const meta = GROUP_META[g];
-          return (
-            <Section key={g} label={items[0].groupLabel} color={meta.color} icon={meta.icon}>
-              {items.map((a) => (
-                <PaletteRow
-                  key={a.id}
-                  action={a}
-                  onPick={() => {
-                    recordRecent(a.id);
-                    a.perform();
-                  }}
-                  checked={isCheckedFor(a.id, theme, motion)}
-                />
-              ))}
-            </Section>
-          );
-        })}
-      </Command.List>
+            <Command.List className="max-h-[55vh] overflow-y-auto p-2.5 space-y-1">
+              <Command.Empty className="px-5 py-10 text-center text-sm text-text-muted">
+                {t('empty')}
+              </Command.Empty>
 
-      {/* Footer: keyboard hints - desktop only, hidden on mobile where
+              {recentActions.length > 0 && (
+                <Section
+                  label={t('groupRecent')}
+                  color={GROUP_META.recent.color}
+                  icon={GROUP_META.recent.icon}
+                >
+                  {recentActions.map((a) => (
+                    <PaletteRow
+                      key={`r-${a.id}`}
+                      action={a}
+                      onPick={() => {
+                        recordRecent(a.id);
+                        a.perform();
+                      }}
+                      rightTag={a.groupLabel}
+                      checked={isCheckedFor(a.id, theme, motion)}
+                    />
+                  ))}
+                </Section>
+              )}
+
+              {groupOrder.map((g) => {
+                const items = grouped.get(g) ?? [];
+                if (items.length === 0) return null;
+                const meta = GROUP_META[g];
+                return (
+                  <Section key={g} label={items[0].groupLabel} color={meta.color} icon={meta.icon}>
+                    {items.map((a) => (
+                      <PaletteRow
+                        key={a.id}
+                        action={a}
+                        onPick={() => {
+                          recordRecent(a.id);
+                          a.perform();
+                        }}
+                        checked={isCheckedFor(a.id, theme, motion)}
+                      />
+                    ))}
+                  </Section>
+                );
+              })}
+            </Command.List>
+
+            {/* Footer: keyboard hints - desktop only, hidden on mobile where
           they don't apply (no keyboard, and the close button replaces
           the Esc affordance). */}
-      <div className="hidden sm:flex items-center justify-between border-t border-white/[0.06] px-5 py-3 text-[11px] font-mono text-text-faint">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5">
-            <Kbd>↑</Kbd>
-            <Kbd>↓</Kbd>
-            <span>{t('hintNavigate')}</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Kbd>↵</Kbd>
-            <span>{t('hintSelect')}</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Kbd>esc</Kbd>
-          <span>{t('toClose')}</span>
-        </div>
-      </div>
+            <div className="hidden sm:flex items-center justify-between border-t border-white/[0.06] px-5 py-3 text-[11px] font-mono text-text-faint">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <Kbd>↑</Kbd>
+                  <Kbd>↓</Kbd>
+                  <span>{t('hintNavigate')}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Kbd>↵</Kbd>
+                  <span>{t('hintSelect')}</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Kbd>esc</Kbd>
+                <span>{t('toClose')}</span>
+              </div>
+            </div>
           </Command>
         </Dialog.Content>
       </Dialog.Portal>

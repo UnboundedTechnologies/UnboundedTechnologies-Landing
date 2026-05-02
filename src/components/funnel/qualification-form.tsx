@@ -210,12 +210,7 @@ export function QualificationForm({ onSuccess }: Props) {
 
       <Field
         label={t('descriptionLabel')}
-        hint={
-          <DescriptionHint
-            control={control}
-            template={(vars) => t('descriptionHint', vars)}
-          />
-        }
+        hint={<DescriptionHint control={control} template={(vars) => t('descriptionHint', vars)} />}
         error={
           errors.description?.type === 'too_small'
             ? t('errorMin')
