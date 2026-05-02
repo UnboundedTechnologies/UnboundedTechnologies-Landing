@@ -66,7 +66,7 @@ export function ServicesPillars() {
             return (
               <div
                 key={p.titleKey}
-                className="group relative overflow-hidden bg-bg-elevated border border-border rounded-xl p-8 flex flex-col transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] active:-translate-y-0.5 focus-within:-translate-y-1 focus-within:[border-color:var(--card-hover-border)]"
+                className="apple-glass-card group relative overflow-hidden rounded-xl p-8 flex flex-col transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)] active:-translate-y-0.5 focus-within:-translate-y-1 focus-within:[border-color:var(--card-hover-border)]"
                 style={
                   {
                     ['--card-hover-border' as string]: accentHoverBorder(p.accent),

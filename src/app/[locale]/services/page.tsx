@@ -116,7 +116,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 <article
                   key={e.titleKey}
                   className={cn(
-                    'group relative overflow-hidden bg-bg-elevated border border-border rounded-xl',
+                    'apple-glass-card group relative overflow-hidden rounded-xl',
                     'p-6 md:p-8 min-h-[260px] md:min-h-[320px] flex flex-col',
                     'transition-[transform,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
                     'hover:-translate-y-1 hover:[border-color:var(--card-hover-border)] hover:shadow-[var(--card-hover-shadow)]',

@@ -89,6 +89,36 @@ html[data-motion="reduce"] *::after {
   --color-text-faint: #565b73;
 }
 
+/*
+ * Apple-style glass surface. Two flavors:
+ *   .apple-glass-nav  - heaviest blur, used for the top header
+ *   .apple-glass-card - lighter blur for in-page cards
+ * The bg color is intentionally low-opacity (~70%) so the backdrop-blur
+ * actually reveals colors and gradients behind the surface; that's what
+ * gives the surface its "glass" character. Saturation is bumped above
+ * 100% so the colors that DO show through read rich rather than washed.
+ * Inner top highlight + soft drop shadow give the lifted-pane feel that
+ * matches macOS Tahoe / Vision Pro window chrome.
+ */
+.apple-glass-nav {
+  background-color: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 32px -16px rgba(0, 0, 0, 0.5);
+}
+.apple-glass-card {
+  background-color: color-mix(in srgb, var(--color-bg-elevated) 70%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 8px 24px -12px rgba(0, 0, 0, 0.4);
+}
+
 .aurora-text {
   background: linear-gradient(
     135deg,
