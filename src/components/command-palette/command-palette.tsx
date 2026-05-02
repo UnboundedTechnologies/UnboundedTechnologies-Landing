@@ -296,35 +296,41 @@ export function CommandPalette({ caseStudies }: Props) {
   }
 
   return (
-    <Command.Dialog
-      open={open}
-      onOpenChange={setOpen}
-      label={t('label')}
-      overlayClassName="fixed inset-0 z-[199] bg-bg/60 backdrop-blur-md"
-      contentClassName={cn(
-        // Center via static layout (inset-x-0 + mx-auto), NOT via
-        // transform - so the mount keyframe is free to animate
-        // translateY/scale without ever clobbering horizontal position.
-        // This is what fixes the brief "left side then centers" jump.
-        'fixed top-[14vh] inset-x-0 mx-auto z-[200]',
-        'w-[min(720px,calc(100vw-2rem))]',
-        'group rounded-3xl overflow-hidden',
-        'border border-white/[0.08]',
-        // Heavy backdrop-blur is expensive on mobile GPUs (iPhone 8
-        // class). Fall back to a lighter blur + slightly more opaque
-        // surface on mobile so the palette doesn't drop frames during
-        // the open animation.
-        'bg-bg-elevated/85 backdrop-blur-md md:bg-bg-elevated/70 md:backdrop-blur-3xl',
-        // Multi-layer shadow: depth + brand glow + inset bevel.
-        '[box-shadow:0_32px_80px_-20px_rgba(0,0,0,0.6),0_0_60px_rgba(93,111,255,0.12),inset_0_1px_0_rgba(255,255,255,0.06)]',
-      )}
-    >
-      {/* Cursor halo inside for that "alive" feel. */}
-      <Spotlight color="rgba(93, 111, 255, 0.18)" size={420} />
+    // We compose Radix Dialog manually instead of using cmdk's Command.Dialog
+    // because cmdk's wrapper hard-codes Dialog.Content props (only forwards
+    // aria-label + className) and silently drops the Dialog.Content event
+    // handlers. Specifically, we need `onOpenAutoFocus` so the iOS keyboard
+    // doesn't pop up the moment the palette opens on a touch device. With
+    // cmdk's wrapper that prop never reaches Dialog.Content, so Radix's
+    // default auto-focus runs and focuses the input no matter what.
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[199] bg-bg/60 backdrop-blur-md" />
+        <Dialog.Content
+          aria-label={t('label')}
+          className={cn(
+            'fixed top-[14vh] inset-x-0 mx-auto z-[200]',
+            'w-[min(720px,calc(100vw-2rem))]',
+            'group rounded-3xl overflow-hidden',
+            'border border-white/[0.08]',
+            'bg-bg-elevated/85 backdrop-blur-md md:bg-bg-elevated/70 md:backdrop-blur-3xl',
+            '[box-shadow:0_32px_80px_-20px_rgba(0,0,0,0.6),0_0_60px_rgba(93,111,255,0.12),inset_0_1px_0_rgba(255,255,255,0.06)]',
+          )}
+          onOpenAutoFocus={(e) => {
+            // On touch devices, prevent Radix from auto-focusing the first
+            // focusable child (Command.Input). Auto-focus on iOS = keyboard
+            // pops up the moment the palette opens. Users tap the input
+            // explicitly when they want to type.
+            if (isTouch) e.preventDefault();
+          }}
+        >
+          <Command label={t('label')}>
+            {/* Cursor halo inside for that "alive" feel. */}
+            <Spotlight color="rgba(93, 111, 255, 0.18)" size={420} />
 
-      {/* a11y title + description, visually hidden. */}
-      <Dialog.Title className="sr-only">{t('label')}</Dialog.Title>
-      <Dialog.Description className="sr-only">{t('placeholder')}</Dialog.Description>
+            {/* a11y title + description, visually hidden. */}
+            <Dialog.Title className="sr-only">{t('label')}</Dialog.Title>
+            <Dialog.Description className="sr-only">{t('placeholder')}</Dialog.Description>
 
       {/* Header: leading icon + input + trailing Esc kbd (desktop) /
           close button (mobile). Touch users have no Esc key, and tapping
@@ -427,7 +433,10 @@ export function CommandPalette({ caseStudies }: Props) {
           <span>{t('toClose')}</span>
         </div>
       </div>
-    </Command.Dialog>
+          </Command>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
