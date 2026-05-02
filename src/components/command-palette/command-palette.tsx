@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Spotlight } from '@/components/primitives/spotlight';
 import { useTheme } from '@/components/theme/theme-provider';
 import { useRouter } from '@/i18n/routing';
+import { useIsTouch } from '@/lib/hooks/use-is-touch';
 import { cn } from '@/lib/utils';
 
 // Custom event surface so the nav search button can trigger the palette
@@ -73,6 +74,7 @@ export function CommandPalette({ caseStudies }: Props) {
   const t = useTranslations('palette');
   const router = useRouter();
   const { theme, setTheme, motion, setMotion } = useTheme();
+  const isTouch = useIsTouch();
   const [open, setOpen] = useState(false);
   const [recent, setRecent] = useState<string[]>([]);
 
@@ -331,6 +333,7 @@ export function CommandPalette({ caseStudies }: Props) {
       <div className="relative flex items-center gap-3 border-b border-white/[0.06] px-5">
         <SearchIcon className="h-4 w-4 flex-shrink-0 text-text-faint group-focus-within:text-brand-blue transition-colors" />
         <Command.Input
+          autoFocus={!isTouch}
           placeholder={t('placeholder')}
           className={cn(
             'flex-1 bg-transparent py-5 text-base text-text placeholder:text-text-faint',
