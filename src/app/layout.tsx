@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { ParticleField } from '@/components/atmosphere/particle-field';
 import { PersistentInfinityLogo } from '@/components/hero/persistent-infinity-logo';
@@ -25,6 +25,14 @@ export const metadata: Metadata = {
   description: "Senior cloud and CPaaS engineering for enterprises that can't afford to fail.",
   authors: [{ name: 'Saïd Aïssani' }],
   creator: 'Unbounded Technologies Inc.',
+};
+
+// viewport-fit=cover makes the page render edge-to-edge on iOS, including
+// under the dynamic island. The top-nav uses pt-[env(safe-area-inset-top)]
+// to extend its glass background into that safe-area so nothing shows above
+// it on iPhone.
+export const viewport: Viewport = {
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

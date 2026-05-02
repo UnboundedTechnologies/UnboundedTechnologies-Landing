@@ -9,7 +9,7 @@ export function TopNav() {
   const t = useTranslations('nav');
   const locale = useLocale() as 'en' | 'fr';
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-bg/95 md:bg-bg/60 border-b border-border">
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-bg/80 border-b border-border pt-[env(safe-area-inset-top)]">
       <nav className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between gap-4">
         {/* Left cluster: hamburger (mobile only) + logo */}
         <div className="flex items-center gap-2">
