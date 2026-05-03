@@ -304,7 +304,14 @@ function Field({
 
 function inputClass(hasError: boolean): string {
   return cn(
-    'block w-full rounded-md bg-bg-elevated px-4 py-2.5 text-sm text-text',
+    // text-base (16px) on mobile is required to prevent iOS Safari from
+    // auto-zooming into the field on focus. iOS auto-zooms any input /
+    // textarea / select with font-size < 16px and does NOT zoom back out
+    // when the keyboard closes, leaving the user with fields wider than
+    // the viewport and "anchored to the left" - a real iPhone 17 surfaced
+    // this. md:text-sm keeps the elegant 14px on desktop where the
+    // auto-zoom heuristic does not apply.
+    'block w-full rounded-md bg-bg-elevated px-4 py-2.5 text-base md:text-sm text-text',
     'border placeholder:text-text-faint',
     'transition-[border-color,box-shadow] duration-[var(--duration-short)]',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40',
