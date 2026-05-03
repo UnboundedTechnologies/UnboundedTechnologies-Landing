@@ -34,15 +34,35 @@ jobs:
       - name: Run PSI mobile + desktop
         env:
           PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
-          SITE_URL: https://unboundedtechnologies.com
+          # PSI's cloud Lighthouse runner with mobile + 4G throttling
+          # consistently times out on the WebGL homepage (R3F + Three.js +
+          # heavy backdrop-blur push past PSI's ~60s budget). We audit
+          # /en/services instead - it's R3F-free and representative of the
+          # site's static-content performance. Homepage WebGL perf is
+          # measured separately by lighthouse.yml on the CI runner (also
+          # imperfect, but tracks regressions).
+          SITE_URL: https://unboundedtechnologies.com/en/services
         run: |
           set -euo pipefail
           mkdir -p out
           for strategy in mobile desktop; do
             echo "=== $strategy ==="
-            curl -sS --fail-with-body \
-              "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${SITE_URL}&strategy=${strategy}&category=performance&category=accessibility&category=best-practices&category=seo&key=${PSI_API_KEY}" \
-              -o "out/psi-${strategy}.json"
+            for attempt in 1 2 3; do
+              http_code=$(curl -sS -w "%{http_code}" \
+                "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${SITE_URL}&strategy=${strategy}&category=performance&category=accessibility&category=best-practices&category=seo&key=${PSI_API_KEY}" \
+                -o "out/psi-${strategy}.json")
+              if [ "$http_code" = "200" ]; then
+                echo "  attempt $attempt OK"
+                break
+              fi
+              echo "  attempt $attempt failed (HTTP $http_code), retrying in 30s..."
+              sleep 30
+              if [ "$attempt" = "3" ]; then
+                echo "  PSI failed after 3 attempts on $strategy"
+                cat "out/psi-${strategy}.json" || true
+                exit 1
+              fi
+            done
           done
 
       - name: Summarize + threshold check
