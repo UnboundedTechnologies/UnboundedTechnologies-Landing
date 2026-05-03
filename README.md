@@ -22,7 +22,7 @@ The official landing site for **[Unbounded Technologies Inc.](https://unboundedt
 - **Bilingual** EN / FR with locale-prefixed routes and per-route slug mapping (`/work` ↔ `/travaux`, `/about` ↔ `/a-propos`, `/legal/privacy` ↔ `/legal/confidentialite`).
 - **Three R3F set-pieces** running concurrently: a persistent infinity logo Canvas hoisted to the layout level (survives in-app nav), an interactive photoreal globe with drag + zoom + great-circle routes, and an animated impact graph with energy edges and live stat pills.
 - **Four MDX-driven case studies** with frontmatter, quantified outcome callouts, inline architecture diagrams, prev/next navigation, and circular wrap-around.
-- **Qualified-lead funnel** with Cloudflare Turnstile, Upstash rate limiting, Notion CRM, Resend transactional email, and Calendly booking embed for qualified applicants.
+- **Qualified-lead funnel** with hidden honeypot bot mitigation, Upstash sliding-window rate limit, Notion CRM, Resend transactional email, and an outbound branded "Book a call" card to Calendly for qualified applicants.
 - **Strict CSP** with per-request nonce, plus HSTS / X-Frame / X-CTO / Referrer / Permissions / COOP. Allowlist tightly scoped to actually-used origins.
 - **macOS Tahoe-style command palette** (cmdk) with ⌘K / Ctrl+K, fuzzy search, recent commands, theme + motion toggles, and case-study deep links.
 - **Triple theme system** (Dark / Cinematic / Auto) with sunrise-sunset auto-resolve and a no-FOUC boot script applied synchronously before hydration.
@@ -40,14 +40,14 @@ The official landing site for **[Unbounded Technologies Inc.](https://unboundedt
 - **Motion**: Framer Motion (motion package) with full `prefers-reduced-motion` honoring
 - **i18n**: next-intl v4 with `pathnames` mapping
 - **Content**: gray-matter + next-mdx-remote/rsc with Zod-validated frontmatter
-- **Forms**: react-hook-form + Zod + Cloudflare Turnstile + Upstash sliding-window rate limit
+- **Forms**: react-hook-form + Zod, hidden-honeypot bot mitigation, Upstash sliding-window rate limit (3/h/IP)
 - **CRM**: Notion API
 - **Email**: Resend (transactional) + react-email templates
-- **Booking**: Calendly inline widget (`react-calendly`)
+- **Booking**: branded outbound CTA card to Calendly (free-tier-friendly, no inline iframe)
 - **PDF**: @react-pdf/renderer (capability statement)
 - **Tooling**: pnpm, Biome (lint + format), Playwright + axe-core (e2e + a11y)
 - **Hosting**: Vercel (Hobby tier sufficient for v1.0 traffic)
-- **DNS / registrar / email routing / Turnstile**: Cloudflare
+- **DNS / registrar / email routing**: Cloudflare
 
 ## Project structure
 
@@ -64,7 +64,7 @@ src/
       not-found.tsx            Branded 404
       [...rest]/               Catch-all → notFound() for branded 404
     api/
-      contact/                 Funnel POST handler (Turnstile + Notion + Resend)
+      contact/                 Funnel POST handler (rate limit + honeypot + Notion + Resend)
       og/[...slug]/            Dynamic OG image generator
     cv.pdf/                    React-PDF capability statement
     layout.tsx                 Root layout (CSP nonce + persistent canvases)
