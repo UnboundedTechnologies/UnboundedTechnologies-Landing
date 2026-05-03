@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+.import { statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 

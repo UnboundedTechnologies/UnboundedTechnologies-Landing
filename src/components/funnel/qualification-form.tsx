@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { type Control, Controller, useForm, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { ChipMultiSelect } from './chip-multi-select';
@@ -44,20 +44,38 @@ const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 export function QualificationForm({ onSuccess }: Props) {
   const t = useTranslations('contactPage.form');
   const [submitError, setSubmitError] = useState<string | null>(null);
-  // Turnstile mounts only after the user starts interacting with the form
-  // (first focus on any field). Mounting it eagerly blocks the main thread
-  // for ~1-3 seconds on iPhone with the script load + Cloudflare's
-  // background risk analysis, which queues the user's first tap and makes
-  // it look like the keyboard "appears 3 seconds later". Deferring lets
-  // the form become responsive instantly and gives Turnstile the entire
-  // form-fill time (typically 30s+) to produce a token in the background.
+  // Defer Turnstile mount to a quiet moment so the script-load + initial
+  // render() (~1-3 seconds of main-thread work on iPhone) does not collide
+  // with the user's first tap or first keystrokes. Mounting eagerly delays
+  // the first tap by ~3s; mounting on first focus blocks 2nd-3rd character
+  // typing (visible as "type 2 chars, freeze, then everything appears").
+  // requestIdleCallback fires when the browser truly idles, so the heavy
+  // mount work happens during a natural gap (between fields, after the
+  // user reads, etc.). The 5s timeout guarantees mount even if the user
+  // is typing continuously - by then they are mid-form anyway.
   const [shouldMountTurnstile, setShouldMountTurnstile] = useState(false);
-
-  // onFocusCapture on the form element fires for any descendant focus
-  // (uses capture phase so it runs before the field's own focus handler).
-  // useCallback so the handler ref is stable across renders.
-  const onFirstFocus = useCallback(() => {
-    setShouldMountTurnstile(true);
+  useEffect(() => {
+    let cancelled = false;
+    const mount = () => {
+      if (!cancelled) setShouldMountTurnstile(true);
+    };
+    type IdleHandle = number;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => IdleHandle;
+      cancelIdleCallback?: (h: IdleHandle) => void;
+    };
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(mount, { timeout: 5000 });
+      return () => {
+        cancelled = true;
+        w.cancelIdleCallback?.(id);
+      };
+    }
+    const id = window.setTimeout(mount, 3000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
   }, []);
 
   const {
@@ -121,12 +139,7 @@ export function QualificationForm({ onSuccess }: Props) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      onFocusCapture={onFirstFocus}
-      noValidate
-      className="space-y-4 md:space-y-6"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 md:space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <Field label={t('nameLabel')} error={errors.name && t('errorRequired')}>
           <input
