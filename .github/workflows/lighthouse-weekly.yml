@@ -1,0 +1,94 @@
+name: lighthouse-weekly
+
+# Weekly real-prod Lighthouse via PageSpeed Insights API. Runs every Monday
+# at 09:00 UTC (early morning Toronto). Posts results to a GitHub issue if
+# any score regresses below the configured thresholds. Manual trigger via
+# workflow_dispatch is supported for ad-hoc checks.
+#
+# Why PSI instead of running Lighthouse-CI on the runner? Real Chrome on
+# Google's infrastructure with hardware acceleration produces representative
+# scores. Our Lighthouse-CI run on the Ubuntu runner is software-rasterizer-
+# bound and reports much lower perf for the WebGL homepage; great for
+# regression tracking, useless as an absolute number.
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Mondays 09:00 UTC
+  workflow_dispatch: # also runnable on demand
+
+permissions:
+  contents: write # to push the updated public/lighthouse.json back to main
+  issues: write
+
+concurrency:
+  group: lighthouse-weekly
+  cancel-in-progress: false
+
+jobs:
+  psi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PSI mobile + desktop
+        env:
+          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
+          SITE_URL: https://unboundedtechnologies.com
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          for strategy in mobile desktop; do
+            echo "=== $strategy ==="
+            curl -sS --fail-with-body \
+              "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${SITE_URL}&strategy=${strategy}&category=performance&category=accessibility&category=best-practices&category=seo&key=${PSI_API_KEY}" \
+              -o "out/psi-${strategy}.json"
+          done
+
+      - name: Summarize + threshold check
+        id: summary
+        run: node scripts/psi-weekly.mjs
+
+      - name: Commit updated public/lighthouse.json
+        run: |
+          set -euo pipefail
+          if git diff --quiet public/lighthouse.json; then
+            echo "no score change, nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/lighthouse.json
+          git commit -m "chore(perf): weekly Lighthouse scores from PageSpeed Insights"
+          git push
+
+      - name: Upload PSI artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: psi-output
+          path: out/
+          retention-days: 30
+
+      - name: Open issue on regression
+        if: steps.summary.outputs.failed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `${{ steps.summary.outputs.summary }}`;
+            const today = new Date().toISOString().slice(0, 10);
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Lighthouse regression on ${today}`,
+              body: [
+                'Weekly PageSpeed Insights run found a score below the configured threshold.',
+                '',
+                summary,
+                '',
+                `Run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                '',
+                'Investigate via the artifact attached to the run for the full audit JSON.',
+              ].join('\n'),
+              labels: ['perf', 'lighthouse'],
+            });

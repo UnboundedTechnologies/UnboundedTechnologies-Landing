@@ -1,4 +1,15 @@
 // One-shot PageSpeed Insights check for prod. Run with: node scripts/psi-check.mjs
+// Reads PSI_API_KEY from .env.local if present (anonymous quota is rate-limited).
+import { readFileSync } from 'node:fs';
+
+let apiKey = process.env.PSI_API_KEY;
+if (!apiKey) {
+  try {
+    const env = readFileSync('.env.local', 'utf8');
+    apiKey = env.match(/^PSI_API_KEY="?([^"\n]+)"?/m)?.[1];
+  } catch {}
+}
+
 const URL_TO_TEST = 'https://unboundedtechnologies.com';
 
 async function fetchPSI(strategy) {
@@ -8,6 +19,7 @@ async function fetchPSI(strategy) {
   for (const c of ['performance', 'accessibility', 'best-practices', 'seo']) {
     u.searchParams.append('category', c);
   }
+  if (apiKey) u.searchParams.set('key', apiKey);
   const res = await fetch(u);
   if (!res.ok) throw new Error(`PSI ${strategy} ${res.status}`);
   return res.json();
