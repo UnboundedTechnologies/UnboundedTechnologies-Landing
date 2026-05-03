@@ -10,20 +10,18 @@ test.describe('Command palette', () => {
   test('opens via Meta+K and closes via Escape', async ({ page }) => {
     await page.goto('/en');
     await page.locator('h1').first().waitFor();
-    // Wait for the search button (rendered by the same client tree as the
-    // command palette) so we know the keydown listener is mounted.
     await page.getByRole('button', { name: /search/i }).first().waitFor();
 
-    // Press Meta+K (also dispatched as Ctrl+K by the listener). Dispatch
-    // the event directly on the document because the global keydown
-    // listener is attached to `window`; relying on Playwright's
-    // `keyboard.press` requires an element with focus that won't swallow
-    // the event, which the homepage doesn't always provide reliably.
-    await page.evaluate(() => {
-      window.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }),
-      );
-    });
+    // Use Playwright's real keyboard event. Synthetic
+    // window.dispatchEvent(new KeyboardEvent(...)) does NOT fire the
+    // useEffect-registered listener in CommandPalette under React 19 +
+    // reactCompiler in production builds (verified via console-log
+    // probes - the listener is registered but synthetic events never
+    // trigger it). Real keyboard events via page.keyboard.press fire it
+    // as expected.
+    await page.locator('body').click({ position: { x: 1, y: 1 } });
+    await page.keyboard.press('Meta+k');
+
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
@@ -36,11 +34,8 @@ test.describe('Command palette', () => {
     await page.locator('h1').first().waitFor();
     await page.getByRole('button', { name: /search/i }).first().waitFor();
 
-    await page.evaluate(() => {
-      window.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }),
-      );
-    });
+    await page.locator('body').click({ position: { x: 1, y: 1 } });
+    await page.keyboard.press('Control+k');
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
