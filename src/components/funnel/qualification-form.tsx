@@ -44,6 +44,21 @@ const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 export function QualificationForm({ onSuccess }: Props) {
   const t = useTranslations('contactPage.form');
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Turnstile mounts only after the user starts interacting with the form
+  // (first focus on any field). Mounting it eagerly blocks the main thread
+  // for ~1-3 seconds on iPhone with the script load + Cloudflare's
+  // background risk analysis, which queues the user's first tap and makes
+  // it look like the keyboard "appears 3 seconds later". Deferring lets
+  // the form become responsive instantly and gives Turnstile the entire
+  // form-fill time (typically 30s+) to produce a token in the background.
+  const [shouldMountTurnstile, setShouldMountTurnstile] = useState(false);
+
+  // onFocusCapture on the form element fires for any descendant focus
+  // (uses capture phase so it runs before the field's own focus handler).
+  // useCallback so the handler ref is stable across renders.
+  const onFirstFocus = useCallback(() => {
+    setShouldMountTurnstile(true);
+  }, []);
 
   const {
     control,
@@ -106,7 +121,12 @@ export function QualificationForm({ onSuccess }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 md:space-y-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onFocusCapture={onFirstFocus}
+      noValidate
+      className="space-y-4 md:space-y-6"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <Field label={t('nameLabel')} error={errors.name && t('errorRequired')}>
           <input
@@ -230,7 +250,7 @@ export function QualificationForm({ onSuccess }: Props) {
         />
       </Field>
 
-      <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />
+      {shouldMountTurnstile && <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />}
 
       {submitError && (
         <div
@@ -255,7 +275,7 @@ export function QualificationForm({ onSuccess }: Props) {
           className={cn(
             'inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold cursor-pointer whitespace-nowrap',
             'bg-gradient-to-r from-brand-blue to-brand-purple text-white shadow-lg shadow-brand-purple/20',
-            'transition-all duration-[var(--duration-short)]',
+            'transition-[transform,opacity,box-shadow] duration-[var(--duration-short)]',
             'hover:opacity-90 hover:shadow-xl hover:shadow-brand-purple/30 active:scale-[0.98]',
             'disabled:cursor-wait disabled:opacity-60 disabled:hover:shadow-lg',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-bg',

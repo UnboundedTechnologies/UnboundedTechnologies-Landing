@@ -35,6 +35,24 @@
   transition-timing-function: var(--ease-out);
 }
 
+/*
+ * iOS Safari adds a ~300ms delay between touchend and the synthetic click
+ * event on every interactive element so it can wait for a possible
+ * double-tap (zoom) gesture. `touch-action: manipulation` tells the
+ * browser "no double-tap zoom here" so the click fires immediately. This
+ * is the difference between "tap responds instantly" and "tap feels
+ * laggy" on every iPhone. Apply to every interactive element so the whole
+ * app feels native, not just specific surfaces.
+ */
+button,
+a,
+input,
+textarea,
+select,
+[role='button'] {
+  touch-action: manipulation;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
