@@ -8,18 +8,24 @@ import {
   sendLeadNotification,
   sendQualifiedConfirmation,
 } from '@/lib/resend';
-import { verifyTurnstile } from '@/lib/turnstile';
 
 // POST /api/contact - the only write endpoint on the site. Pipeline:
-//   rate limit -> schema parse -> Turnstile verify -> score ->
+//   rate limit (Upstash 3/h sliding window per IP) -> JSON parse ->
+//   Zod schema validation -> honeypot check -> score ->
 //   notify (Notion + owner email) -> applicant confirmation.
 //
-// Notion / Resend writes happen in parallel; the applicant confirmation is
-// sent serially after so a failed write doesn't leave the user with a
-// confirmation about a record that doesn't exist. All third-party writes
-// soft-fail (their lib helpers noop) when env keys aren't configured, so
-// local dev still resolves to {status: 'qualified'|'exploratory'} without
-// secrets.
+// Cloudflare Turnstile was removed because the widget's continuous
+// background risk-analysis was running on the main thread and producing
+// multi-second freezes during typing/scroll on iPhone, making the form
+// effectively unusable. Bot protection is now a combination of:
+//   1. Upstash rate limit: 3 submissions / hour / IP. Stops naive bots.
+//   2. Honeypot field (`hp_field`): a visually hidden input that humans
+//      never see; naive bots blindly fill every input. Any non-empty
+//      value silently rejects the request.
+//   3. Strict Zod schema validation: rejects malformed payloads cheaply.
+// If spam volume ramps up, reintroduce a smarter challenge (e.g. Turnstile
+// only after a first failed honeypot attempt) - but only behind an explicit
+// signal so we never reintroduce the iPhone main-thread issue.
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
 
@@ -40,9 +46,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid', issues: parsed.error.issues }, { status: 400 });
   }
 
-  const ok = await verifyTurnstile(parsed.data.turnstileToken, ip);
-  if (!ok) {
-    return NextResponse.json({ error: 'turnstile-failed' }, { status: 400 });
+  // Honeypot: humans never fill `hp_field` (it is visually hidden and
+  // tab-skipped). If we receive a non-empty value, it is a bot. Return a
+  // 200 success-shaped response so the bot does not learn the rejection
+  // mechanism, but skip every downstream side-effect (no Notion write, no
+  // emails sent). The owner sees nothing in their inbox; the bot moves on.
+  if (parsed.data.hp_field && parsed.data.hp_field.length > 0) {
+    return NextResponse.json({ status: 'exploratory' });
   }
 
   const meta = scoreLead(parsed.data);

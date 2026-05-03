@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { type Control, Controller, useForm, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { ChipMultiSelect } from './chip-multi-select';
@@ -18,10 +18,15 @@ import {
   timelines,
 } from './form-schema';
 import { HourlyRateSlider } from './hourly-rate-slider';
-import { TurnstileWidget } from './turnstile-widget';
 
 // Qualified-inquiry form. Single-screen layout; all required fields visible
 // at once so visitors can scan the commitment before they start typing.
+//
+// Bot protection moved entirely server-side after Cloudflare Turnstile's
+// continuous main-thread risk-analysis was producing multi-second freezes
+// on iPhone (typing, scrolling, keyboard dismiss all delayed by ~3s).
+// Server now validates a hidden honeypot field + the existing Upstash
+// 3/h-per-IP rate limit. See src/app/api/contact/route.ts.
 //
 // Submit pipeline (client side):
 //   1. zod validation via @hookform/resolvers - synchronous, surfaces field
@@ -30,8 +35,7 @@ import { TurnstileWidget } from './turnstile-widget';
 //   3. On 200: caller's onSuccess fires with {status} so the parent can
 //      swap to the thank-you screen.
 //   4. On 400/429/500: surfaces a contextual error message and re-enables
-//      submit. We never auto-reset the Turnstile widget on success because
-//      the form has been replaced by the thank-you screen at that point.
+//      submit.
 
 type FormStatus = 'qualified' | 'exploratory';
 
@@ -39,50 +43,14 @@ type Props = {
   onSuccess: (status: FormStatus) => void;
 };
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-
 export function QualificationForm({ onSuccess }: Props) {
   const t = useTranslations('contactPage.form');
   const [submitError, setSubmitError] = useState<string | null>(null);
-  // Defer Turnstile mount to a quiet moment so the script-load + initial
-  // render() (~1-3 seconds of main-thread work on iPhone) does not collide
-  // with the user's first tap or first keystrokes. Mounting eagerly delays
-  // the first tap by ~3s; mounting on first focus blocks 2nd-3rd character
-  // typing (visible as "type 2 chars, freeze, then everything appears").
-  // requestIdleCallback fires when the browser truly idles, so the heavy
-  // mount work happens during a natural gap (between fields, after the
-  // user reads, etc.). The 5s timeout guarantees mount even if the user
-  // is typing continuously - by then they are mid-form anyway.
-  const [shouldMountTurnstile, setShouldMountTurnstile] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    const mount = () => {
-      if (!cancelled) setShouldMountTurnstile(true);
-    };
-    type IdleHandle = number;
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => IdleHandle;
-      cancelIdleCallback?: (h: IdleHandle) => void;
-    };
-    if (w.requestIdleCallback) {
-      const id = w.requestIdleCallback(mount, { timeout: 5000 });
-      return () => {
-        cancelled = true;
-        w.cancelIdleCallback?.(id);
-      };
-    }
-    const id = window.setTimeout(mount, 3000);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(id);
-    };
-  }, []);
 
   const {
     control,
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<Lead>({
     resolver: zodResolver(leadSchema),
@@ -95,20 +63,10 @@ export function QualificationForm({ onSuccess }: Props) {
       hourlyRate: HOURLY_RATE_DEFAULT,
       timeline: undefined,
       description: '',
-      turnstileToken: '',
+      hp_field: '',
     },
     mode: 'onBlur',
   });
-
-  // Stable callback so the Turnstile widget's useEffect doesn't tear down
-  // and recreate the challenge on every parent re-render (each keystroke in
-  // the description textarea fires a re-render via watch()).
-  const onToken = useCallback(
-    (token: string) => {
-      setValue('turnstileToken', token, { shouldValidate: !!token });
-    },
-    [setValue],
-  );
 
   async function onSubmit(values: Lead) {
     setSubmitError(null);
@@ -123,8 +81,7 @@ export function QualificationForm({ onSuccess }: Props) {
         return;
       }
       if (r.status === 400) {
-        const j = (await r.json().catch(() => ({}))) as { error?: string };
-        setSubmitError(j.error === 'turnstile-failed' ? t('errorTurnstile') : t('errorGeneric'));
+        setSubmitError(t('errorGeneric'));
         return;
       }
       if (!r.ok) {
@@ -263,7 +220,25 @@ export function QualificationForm({ onSuccess }: Props) {
         />
       </Field>
 
-      {shouldMountTurnstile && <TurnstileWidget siteKey={SITE_KEY} onToken={onToken} />}
+      {/* Honeypot. Visually hidden + tab-skipped so humans never see or
+          fill it; naive bots blindly fill every input. Server rejects
+          submissions where this is non-empty. autoComplete=off prevents
+          password managers from autofilling it for some users. */}
+      <input
+        {...register('hp_field')}
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          opacity: 0,
+          pointerEvents: 'none',
+        }}
+      />
 
       {submitError && (
         <div

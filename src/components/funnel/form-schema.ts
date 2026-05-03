@@ -31,7 +31,16 @@ export const leadSchema = z.object({
   hourlyRate: z.number().int().min(HOURLY_RATE_MIN).max(HOURLY_RATE_MAX),
   timeline: z.enum(timelines),
   description: z.string().min(30).max(2000),
-  turnstileToken: z.string().min(1),
+  // Honeypot field. Visually hidden + tab-skipped so humans never see or
+  // fill it; naive bots blindly fill every input. Server rejects any
+  // submission where this is non-empty. Replaces Cloudflare Turnstile,
+  // which was running continuous background fingerprinting on the main
+  // thread and producing ~3-second freezes during typing/scroll on iPhone.
+  // Combined with the Upstash 3/h-per-IP rate limit and Zod schema
+  // validation, this is sufficient for our traffic and contact-form-fill
+  // patterns. If spam ramps up later, reintroduce a smarter challenge
+  // surface (e.g. Turnstile only after a failed honeypot attempt).
+  hp_field: z.string().max(0).optional(),
 });
 
 export type Lead = z.infer<typeof leadSchema>;
