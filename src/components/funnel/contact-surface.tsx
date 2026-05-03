@@ -37,6 +37,18 @@ export function ContactSurface({ calendlyUrl }: Props) {
     setStatus(null);
   }, [pathname]);
 
+  // On form-submit success the parent flips status from null to qualified
+  // or exploratory. ContactSurface re-renders inside the same scroll
+  // container, so the window scroll position is preserved - on mobile that
+  // leaves the user looking at the bottom of the new screen and missing the
+  // celebration card. Scroll to top on the transition so the thank-you
+  // content is visible above the fold.
+  useEffect(() => {
+    if (status !== null) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [status]);
+
   // Reset on browser bfcache restore. event.persisted distinguishes a
   // bfcache restoration from a normal pageshow; we only clear in the
   // restore case to avoid wiping the thank-you screen the moment it

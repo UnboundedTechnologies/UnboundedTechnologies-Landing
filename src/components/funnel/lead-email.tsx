@@ -66,7 +66,8 @@ export function QualifiedConfirmationEmail({ lead }: { lead: Lead }) {
           </Heading>
           <Text style={paragraphStyle}>
             I have your note about {lead.company}. The Calendly link on the contact page lets you
-            grab a 30-minute slot directly on my calendar. I aim to respond within one business day.
+            grab a 30-minute slot directly on my calendar. I aim to respond within three business
+            days.
           </Text>
           <Text style={paragraphStyle}>
             If your situation is time-sensitive, the fastest route is the direct line:

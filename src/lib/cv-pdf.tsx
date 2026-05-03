@@ -611,7 +611,7 @@ export function CvDocument({
         <Text style={styles.paragraph}>
           Engagements run on Master Service Agreement plus per-project Statement of Work, with $2M
           Errors &amp; Omissions and $5M General Liability insurance. Reach out to start the
-          conversation; we will follow up within one business day.
+          conversation. We will follow up within three business days.
         </Text>
         <View style={{ height: 12 }} />
         <View style={styles.contactRow}>

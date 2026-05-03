@@ -191,10 +191,12 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
         </div>
       </div>
 
-      {/* Calendly only on the qualified branch, below the celebration card. */}
+      {/* Booking CTA only on the qualified branch, below the celebration
+          card. The embed component now renders its own eyebrow + heading
+          (it is a full branded card linking out to Calendly), so this
+          parent slot stays a thin layout container. */}
       {status === 'qualified' && (
         <div className="mt-10">
-          <Eyebrow className="mb-5">{t('qualifiedCalendlyEyebrow')}</Eyebrow>
           <CalendlyEmbed url={calendlyUrl} />
         </div>
       )}

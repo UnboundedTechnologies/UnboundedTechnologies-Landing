@@ -214,7 +214,7 @@
     "eyebrow": "- Contact",
     "headlineLead": "Démarrer une",
     "headlineAccent": "conversation projet.",
-    "intro": "Partagez quelques détails sur votre projet. Nous répondons sous un jour ouvrable. Les profils alignés peuvent réserver un appel directement à l'écran suivant.",
+    "intro": "Partagez quelques détails sur votre projet. Nous répondons sous trois jours ouvrables. Les profils alignés peuvent réserver un appel directement à l'écran suivant.",
     "form": {
       "nameLabel": "Votre nom",
       "namePlaceholder": "Jeanne Dupont",
@@ -258,7 +258,7 @@
       "descriptionHint": "Requis. Minimum 30 caractères. {count}/2000.",
       "submit": "Envoyer",
       "submitting": "Envoi...",
-      "replyTime": "Nous répondons sous un jour ouvrable",
+      "replyTime": "Nous répondons sous trois jours ouvrables",
       "errorRequired": "Requis.",
       "errorEmail": "Adresse courriel invalide.",
       "errorMin": "Quelques détails de plus, s'il vous plaît.",
@@ -270,12 +270,21 @@
     "thankYou": {
       "qualifiedEyebrow": "Soumission reçue",
       "qualifiedHeadline": "Merci. Nous avons hâte d'échanger.",
-      "qualifiedBody": "Votre projet s'aligne avec ce que nous faisons de mieux. Choisissez un créneau de 30 minutes ci-dessous et vous recevrez l'invitation par courriel tout de suite.",
-      "qualifiedCalendlyEyebrow": "- Réserver un appel",
+      "qualifiedBody": "Votre projet s'aligne avec ce que nous faisons de mieux. Cliquez sur la carte ci-dessous et choisissez un créneau de 30 minutes. L'invitation arrive dans votre boîte mail dès que vous confirmez.",
       "exploratoryEyebrow": "Soumission reçue",
       "exploratoryHeadline": "Merci de nous avoir contactés.",
       "exploratoryBody": "Nous avons reçu votre message et répondrons par courriel sous quelques jours ouvrables. Si quelque chose évolue, écrivez-nous à contact@unboundedtechnologies.com.",
-      "backLabel": "Retour à l'accueil"
+      "backLabel": "Retour à l'accueil",
+      "bookCard": {
+        "eyebrow": "- Réserver un appel",
+        "heading": "Choisissez un créneau de 30 minutes.",
+        "subhead": "L'invitation arrive dans votre boîte mail dès que vous confirmez.",
+        "badgeDuration": "30 min",
+        "badgeMedium": "Zoom ou Meet",
+        "badgeInvite": "Invitation immédiate",
+        "cta": "Planifier l'appel",
+        "opensInNewTab": "Ouvre calendly.com dans un nouvel onglet"
+      }
     }
   },
   "work": {

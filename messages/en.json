@@ -214,7 +214,7 @@
     "eyebrow": "- Contact",
     "headlineLead": "Start a",
     "headlineAccent": "project conversation.",
-    "intro": "Share a few details about your project. We respond within one business day. Strong matches can book a call directly on the next screen.",
+    "intro": "Share a few details about your project. We respond within three business days. Strong matches can book a call directly on the next screen.",
     "form": {
       "nameLabel": "Your name",
       "namePlaceholder": "Jane Doe",
@@ -258,7 +258,7 @@
       "descriptionHint": "Required. Minimum 30 characters. {count}/2000.",
       "submit": "Send",
       "submitting": "Sending...",
-      "replyTime": "We respond within one business day",
+      "replyTime": "We respond within three business days",
       "errorRequired": "Required.",
       "errorEmail": "Please enter a valid email.",
       "errorMin": "A few more details, please.",
@@ -269,13 +269,22 @@
     },
     "thankYou": {
       "qualifiedEyebrow": "Submission received",
-      "qualifiedHeadline": "Thank you. We are excited to talk.",
-      "qualifiedBody": "Your project lines up well with what we do best. Pick a 30-minute slot below and you will receive a calendar invite by email right away.",
-      "qualifiedCalendlyEyebrow": "- Book a call",
+      "qualifiedHeadline": "Thank you. We are excited to connect.",
+      "qualifiedBody": "Your project lines up with what we do best. Tap the card below and pick a 30-minute slot. The invite lands in your inbox the moment you confirm.",
       "exploratoryEyebrow": "Submission received",
       "exploratoryHeadline": "Thank you for reaching out.",
       "exploratoryBody": "We have your note and will reply by email within a few business days. If anything changes in the meantime, write to contact@unboundedtechnologies.com.",
-      "backLabel": "Back to home"
+      "backLabel": "Back to home",
+      "bookCard": {
+        "eyebrow": "- Book a call",
+        "heading": "Pick a 30-minute slot.",
+        "subhead": "We send the invite to your inbox the moment you confirm.",
+        "badgeDuration": "30 min",
+        "badgeMedium": "Zoom or Meet",
+        "badgeInvite": "Instant invite",
+        "cta": "Schedule the call",
+        "opensInNewTab": "Opens calendly.com in a new tab"
+      }
     }
   },
   "work": {
