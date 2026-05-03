@@ -1,8 +1,20 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from 'react';
 import { CanvasErrorBoundary } from './canvas-error-boundary';
-import { InfinityLogo3D } from './infinity-logo-3d';
 import { InfinityLogoStatic } from './infinity-logo-static';
+
+// Dynamic import for InfinityLogo3D so the Three.js + R3F + drei +
+// postprocessing bundles (~354 KiB) are NOT shipped on pages that don't
+// have a hero anchor. Without this, navigating to /services or /about pulls
+// the entire R3F runtime even though no Canvas ever renders there - which
+// shows up as "Reduce unused JavaScript" in PSI / Lighthouse and tanks TBT.
+// `ssr: false` because the canvas is client-only anyway, and a null fallback
+// because the wrapper handles "anchor present" gating below.
+const InfinityLogo3D = dynamic(
+  () => import('./infinity-logo-3d').then((m) => ({ default: m.InfinityLogo3D })),
+  { ssr: false, loading: () => null },
+);
 
 // Layout-level WebGL Canvas owner. Mounted ONCE in app/layout.tsx and
 // persists across every in-app navigation, so the Canvas never has to tear
@@ -32,6 +44,12 @@ const OFFSCREEN_TOP = -10000;
 
 export function PersistentInfinityLogo() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  // hasAnchor flips state-only when an anchor presence/absence transition
+  // happens (NOT every rAF tick) so the InfinityLogo3D dynamic chunk is
+  // requested only on pages that actually have a hero. The hasAnchorRef
+  // mirrors the state inside the rAF closure to avoid stale-closure reads.
+  const [hasAnchor, setHasAnchor] = useState(false);
+  const hasAnchorRef = useRef(false);
 
   useEffect(() => {
     let raf = 0;
@@ -40,6 +58,10 @@ export function PersistentInfinityLogo() {
     function applyOffscreen() {
       const w = wrapperRef.current;
       if (!w) return;
+      if (hasAnchorRef.current) {
+        hasAnchorRef.current = false;
+        setHasAnchor(false);
+      }
       const key = 'offscreen';
       if (key === lastKey) return;
       lastKey = key;
@@ -53,6 +75,10 @@ export function PersistentInfinityLogo() {
     function applyRect(rect: DOMRect) {
       const w = wrapperRef.current;
       if (!w) return;
+      if (!hasAnchorRef.current) {
+        hasAnchorRef.current = true;
+        setHasAnchor(true);
+      }
       // Convert viewport-relative rect to document-relative coords so the
       // wrapper can use position:absolute and scroll natively with the
       // page. On iOS Safari this avoids the position:fixed momentum-scroll
@@ -107,15 +133,21 @@ export function PersistentInfinityLogo() {
         zIndex: 5,
       }}
     >
-      <CanvasErrorBoundary
-        fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
-          </div>
-        }
-      >
-        <InfinityLogo3D />
-      </CanvasErrorBoundary>
+      {/* Conditionally mount InfinityLogo3D only when a hero anchor is on
+          the page. Pages without a hero (services, about, work index, contact,
+          legal) skip the Three.js + R3F bundle entirely - that's the 354 KiB
+          unused-JS savings PSI was flagging. */}
+      {hasAnchor ? (
+        <CanvasErrorBoundary
+          fallback={
+            <div className="w-full h-full flex items-center justify-center">
+              <InfinityLogoStatic className="w-64 h-40 drop-shadow-[0_0_40px_rgba(124,142,255,0.6)]" />
+            </div>
+          }
+        >
+          <InfinityLogo3D />
+        </CanvasErrorBoundary>
+      ) : null}
     </div>
   );
 }
