@@ -1,8 +1,8 @@
 {
-  "performance": null,
-  "accessibility": null,
-  "bestPractices": null,
-  "seo": null,
-  "fetchedAt": null,
-  "_note": "Placeholder so the perf-scorecard fetch returns 200 instead of 404. Phase 15 weekly Lighthouse cron will overwrite this with real scores against the prod URL."
+  "performance": 71,
+  "accessibility": 98,
+  "bestPractices": 100,
+  "seo": 92,
+  "fetchedAt": "2026-05-03T00:59:05.338Z",
+  "_note": "Updated weekly by .github/workflows/lighthouse-weekly.yml from PageSpeed Insights mobile run."
 }
