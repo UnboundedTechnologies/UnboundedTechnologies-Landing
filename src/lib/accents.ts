@@ -23,7 +23,7 @@ export const BRAND_HEX: Record<SolidAccent, string> = {
 
 // "R, G, B" triples for use inside rgba(...) calls. Avoids per-call string
 // surgery in the hero/glow gradients.
-export const BRAND_RGB: Record<SolidAccent, string> = {
+const BRAND_RGB: Record<SolidAccent, string> = {
   blue: '93, 111, 255',
   purple: '163, 93, 255',
   cyan: '93, 199, 255',

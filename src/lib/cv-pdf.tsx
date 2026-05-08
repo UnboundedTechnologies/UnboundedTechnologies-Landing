@@ -514,13 +514,7 @@ function CaseStudyPage({ study, index }: { study: CaseStudy; index: number }) {
   );
 }
 
-function CvDocument({
-  caseStudies,
-  generatedAt,
-}: {
-  caseStudies: CaseStudy[];
-  generatedAt: Date;
-}) {
+function CvDocument({ caseStudies, generatedAt }: { caseStudies: CaseStudy[]; generatedAt: Date }) {
   const ordered = orderedCaseStudies(caseStudies);
 
   return (

@@ -283,10 +283,12 @@ export function CommandPalette({ caseStudies }: Props) {
     },
   ];
 
-  // Recent slice + section rendering order.
+  // Recent slice + section rendering order. Build a single id->action index
+  // so we don't re-scan `actions` for every entry of `recent` (was O(n*m)).
+  const actionsById = new Map(actions.map((a) => [a.id, a]));
   const recentActions: Action[] = [];
   for (const id of recent) {
-    const a = actions.find((x) => x.id === id);
+    const a = actionsById.get(id);
     if (a) recentActions.push(a);
   }
 
