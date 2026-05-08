@@ -31,7 +31,7 @@ export function HourlyRateSlider({ value, onChange, min, max, step, ariaLabel, s
     <div className="space-y-3">
       <div className="flex items-baseline justify-between gap-3">
         <div className="flex items-baseline gap-1.5">
-          <span className="font-mono text-2xl md:text-3xl font-semibold tracking-tight text-text">
+          <span className="font-mono text-2xl md:text-3xl font-semibold tracking-tight tabular-nums text-text">
             CAD ${value}
           </span>
           <span className="font-mono text-xs uppercase tracking-[0.18em] text-text-muted">

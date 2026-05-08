@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 // Tiny client component that renders a "Xm ago" string and refreshes
 // every minute. Lives in client land because Date.now() in a Cache
@@ -31,5 +32,5 @@ export function RelativeTime({ iso, className }: Props) {
     return () => clearInterval(id);
   }, [iso]);
 
-  return <span className={className}>{label}</span>;
+  return <span className={cn('tabular-nums', className)}>{label}</span>;
 }
