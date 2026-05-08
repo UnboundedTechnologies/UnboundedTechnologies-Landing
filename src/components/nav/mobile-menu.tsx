@@ -44,9 +44,9 @@ export function MobileMenu({ current }: Props) {
         <button
           type="button"
           aria-label={t('menuOpen')}
-          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+          className="md:hidden inline-flex size-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+          <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden>
             <title>Menu</title>
             <path
               d="M4 7 H20 M4 12 H20 M4 17 H20"
@@ -90,9 +90,9 @@ export function MobileMenu({ current }: Props) {
               <button
                 type="button"
                 aria-label={t('menuClose')}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+                className="inline-flex size-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
               >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+                <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden>
                   <title>Close</title>
                   <path
                     d="M6 6 L18 18 M18 6 L6 18"

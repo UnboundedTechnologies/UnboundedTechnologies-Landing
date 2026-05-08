@@ -33,7 +33,7 @@ export function HeroAtmosphere({ className }: { className?: string }) {
 
       {/* Cyan light leak from bottom-left, slowly breathing */}
       <div
-        className="absolute -bottom-1/2 -left-1/3 w-[80vw] h-[80vw] rounded-full opacity-40"
+        className="absolute -bottom-1/2 -left-1/3 size-[80vw] rounded-full opacity-40"
         style={{
           background: 'radial-gradient(circle, rgba(93,199,255,0.10) 0%, transparent 65%)',
           animation: 'hero-leak-cyan 32s ease-in-out infinite alternate',
@@ -42,7 +42,7 @@ export function HeroAtmosphere({ className }: { className?: string }) {
 
       {/* Purple light leak from top-right, opposite drift */}
       <div
-        className="absolute -top-1/3 -right-1/3 w-[70vw] h-[70vw] rounded-full opacity-35"
+        className="absolute -top-1/3 -right-1/3 size-[70vw] rounded-full opacity-35"
         style={{
           background: 'radial-gradient(circle, rgba(163,93,255,0.12) 0%, transparent 60%)',
           animation: 'hero-leak-purple 40s ease-in-out infinite alternate',
@@ -54,14 +54,14 @@ export function HeroAtmosphere({ className }: { className?: string }) {
           space tone. Same drift loops as the brighter twin so the motion
           feel is consistent across heroes. */}
       <div
-        className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full opacity-25"
+        className="absolute -top-32 -left-32 size-[600px] rounded-full opacity-25"
         style={{
           background: 'radial-gradient(circle, rgba(93,111,255,0.45) 0%, transparent 70%)',
           animation: 'orb-drift-a 14s var(--ease-out) infinite alternate',
         }}
       />
       <div
-        className="absolute -bottom-40 -right-40 w-[700px] h-[700px] rounded-full opacity-20"
+        className="absolute -bottom-40 -right-40 size-[700px] rounded-full opacity-20"
         style={{
           background: 'radial-gradient(circle, rgba(163,93,255,0.4) 0%, transparent 65%)',
           animation: 'orb-drift-b 18s var(--ease-out) infinite alternate',

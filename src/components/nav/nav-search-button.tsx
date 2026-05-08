@@ -16,9 +16,9 @@ export function NavSearchButton() {
       type="button"
       onClick={open}
       aria-label="Search (⌘K or Ctrl+K)"
-      className="group relative inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+      className="group relative inline-flex size-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
     >
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
+      <svg viewBox="0 0 24 24" className="size-4" fill="none" aria-hidden>
         <title>Search</title>
         <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
         <path d="M20 20 L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

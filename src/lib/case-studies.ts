@@ -54,7 +54,7 @@ const FrontmatterSchema = z.object({
   diagram: z.string().optional(),
 });
 
-export type CaseStudyMeta = z.infer<typeof FrontmatterSchema>;
+type CaseStudyMeta = z.infer<typeof FrontmatterSchema>;
 export type CaseStudy = CaseStudyMeta & { body: string };
 
 export type Locale = 'en' | 'fr';

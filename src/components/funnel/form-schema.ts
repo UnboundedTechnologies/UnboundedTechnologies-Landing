@@ -44,6 +44,3 @@ export const leadSchema = z.object({
 });
 
 export type Lead = z.infer<typeof leadSchema>;
-export type ProjectType = (typeof projectTypes)[number];
-export type Timeline = (typeof timelines)[number];
-export type Industry = (typeof industries)[number];

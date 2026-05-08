@@ -10,7 +10,7 @@
 
 import type { Edge, Node } from '@/components/impact-graph/graph-data';
 
-export type CaseStudyDiagram = {
+type CaseStudyDiagram = {
   nodes: ReadonlyArray<Node>;
   edges: ReadonlyArray<Edge>;
 };
@@ -156,11 +156,7 @@ const PRESETS = {
   'etba-erp-stack': ETBA_ERP_STACK,
 } as const satisfies Record<string, CaseStudyDiagram>;
 
-export type CaseStudyDiagramPreset = keyof typeof PRESETS;
-
-export const CASE_STUDY_DIAGRAM_PRESETS: ReadonlyArray<CaseStudyDiagramPreset> = Object.keys(
-  PRESETS,
-) as CaseStudyDiagramPreset[];
+type CaseStudyDiagramPreset = keyof typeof PRESETS;
 
 /**
  * Look up a diagram preset by name. Returns null when the name is unknown so

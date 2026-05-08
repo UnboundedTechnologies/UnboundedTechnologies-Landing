@@ -107,7 +107,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="relative border-t border-border py-6 px-6 text-center text-xs font-mono text-text-faint">
+      <div className="relative border-t border-border p-6 text-center text-xs font-mono text-text-faint">
         <span>© 2026 Unbounded Technologies Inc.</span>
         {/* Perf chip floats to the right but doesn't push the centered
             copyright off-axis. Stacks below on mobile so it doesn't

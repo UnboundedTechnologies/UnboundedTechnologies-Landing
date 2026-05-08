@@ -14,7 +14,8 @@ import { ThankYouScreen } from './thank-you-screen';
 // Next.js's router cache and the browser's bfcache can both keep the
 // component instance alive across navigation rather than remounting it:
 //   1. Client-side navigation away and back (Link clicks). usePathname
-//      changes; the [pathname] effect fires and clears state.
+//      changes; the outer key={pathname} unmounts/remounts the inner
+//      stateful component.
 //   2. Browser back/forward (bfcache restore). The pageshow event fires
 //      with `event.persisted === true` whether or not React remounted;
 //      we listen and clear state.
@@ -26,28 +27,12 @@ type Props = {
 };
 
 export function ContactSurface({ calendlyUrl }: Props) {
-  const [status, setStatus] = useState<Status | null>(null);
   const pathname = usePathname();
+  return <ContactSurfaceInner key={pathname} calendlyUrl={calendlyUrl} />;
+}
 
-  // Reset on every pathname change (covers client-side nav away + back).
-  // Submitting the form doesn't touch pathname so the thank-you state
-  // sticks while the user remains on /contact.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the trigger, not a read value
-  useEffect(() => {
-    setStatus(null);
-  }, [pathname]);
-
-  // On form-submit success the parent flips status from null to qualified
-  // or exploratory. ContactSurface re-renders inside the same scroll
-  // container, so the window scroll position is preserved - on mobile that
-  // leaves the user looking at the bottom of the new screen and missing the
-  // celebration card. Scroll to top on the transition so the thank-you
-  // content is visible above the fold.
-  useEffect(() => {
-    if (status !== null) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [status]);
+function ContactSurfaceInner({ calendlyUrl }: Props) {
+  const [status, setStatus] = useState<Status | null>(null);
 
   // Reset on browser bfcache restore. event.persisted distinguishes a
   // bfcache restoration from a normal pageshow; we only clear in the
@@ -61,8 +46,16 @@ export function ContactSurface({ calendlyUrl }: Props) {
     return () => window.removeEventListener('pageshow', onShow);
   }, []);
 
+  const handleSuccess = (s: Status) => {
+    setStatus(s);
+    // Scroll to top inline so the thank-you card lands above the fold on
+    // mobile, where the previous form's scroll position would otherwise
+    // leave the user looking at the bottom of the new screen.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (status === null) {
-    return <QualificationForm onSuccess={(s) => setStatus(s)} />;
+    return <QualificationForm onSuccess={handleSuccess} />;
   }
   return <ThankYouScreen status={status} calendlyUrl={calendlyUrl} />;
 }

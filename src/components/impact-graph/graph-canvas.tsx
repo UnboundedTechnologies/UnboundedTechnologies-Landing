@@ -1,4 +1,5 @@
 'use client';
+import { domAnimation, LazyMotion } from 'motion/react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { GraphCard } from './graph-card';
@@ -93,11 +94,12 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
       : 'mt-24 md:mt-52 mb-10 md:mb-20 gap-y-0 md:gap-y-24 gap-x-0 md:gap-x-24';
 
   return (
-    <div
-      ref={containerRef}
-      className={cn('relative grid grid-cols-1', colsClass, spacing)}
-      data-graph-variant={variant}
-    >
+    <LazyMotion features={domAnimation} strict>
+      <div
+        ref={containerRef}
+        className={cn('relative grid grid-cols-1', colsClass, spacing)}
+        data-graph-variant={variant}
+      >
       {nodes.map((n, i) => {
         const isSelf = activeSlug !== undefined && n.href.replace(/^\/work\//, '') === activeSlug;
         const isLast = i === nodes.length - 1;
@@ -132,15 +134,16 @@ export function GraphCanvas({ nodes, edges, variant = 'page', activeSlug }: Prop
           </Fragment>
         );
       })}
-      <div className="hidden md:block">
-        <GraphEdges
-          edges={edges}
-          rects={rects}
-          width={containerSize.width}
-          height={containerSize.height}
-          pillDistance={variant === 'page' ? 64 : 120}
-        />
+        <div className="hidden md:block">
+          <GraphEdges
+            edges={edges}
+            rects={rects}
+            width={containerSize.width}
+            height={containerSize.height}
+            pillDistance={variant === 'page' ? 64 : 120}
+          />
+        </div>
       </div>
-    </div>
+    </LazyMotion>
   );
 }

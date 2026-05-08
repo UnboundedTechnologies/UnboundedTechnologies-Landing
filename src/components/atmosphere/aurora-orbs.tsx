@@ -56,14 +56,14 @@ export function AuroraOrbs({ className }: { className?: string }) {
       )}
       {/* Two aurora orbs - cheap radial gradients, run on every device. */}
       <div
-        className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full opacity-60"
+        className="absolute -top-32 -left-32 size-[600px] rounded-full opacity-60"
         style={{
           background: 'radial-gradient(circle, rgba(93,111,255,0.55) 0%, transparent 70%)',
           animation: 'orb-drift-a 14s var(--ease-out) infinite alternate',
         }}
       />
       <div
-        className="absolute -bottom-40 -right-40 w-[700px] h-[700px] rounded-full opacity-50"
+        className="absolute -bottom-40 -right-40 size-[700px] rounded-full opacity-50"
         style={{
           background: 'radial-gradient(circle, rgba(163,93,255,0.5) 0%, transparent 65%)',
           animation: 'orb-drift-b 18s var(--ease-out) infinite alternate',

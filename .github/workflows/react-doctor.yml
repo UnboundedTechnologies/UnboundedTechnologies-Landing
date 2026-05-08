@@ -1,0 +1,58 @@
+name: react-doctor
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: react-doctor-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  react-doctor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Non-blocking sweep: react-doctor exits non-zero whenever there is at
+      # least one finding, but most of the remaining findings on this repo
+      # are intentional (R3F three.js JSX props, hero-atmosphere blurs, etc.
+      # see memory/reference_react_doctor_baseline.md). We treat the run as
+      # informational, capture the score in the job summary, and let owners
+      # eyeball the diff PR-by-PR rather than gating on a hard threshold.
+      - name: Run react-doctor
+        id: doctor
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npx -y react-doctor@latest . 2>&1 | tee react-doctor.log
+
+      - name: Publish summary
+        if: always()
+        run: |
+          {
+            echo '## react-doctor'
+            echo ''
+            echo '```'
+            tail -40 react-doctor.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload full log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-doctor-log
+          path: react-doctor.log
+          retention-days: 14

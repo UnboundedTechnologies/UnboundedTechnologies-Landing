@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, use, useCallback, useEffect, useState } from 'react';
 
 // Theme + motion preferences for the bonus-features layer (Phase 10).
 //
@@ -128,7 +128,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useTheme(): ThemeContextValue {
-  const v = useContext(ThemeContext);
+  const v = use(ThemeContext);
   if (!v) throw new Error('useTheme must be used within ThemeProvider');
   return v;
 }

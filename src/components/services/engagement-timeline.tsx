@@ -80,7 +80,7 @@ export function EngagementTimeline() {
     if (!isTouch || reducedMotion) return;
     const el = olRef.current;
     if (!el) return;
-    let cancelled = false;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
     const obs = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -91,9 +91,11 @@ export function EngagementTimeline() {
           // next one starts so the aurora fill bar has time to draw.
           const stepDelay = Math.round(FILL_TRANSITION_MS / 1.6);
           for (let i = 1; i <= TOTAL_STEPS; i++) {
-            setTimeout(() => {
-              if (!cancelled) setActiveStep(i);
-            }, i * stepDelay);
+            timeouts.push(
+              setTimeout(() => {
+                setActiveStep(i);
+              }, i * stepDelay),
+            );
           }
           return;
         }
@@ -102,7 +104,7 @@ export function EngagementTimeline() {
     );
     obs.observe(el);
     return () => {
-      cancelled = true;
+      for (const id of timeouts) clearTimeout(id);
       obs.disconnect();
     };
   }, [isTouch, reducedMotion]);
@@ -176,7 +178,7 @@ export function EngagementTimeline() {
             {/* 4. Number circle */}
             <div
               className={cn(
-                'relative z-10 flex h-10 w-10 items-center justify-center rounded-full',
+                'relative z-10 flex size-10 items-center justify-center rounded-full',
                 'border bg-bg-elevated font-mono text-xs tracking-widest',
                 'transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
                 isActive && 'scale-[1.18]',

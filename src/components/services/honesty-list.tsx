@@ -130,13 +130,13 @@ function BringItem({ text, inView, delay, reducedMotion, autoUnderline = false }
       <span
         aria-hidden
         className={cn(
-          'relative mt-0.5 flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full',
+          'relative mt-0.5 flex-shrink-0 inline-flex size-5 items-center justify-center rounded-full',
           'bg-brand-cyan/15 text-brand-cyan',
           'transition-transform duration-300 ease-out',
           'group-hover:scale-110 group-focus-within:scale-110',
         )}
       >
-        <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none">
+        <svg viewBox="0 0 16 16" className="size-3" fill="none">
           <title>check</title>
           <path
             d="M3 8 L6.5 11.5 L13 5"

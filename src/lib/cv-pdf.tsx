@@ -514,7 +514,7 @@ function CaseStudyPage({ study, index }: { study: CaseStudy; index: number }) {
   );
 }
 
-export function CvDocument({
+function CvDocument({
   caseStudies,
   generatedAt,
 }: {

@@ -88,7 +88,7 @@ export function OutcomeRibbon() {
               >
                 <div
                   aria-hidden
-                  className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                  className="services-orb absolute top-0 right-0 size-32 rounded-full blur-2xl pointer-events-none"
                   style={{ background: o.glowColor, animationDelay: `${i * 1500}ms` }}
                 />
                 <Spotlight color={o.spotlightColor} />

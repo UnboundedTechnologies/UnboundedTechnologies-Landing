@@ -253,7 +253,7 @@ export function QualificationForm({ onSuccess }: Props) {
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted flex items-center gap-2">
           <span
             aria-hidden
-            className="inline-block w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse"
+            className="inline-block size-1.5 rounded-full bg-brand-blue animate-pulse"
           />
           {t('replyTime')}
         </p>

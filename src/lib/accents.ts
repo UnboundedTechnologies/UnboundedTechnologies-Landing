@@ -52,34 +52,6 @@ export function heroGradient(accent: Accent): string {
 }
 
 /**
- * `box-shadow` value for the inset accent stripe used on case-study index
- * cards, prev/next adjacent cards, and impact-graph cards.
- *
- * For solid accents this returns a single inset shadow on the requested side
- * (defaults to a 3px stripe on the left edge).
- *
- * For the `mixed` accent this returns an EMPTY string and the consumer must
- * additionally set `data-accent="mixed"` on the element so the CSS rule in
- * globals.css renders the tri-tone gradient via a `::before` pseudo-element.
- * Stacking three identical-position insets does NOT work: CSS composites them
- * such that only the topmost layer paints, collapsing the visual to a single
- * solid color.
- */
-export function accentStripeShadow(
-  accent: Accent,
-  options?: { side?: 'left' | 'right'; widthPx?: number },
-): string {
-  if (accent === 'mixed') {
-    // Rendered via [data-accent="mixed"]::before in globals.css.
-    return '';
-  }
-  const width = options?.widthPx ?? 3;
-  const side = options?.side ?? 'left';
-  const xOffset = side === 'left' ? width : -width;
-  return `inset ${xOffset}px 0 0 0 ${BRAND_HEX[accent]}`;
-}
-
-/**
  * Translucent border tint for adjacent (prev/next) case-study cards. Solid
  * accents return their brand hex with ~45% alpha; `mixed` falls back to a
  * neutral purple tone (the prev/next surface is too small to render the

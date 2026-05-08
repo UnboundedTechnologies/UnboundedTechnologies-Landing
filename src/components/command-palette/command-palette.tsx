@@ -72,7 +72,7 @@ type Props = {
 
 export function CommandPalette({ caseStudies }: Props) {
   const t = useTranslations('palette');
-  const router = useRouter();
+  const { prefetch, push } = useRouter();
   const { theme, setTheme, motion, setMotion } = useTheme();
   const isTouch = useIsTouch();
   const [open, setOpen] = useState(false);
@@ -104,9 +104,12 @@ export function CommandPalette({ caseStudies }: Props) {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-          const cleaned = parsed
-            .filter((x): x is string => typeof x === 'string')
-            .filter((id) => TRACK_RECENT_PREFIXES.some((p) => id.startsWith(p)));
+          const cleaned: string[] = [];
+          for (const x of parsed) {
+            if (typeof x === 'string' && TRACK_RECENT_PREFIXES.some((p) => x.startsWith(p))) {
+              cleaned.push(x);
+            }
+          }
           setRecent(cleaned);
           if (cleaned.length !== parsed.length) {
             localStorage.setItem(RECENT_KEY, JSON.stringify(cleaned));
@@ -122,12 +125,12 @@ export function CommandPalette({ caseStudies }: Props) {
   useEffect(() => {
     const routes = ['/', '/services', '/work', '/about', '/contact'];
     for (const r of routes) {
-      router.prefetch(r as Parameters<typeof router.prefetch>[0]);
+      prefetch(r as Parameters<typeof prefetch>[0]);
     }
     for (const cs of caseStudies) {
-      router.prefetch(`/work/${cs.slug}` as Parameters<typeof router.prefetch>[0]);
+      prefetch(`/work/${cs.slug}` as Parameters<typeof prefetch>[0]);
     }
-  }, [router, caseStudies]);
+  }, [prefetch, caseStudies]);
 
   // Recent only tracks navigation + case studies. Theme/motion are
   // preferences, not destinations - tracking them as "recent" is noise.
@@ -146,10 +149,10 @@ export function CommandPalette({ caseStudies }: Props) {
 
   const navigate = useCallback(
     (href: string) => {
-      router.push(href as Parameters<typeof router.push>[0]);
+      push(href as Parameters<typeof push>[0]);
       setOpen(false);
     },
-    [router],
+    [push],
   );
 
   const navGroupLabel = t('groupNavigation');
@@ -281,9 +284,11 @@ export function CommandPalette({ caseStudies }: Props) {
   ];
 
   // Recent slice + section rendering order.
-  const recentActions = recent
-    .map((id) => actions.find((a) => a.id === id))
-    .filter((a): a is Action => !!a);
+  const recentActions: Action[] = [];
+  for (const id of recent) {
+    const a = actions.find((x) => x.id === id);
+    if (a) recentActions.push(a);
+  }
 
   const seenInRecent = new Set(recentActions.map((a) => a.id));
   const groupOrder: GroupKey[] = ['navigation', 'caseStudies', 'theme', 'motion'];
@@ -337,7 +342,7 @@ export function CommandPalette({ caseStudies }: Props) {
           the backdrop isn't discoverable, so we ship an explicit × on
           small screens. */}
             <div className="relative flex items-center gap-3 border-b border-white/[0.06] px-5">
-              <SearchIcon className="h-4 w-4 flex-shrink-0 text-text-faint group-focus-within:text-brand-blue transition-colors" />
+              <SearchIcon className="size-4 flex-shrink-0 text-text-faint group-focus-within:text-brand-blue transition-colors" />
               <Command.Input
                 autoFocus={!isTouch}
                 placeholder={t('placeholder')}
@@ -351,9 +356,9 @@ export function CommandPalette({ caseStudies }: Props) {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="sm:hidden flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-surface-hover active:scale-95 transition-colors duration-150"
+                className="sm:hidden flex-shrink-0 inline-flex size-8 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-surface-hover active:scale-95 transition-colors duration-150"
               >
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
+                <svg viewBox="0 0 24 24" className="size-4" fill="none" aria-hidden>
                   <title>Close</title>
                   <path
                     d="M6 6 L18 18 M18 6 L6 18"
@@ -517,7 +522,7 @@ function PaletteRow({
     >
       <span
         className={cn(
-          'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl',
+          'flex size-9 flex-shrink-0 items-center justify-center rounded-xl',
           colorClass,
         )}
       >
@@ -577,7 +582,7 @@ function SearchIcon({ className }: { className?: string }) {
 }
 function ClockIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden>
       <title>Recent</title>
       <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
       <path d="M8 4 L8 8 L11 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -586,7 +591,7 @@ function ClockIcon() {
 }
 function NavIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden>
       <title>Navigation</title>
       <path
         d="M5 11 L11 5 M11 5 H6.5 M11 5 V9.5"
@@ -600,7 +605,7 @@ function NavIcon() {
 }
 function LayersIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden>
       <title>Case studies</title>
       <path
         d="M8 2 L14 5 L8 8 L2 5 L8 2 Z"
@@ -615,7 +620,7 @@ function LayersIcon() {
 }
 function SunMoonIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden>
       <title>Appearance</title>
       <path
         d="M12 8 A4 4 0 1 1 8 4 A3 3 0 0 0 12 8 Z"
@@ -628,7 +633,7 @@ function SunMoonIcon() {
 }
 function SparklesIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden>
       <title>Motion</title>
       <path
         d="M8 2 L9 6 L13 7 L9 8 L8 12 L7 8 L3 7 L7 6 Z"
@@ -641,7 +646,7 @@ function SparklesIcon() {
 }
 function HomeIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Home</title>
       <path
         d="M3 7 L8 3 L13 7 V13 H10 V9 H6 V13 H3 Z"
@@ -654,7 +659,7 @@ function HomeIcon() {
 }
 function BriefcaseIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Services</title>
       <rect x="2" y="5" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
       <path d="M6 5 V3 H10 V5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -663,7 +668,7 @@ function BriefcaseIcon() {
 }
 function FolderIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Work</title>
       <path
         d="M2 5 V12 A1 1 0 0 0 3 13 H13 A1 1 0 0 0 14 12 V6 A1 1 0 0 0 13 5 H8 L7 3.5 H3 A1 1 0 0 0 2 5 Z"
@@ -676,7 +681,7 @@ function FolderIcon() {
 }
 function PersonIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>About</title>
       <circle cx="8" cy="6" r="2.5" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -690,7 +695,7 @@ function PersonIcon() {
 }
 function MailIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Contact</title>
       <rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -704,7 +709,7 @@ function MailIcon() {
 }
 function DocumentIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Case study</title>
       <path
         d="M4 2 H10 L13 5 V13 A1 1 0 0 1 12 14 H4 A1 1 0 0 1 3 13 V3 A1 1 0 0 1 4 2 Z"
@@ -718,7 +723,7 @@ function DocumentIcon() {
 }
 function MoonIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Dark</title>
       <path
         d="M12 9 A4.5 4.5 0 1 1 7 4 A3.5 3.5 0 0 0 12 9 Z"
@@ -731,7 +736,7 @@ function MoonIcon() {
 }
 function FilmIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Cinematic</title>
       <rect x="2" y="3" width="12" height="10" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -745,7 +750,7 @@ function FilmIcon() {
 }
 function SunsetIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Auto</title>
       <circle cx="8" cy="9" r="3" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -759,7 +764,7 @@ function SunsetIcon() {
 }
 function GearIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Follow system</title>
       <circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -773,7 +778,7 @@ function GearIcon() {
 }
 function PauseIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Reduce motion</title>
       <rect x="5" y="3" width="2" height="10" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
       <rect x="9" y="3" width="2" height="10" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
@@ -782,7 +787,7 @@ function PauseIcon() {
 }
 function PlayIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden>
       <title>Full motion</title>
       <path d="M5 3 L13 8 L5 13 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>

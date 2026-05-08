@@ -36,7 +36,7 @@ function asOgLocale(locale: string): OgLocale {
  * The handler does not consult the request URL beyond the segment list, so
  * any well-formed path is safe to pass.
  */
-export function ogImagePath(locale: string, segments: ReadonlyArray<string> = []): string {
+function ogImagePath(locale: string, segments: ReadonlyArray<string> = []): string {
   const safe = asOgLocale(locale);
   const tail = segments.length === 0 ? '' : `/${segments.join('/')}`;
   return `${SITE_URL}/api/og/${safe}${tail}`;

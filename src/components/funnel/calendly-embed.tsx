@@ -63,22 +63,22 @@ export function CalendlyEmbed({ url }: Props) {
           from globals.css so it matches every other card on the site. */}
       <div
         aria-hidden
-        className="services-orb absolute top-0 right-0 w-44 h-44 rounded-full blur-3xl pointer-events-none"
+        className="services-orb absolute top-0 right-0 size-44 rounded-full blur-3xl pointer-events-none"
         style={{ background: 'rgba(93, 111, 255, 0.30)' }}
       />
       <div
         aria-hidden
-        className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-0 left-0 size-32 rounded-full blur-3xl pointer-events-none"
         style={{ background: 'rgba(163, 93, 255, 0.18)' }}
       />
 
       <div className="relative">
         {/* Calendar icon with halo */}
-        <div className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center">
+        <div className="relative mx-auto mb-6 flex size-14 items-center justify-center">
           <div aria-hidden className="absolute inset-0 rounded-full bg-brand-blue/20 blur-xl" />
           <svg
             viewBox="0 0 24 24"
-            className="relative h-7 w-7 text-brand-blue"
+            className="relative size-7 text-brand-blue"
             fill="none"
             stroke="currentColor"
             strokeWidth={2}
@@ -108,15 +108,15 @@ export function CalendlyEmbed({ url }: Props) {
         {/* Badges row */}
         <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
           <span className="flex items-center gap-2">
-            <span className="h-1 w-1 rounded-full bg-brand-blue" aria-hidden />
+            <span className="size-1 rounded-full bg-brand-blue" aria-hidden />
             {t('badgeDuration')}
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1 w-1 rounded-full bg-brand-purple" aria-hidden />
+            <span className="size-1 rounded-full bg-brand-purple" aria-hidden />
             {t('badgeMedium')}
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1 w-1 rounded-full bg-brand-cyan" aria-hidden />
+            <span className="size-1 rounded-full bg-brand-cyan" aria-hidden />
             {t('badgeInvite')}
           </span>
         </div>

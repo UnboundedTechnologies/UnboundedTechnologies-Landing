@@ -1,9 +1,13 @@
-import { type AnchorHTMLAttributes, forwardRef } from 'react';
+import type { AnchorHTMLAttributes, Ref } from 'react';
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 
 type Variant = 'gradient' | 'ghost' | 'mono';
-type Props = AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: Variant; href: string };
+type Props = AnchorHTMLAttributes<HTMLAnchorElement> & {
+  variant?: Variant;
+  href: string;
+  ref?: Ref<HTMLAnchorElement>;
+};
 
 const BASE =
   'inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-[var(--duration-short)]';
@@ -18,31 +22,34 @@ function isInternalHref(href: string): boolean {
   return href.startsWith('/') && !href.startsWith('//');
 }
 
-export const ButtonLink = forwardRef<HTMLAnchorElement, Props>(
-  ({ variant = 'gradient', className, children, href, ...rest }, ref) => {
-    const classes = cn(BASE, VARIANTS[variant], className);
+export function ButtonLink({
+  variant = 'gradient',
+  className,
+  children,
+  href,
+  ref,
+  ...rest
+}: Props) {
+  const classes = cn(BASE, VARIANTS[variant], className);
 
-    if (isInternalHref(href)) {
-      return (
-        <Link
-          ref={ref}
-          // next-intl Link expects a typed href union from the routing config; callers pass
-          // runtime strings, so we widen here. Locale prefix is added automatically.
-          href={href as Parameters<typeof Link>[0]['href']}
-          className={classes}
-          {...rest}
-        >
-          {children}
-        </Link>
-      );
-    }
-
+  if (isInternalHref(href)) {
     return (
-      <a ref={ref} href={href} className={classes} {...rest}>
+      <Link
+        ref={ref}
+        // next-intl Link expects a typed href union from the routing config; callers pass
+        // runtime strings, so we widen here. Locale prefix is added automatically.
+        href={href as Parameters<typeof Link>[0]['href']}
+        className={classes}
+        {...rest}
+      >
         {children}
-      </a>
+      </Link>
     );
-  },
-);
+  }
 
-ButtonLink.displayName = 'ButtonLink';
+  return (
+    <a ref={ref} href={href} className={classes} {...rest}>
+      {children}
+    </a>
+  );
+}

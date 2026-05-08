@@ -65,18 +65,18 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
         {/* Soft brand-blue glow drifting in the top-right corner. */}
         <div
           aria-hidden
-          className="services-orb absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+          className="services-orb absolute top-0 right-0 size-40 rounded-full blur-3xl pointer-events-none"
           style={{ background: 'rgba(93, 111, 255, 0.35)' }}
         />
         {/* And a brand-purple match in the bottom-left for symmetry. */}
         <div
           aria-hidden
-          className="absolute bottom-0 left-0 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+          className="absolute bottom-0 left-0 size-40 rounded-full blur-3xl pointer-events-none"
           style={{ background: 'rgba(163, 93, 255, 0.25)' }}
         />
 
         {/* Check icon: ring scales in, then stroke draws itself. */}
-        <div className="relative mx-auto mb-7 flex h-20 w-20 items-center justify-center">
+        <div className="relative mx-auto mb-7 flex size-20 items-center justify-center">
           {/* Outer halo (always visible, low alpha). */}
           <div
             aria-hidden
@@ -103,7 +103,7 @@ export function ThankYouScreen({ status, calendlyUrl }: Props) {
             style={{ transitionDelay: animate ? '120ms' : '0ms' }}
           />
           {/* Check stroke. */}
-          <svg viewBox="0 0 24 24" className="relative h-9 w-9" fill="none">
+          <svg viewBox="0 0 24 24" className="relative size-9" fill="none">
             <title>check</title>
             <path
               d="M5 12 L10 17 L19 8"

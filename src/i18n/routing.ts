@@ -23,7 +23,7 @@ export const routing = defineRouting({
   },
 });
 
-export const { Link, getPathname, redirect, usePathname, useRouter } = createNavigation(routing);
+export const { Link, getPathname, usePathname, useRouter } = createNavigation(routing);
 
 /**
  * Build a typed `/work/{slug}` href for `<Link>`. Centralizes the cast that

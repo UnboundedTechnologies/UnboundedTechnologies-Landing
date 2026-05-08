@@ -28,8 +28,10 @@ export async function generateMetadata({
 export default async function WorkIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('work');
-  const studies = await getAllCaseStudies(locale as Locale);
+  const [t, studies] = await Promise.all([
+    getTranslations('work'),
+    getAllCaseStudies(locale as Locale),
+  ]);
 
   return (
     <section className="relative overflow-hidden py-20 md:py-28">

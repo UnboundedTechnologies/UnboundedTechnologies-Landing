@@ -35,7 +35,7 @@ type Props = {
 
 export function LanguageSwitcher({ current, direction = 'down' }: Props) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { replace } = useRouter();
   const params = useParams<{ slug?: string }>();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,14 +69,14 @@ export function LanguageSwitcher({ current, direction = 'down' }: Props) {
     // explicitly. For static routes the string pathname is fine because
     // next-intl's pathnames mapping handles them deterministically.
     if (params.slug) {
-      router.replace(
+      replace(
         // biome-ignore lint/suspicious/noExplicitAny: typed pathnames union is too narrow for runtime descriptors
         { pathname: '/work/[slug]' as any, params: { slug: params.slug } },
         { locale: loc },
       );
     } else {
       // biome-ignore lint/suspicious/noExplicitAny: same reason
-      router.replace(pathname as any, { locale: loc });
+      replace(pathname as any, { locale: loc });
     }
   };
 
@@ -88,9 +88,9 @@ export function LanguageSwitcher({ current, direction = 'down' }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Language: ${current.toUpperCase()}`}
-        className="group relative inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+        className="group relative inline-flex size-10 items-center justify-center rounded-full cursor-pointer text-text-muted hover:text-text hover:bg-surface-hover transition-colors duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
       >
-        <GlobeIcon className="h-4 w-4" />
+        <GlobeIcon className="size-4" />
         {/* Tooltip - desktop affordance only; hidden on mobile. */}
         <span
           role="tooltip"

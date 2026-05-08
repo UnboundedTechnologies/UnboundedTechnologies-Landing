@@ -1,5 +1,5 @@
 'use client';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useMemo } from 'react';
 import { type CardRect, COLOR_HEX, type Edge, type RoutedEdge, routeEdge } from './graph-data';
 
@@ -20,10 +20,14 @@ type Props = {
 
 export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: Props) {
   const PILL_DISTANCE = pillDistance;
-  const routed = useMemo(
-    () => edges.map((e) => routeEdge(e, rects)).filter((r): r is RoutedEdge => r !== null),
-    [edges, rects],
-  );
+  const routed = useMemo(() => {
+    const out: RoutedEdge[] = [];
+    for (const e of edges) {
+      const r = routeEdge(e, rects);
+      if (r !== null) out.push(r);
+    }
+    return out;
+  }, [edges, rects]);
 
   if (routed.length === 0 || width === 0 || height === 0) return null;
 
@@ -52,7 +56,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
           const stemDelay = 0.7 + i * 0.08;
           return (
             <g key={`line-${edge.from}-${edge.to}`}>
-              <motion.line
+              <m.line
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -66,7 +70,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.5, delay: lineDelay, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.line
+              <m.line
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -81,7 +85,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.4, delay: lineDelay + 0.5, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.circle
+              <m.circle
                 cx={x1}
                 cy={y1}
                 r={4}
@@ -91,7 +95,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.3, delay: dotDelay, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.circle
+              <m.circle
                 cx={x2}
                 cy={y2}
                 r={4}
@@ -101,7 +105,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.3, delay: dotDelay, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.line
+              <m.line
                 x1={midX}
                 y1={midY}
                 x2={stemEndX}
@@ -115,7 +119,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.4, delay: stemDelay, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.line
+              <m.line
                 x1={midX}
                 y1={midY}
                 x2={stemEndX}
@@ -130,7 +134,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                 transition={{ duration: 0.3, delay: stemDelay + 0.4, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: '-80px' }}
               />
-              <motion.circle
+              <m.circle
                 cx={midX}
                 cy={midY}
                 r={3.5}
@@ -162,7 +166,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
             className={`absolute pointer-events-none ${translateClass}`}
             style={{ left: anchorLeft, top: anchorTop }}
           >
-            <motion.div
+            <m.div
               className="graph-pill"
               style={{ ['--pill-glow' as string]: `${stroke}55` }}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -183,7 +187,7 @@ export function GraphEdges({ edges, rects, width, height, pillDistance = 64 }: P
                   </span>
                 )}
               </div>
-            </motion.div>
+            </m.div>
           </div>
         );
       })}

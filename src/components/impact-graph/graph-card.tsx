@@ -1,6 +1,6 @@
 'use client';
-import { motion } from 'motion/react';
-import { type ForwardedRef, forwardRef } from 'react';
+import { m } from 'motion/react';
+import type { Ref } from 'react';
 import { Spotlight } from '@/components/primitives/spotlight';
 import { Link, workHref } from '@/i18n/routing';
 import { accentSpotlight } from '@/lib/accents';
@@ -26,6 +26,7 @@ type Props = {
   color: GraphColor;
   category: GraphCategory;
   index: number;
+  ref?: Ref<HTMLDivElement>;
 };
 
 // The outer motion.div is the layout / measurement target that
@@ -33,10 +34,7 @@ type Props = {
 // the parent so the entire card surface is clickable when linked. This
 // Pattern A keeps the SVG edge geometry intact (the measured rect is
 // unchanged regardless of inner element).
-export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
-  { label, sub, href, color, category, index }: Props,
-  ref: ForwardedRef<HTMLDivElement>,
-) {
+export function GraphCard({ label, sub, href, color, category, index, ref }: Props) {
   const accent = COLOR_HEX[color];
   const number = String(index + 1).padStart(2, '0');
   const isLinked = typeof href === 'string' && href.length > 0;
@@ -57,7 +55,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
   );
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -82,7 +80,7 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
           aria-hidden
           className="md:hidden absolute top-3 right-3 z-10 text-text-faint pointer-events-none"
         >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
+          <svg viewBox="0 0 16 16" className="size-3.5" fill="none">
             <title>Open</title>
             <path
               d="M5 11 L11 5 M11 5 H6.5 M11 5 V9.5"
@@ -109,6 +107,6 @@ export const GraphCard = forwardRef<HTMLDivElement, Props>(function GraphCard(
           {innerContent}
         </div>
       )}
-    </motion.div>
+    </m.div>
   );
-});
+}

@@ -41,6 +41,10 @@ const InfinityLogo3D = dynamic(
 
 const ANCHOR_SELECTOR = '[data-hero-canvas-anchor]';
 const OFFSCREEN_TOP = -10000;
+// Persistent style fragment shared by every cssText write. Keeping it
+// constant means the rAF loop only varies the dynamic top/left/width/height
+// and skips re-touching the always-on properties.
+const PERSISTENT_STYLE = 'position:absolute;pointer-events:none;z-index:5;';
 
 export function PersistentInfinityLogo() {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -65,10 +69,7 @@ export function PersistentInfinityLogo() {
       const key = 'offscreen';
       if (key === lastKey) return;
       lastKey = key;
-      w.style.top = `${OFFSCREEN_TOP}px`;
-      w.style.left = '0px';
-      w.style.width = '400px';
-      w.style.height = '400px';
+      w.style.cssText = `${PERSISTENT_STYLE}top:${OFFSCREEN_TOP}px;left:0;width:400px;height:400px;`;
       w.setAttribute('aria-hidden', 'true');
     }
 
@@ -88,10 +89,7 @@ export function PersistentInfinityLogo() {
       const key = `${docTop}|${docLeft}|${rect.width}|${rect.height}`;
       if (key === lastKey) return;
       lastKey = key;
-      w.style.top = `${docTop}px`;
-      w.style.left = `${docLeft}px`;
-      w.style.width = `${rect.width}px`;
-      w.style.height = `${rect.height}px`;
+      w.style.cssText = `${PERSISTENT_STYLE}top:${docTop}px;left:${docLeft}px;width:${rect.width}px;height:${rect.height}px;`;
       w.setAttribute('aria-hidden', 'false');
     }
 

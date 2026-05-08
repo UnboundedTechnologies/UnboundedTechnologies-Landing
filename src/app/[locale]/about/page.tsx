@@ -148,7 +148,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 >
                   <div
                     aria-hidden
-                    className="services-orb absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl pointer-events-none opacity-60"
+                    className="services-orb absolute top-0 right-0 size-24 rounded-full blur-2xl pointer-events-none opacity-60"
                     style={{
                       background: accentGlowColor(bullet.accent, 0),
                       animationDelay: `${idx * 1200}ms`,

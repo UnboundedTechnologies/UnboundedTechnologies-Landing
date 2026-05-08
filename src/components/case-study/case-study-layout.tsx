@@ -202,7 +202,7 @@ export async function CaseStudyLayout({ study, prev, next }: Props) {
                 >
                   <div
                     aria-hidden
-                    className="services-orb absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl pointer-events-none"
+                    className="services-orb absolute top-0 right-0 size-32 rounded-full blur-2xl pointer-events-none"
                     style={{
                       background: accentGlowColor(study.accent, i),
                       animationDelay: `${i * 1500}ms`,
