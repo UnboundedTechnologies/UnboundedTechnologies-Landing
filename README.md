@@ -1,4 +1,4 @@
-# Unbounded Technologies · Landing Site
+# Unbounded Technologies Inc. · Landing Site
 
 [![CI](https://github.com/UnboundedTechnologies/UnboundedTechnologies-Landing/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/UnboundedTechnologies/UnboundedTechnologies-Landing/actions/workflows/ci.yml)
 [![Lighthouse](https://github.com/UnboundedTechnologies/UnboundedTechnologies-Landing/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/UnboundedTechnologies/UnboundedTechnologies-Landing/actions/workflows/lighthouse.yml)
