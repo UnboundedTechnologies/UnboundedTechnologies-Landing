@@ -20,10 +20,10 @@ The official landing site for **[Unbounded Technologies Inc.](https://unboundedt
 ## Highlights
 
 - **Bilingual** EN / FR with locale-prefixed routes and per-route slug mapping (`/work` ↔ `/travaux`, `/about` ↔ `/a-propos`, `/legal/privacy` ↔ `/legal/confidentialite`).
-- **Three R3F set-pieces** running concurrently: a persistent infinity logo Canvas hoisted to the layout level (survives in-app nav), an interactive photoreal globe with drag + zoom + great-circle routes, and an animated impact graph with energy edges and live stat pills.
+- **Three R3F set-pieces** running concurrently: a persistent infinity logo Canvas hoisted to the **root** layout (survives locale switches and all in-app nav), an interactive photoreal globe with drag + zoom + great-circle routes, and an animated impact graph with energy edges and live stat pills.
 - **Four MDX-driven case studies** with frontmatter, quantified outcome callouts, inline architecture diagrams, prev/next navigation, and circular wrap-around.
 - **Qualified-lead funnel** with hidden honeypot bot mitigation, Upstash sliding-window rate limit, Notion CRM, Resend transactional email, and an outbound branded "Book a call" card to Calendly for qualified applicants.
-- **Strict CSP** with per-request nonce, plus HSTS / X-Frame / X-CTO / Referrer / Permissions / COOP. Allowlist tightly scoped to actually-used origins.
+- **Strict CSP** with a tightly scoped allowlist (script-src uses `'unsafe-inline'` + a small set of trusted origins; nonces were dropped after Next 16's notFound() flight payloads emitted `"nonce":"$undefined"` and broke the 404 page; XSS surface is controlled by `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, and a no-DOM-echo funnel), plus HSTS / X-Frame / X-CTO / Referrer / Permissions / COOP.
 - **macOS Tahoe-style command palette** (cmdk) with ⌘K / Ctrl+K, fuzzy search, recent commands, theme + motion toggles, and case-study deep links.
 - **Triple theme system** (Dark / Cinematic / Auto) with sunrise-sunset auto-resolve and a no-FOUC boot script applied synchronously before hydration.
 - **Touch-aware motion**: every hover-only effect has an `active:` / `focus-within:` fallback plus IntersectionObserver auto-cascades on coarse-pointer devices, so mobile reads as alive.
@@ -67,39 +67,53 @@ src/
       contact/                 Funnel POST handler (rate limit + honeypot + Notion + Resend)
       og/[...slug]/            Dynamic OG image generator
     cv.pdf/                    React-PDF capability statement
-    layout.tsx                 Root layout (CSP nonce + persistent canvases)
+    layout.tsx                 Root layout: persistent canvases + theme boot script + font setup
     sitemap.ts                 EN + FR sitemap with hreflang
     robots.ts                  Allow-everything except /api
+    proxy.ts (one above)       next-intl middleware + CSP + security headers
   components/
     atmosphere/                ParticleField, AuroraOrbs, HeroAtmosphere, SectionAtmosphere
-    case-study/                CaseStudyLayout (MDX renderer + outcome callouts + prev/next)
+    case-study/                CaseStudyLayout (MDX renderer + outcome callouts + prev/next + diagrams)
     command-palette/           cmdk-powered ⌘K palette
-    funnel/                    Qualified-lead form, Turnstile widget, Calendly embed
+    easter-egg/                Konami / hidden interactions
+    funnel/                    Qualified-lead form (honeypot bot mitigation) + branded outbound Calendly card
+    github-strip/              GitHub-strip live activity widget
     globe/                     R3F photoreal globe with great-circle routes
-    hero/                      Persistent infinity logo Canvas (layout-level)
+    hero/                      Persistent infinity logo Canvas (mounted in root layout, not Hero)
     impact-graph/              Self-drawing impact graph + energy edges
     nav/                       TopNav, Footer, MobileMenu, LanguageSwitcher
+    outcomes/                  Outcome-callout cards used inside MDX case studies
+    perf-scorecard/            Footer chip that reads public/lighthouse.json
     primitives/                Buttons, Eyebrows, Spotlight (cursor halo)
     services/                  Pillars, EngagementTimeline, HonestyList
     theme/                     Tri-state theme provider with no-FOUC boot
+    trusted-by/                Trusted-by logo strip
   i18n/
     routing.ts                 next-intl routing + workHref helper
     config.ts                  Locales: en (default), fr
   lib/
     accents.ts                 Brand-color helpers (blue/purple/cyan/mixed)
     case-studies.ts            MDX loader (server-only, 'use cache' + React.cache)
-    cv-pdf.tsx                 PDF document component
+    case-study-diagrams.ts     Inline architecture diagram primitives
+    cv-pdf.tsx                 PDF document component (@react-pdf/renderer)
+    env.ts                     Zod-validated runtime env schema
+    github.ts                  GitHub API client (soft-fails if no token; rate-limit aware)
+    hooks/                     Shared React hooks
+    lead-score.ts              Scores funnel submissions as qualified vs exploratory
     notion.ts                  Notion CRM client (soft-fails if env absent)
-    resend.ts                  Resend client (soft-fails if env absent)
-    rate-limit.ts              Upstash limiter (noop fallback if env absent)
-    turnstile.ts               Server-side Turnstile verify
     og.ts                      OG image metadata helpers
+    rate-limit.ts              Upstash limiter (noop fallback if env absent)
+    resend.ts                  Resend client (soft-fails if env absent)
+    utils.ts                   cn() and small shared utilities
 content/case-studies/          MDX files (BMO, AWS Connect, Renault Forex, ETBA ERP)
 messages/                      EN + FR i18n strings
-public/                        Banner images, brand logo, earth textures, world topojson
-.github/workflows/             CI + Lighthouse-CI workflows
+public/                        Banner images, brand logo, earth textures, world topojson, lighthouse.json
+.github/workflows/             ci, lighthouse, lighthouse-weekly, react-doctor
+.github/dependabot.yml         Weekly grouped npm + GH Actions PRs (Mondays 06:00 America/Toronto)
+docs/                          post-launch.md (operations) + architecture.md (engineering deep-dive)
 docs/superpowers/              Specs + plans (gitignored, owner-local)
 tests/e2e/                     Playwright smoke + axe sweeps
+scripts/                       PSI helpers (psi-weekly, psi-opportunities, lh-summary, etc.)
 ```
 
 ## Local development
@@ -110,7 +124,7 @@ cp .env.example .env.local      # fill in local-dev secrets if you want full fun
 pnpm dev                         # turbopack dev server at http://localhost:3000
 ```
 
-> The funnel (Turnstile / Notion / Resend / Upstash) soft-fails when env vars are absent, so most surfaces work without any keys. For visual + 3D testing, run a production build (`pnpm build && pnpm start`) instead of dev — turbopack's HMR overhead distorts WebGL timing.
+> The funnel (Notion / Resend / Upstash) soft-fails when env vars are absent, so most surfaces work without any keys. For visual + 3D testing, run a production build (`pnpm build && pnpm start`) instead of dev. Turbopack's HMR overhead distorts WebGL timing.
 
 ## Scripts
 
@@ -127,43 +141,48 @@ pnpm dev                         # turbopack dev server at http://localhost:3000
 
 ## CI gates
 
-Two GitHub Actions workflows guard `main`:
+Four GitHub Actions workflows guard `main`:
 
 | Workflow | Triggered on | Asserts |
 |---|---|---|
 | `ci.yml` | every push + PR | install, lint, type-check, build, Playwright suite (19 tests + 1 docs-skipped) |
-| `lighthouse.yml` | every push to `main` + PRs | desktop-preset Lighthouse with thresholds: a11y ≥ 0.95 (error), best-practices ≥ 0.90 (error), SEO ≥ 0.90 (error), perf ≥ 0.85 (warn — CI runners can't measure WebGL meaningfully) |
+| `lighthouse.yml` | every push to `main` + PRs | desktop-preset Lighthouse-CI on the runner. Thresholds: a11y ≥ 0.95 (error), best-practices ≥ 0.90 (error), SEO ≥ 0.90 (error), perf ≥ 0.85 (warn). Software-rasterized WebGL on the Ubuntu runner crushes perf scores, so the gate is informational rather than blocking. |
+| `lighthouse-weekly.yml` | Mondays 09:00 UTC (cron) + manual | Real-prod PageSpeed Insights run against `/en/services` (R3F-free, representative of static-content perf). Commits the latest scores back to `public/lighthouse.json` for the footer scorecard chip. Opens a regression issue if any score drops below the configured threshold (mobile perf 90, desktop 80, a11y 95, BP 90, SEO 90). |
+| `react-doctor.yml` | every push to `main` + PRs | Non-blocking sweep. Captures the score in the job summary so owners can eyeball drift PR-by-PR; most remaining findings (R3F three.js JSX props, hero-atmosphere blurs, long ambient rotations) are intentional design-intent and live-tracked in memory. |
 
-The perf gate is intentionally a warning rather than an error on CI: GitHub Actions Ubuntu runners use software-rasterized WebGL which crushes scores for any R3F-heavy site. Real-prod Lighthouse on Vercel hits the gate on real hardware. Phase 15 will add a weekly cron Lighthouse run against the production URL with a hard gate.
+Dependabot (`.github/dependabot.yml`) opens grouped weekly PRs Mondays 06:00 America/Toronto for npm + GitHub Actions. Three.js / R3F / drei / `@types/three` are pinned out of the bot because they coordinate together and minor bumps can produce silent peer-dep drift; bump those by hand.
 
 ## Architecture notes
 
-A few decisions worth knowing about before editing:
+A few decisions worth knowing about before editing. The deep-dive companion lives at [`docs/architecture.md`](./docs/architecture.md); operations + on-call break-glass at [`docs/post-launch.md`](./docs/post-launch.md).
 
-- **The 3D infinity logo Canvas is owned by the locale layout, not the Hero.** It's mounted once in `[locale]/layout.tsx` as `<PersistentInfinityLogo />` and an imperative `requestAnimationFrame` loop reads `document.querySelector('[data-hero-canvas-anchor]').getBoundingClientRect()` every frame to overlay the Canvas exactly where the Hero reserves space. This sidesteps a class of WebGL-context-loss bugs that lazy-loading approaches couldn't resolve. The Canvas is never unmounted during in-app nav.
+- **The 3D infinity logo Canvas is owned by the root layout, not the Hero.** It's mounted once in `src/app/layout.tsx` (alongside `<ParticleField />`) as `<PersistentInfinityLogo />` and an imperative `requestAnimationFrame` loop reads `document.querySelector('[data-hero-canvas-anchor]').getBoundingClientRect()` every frame to overlay the Canvas exactly where the Hero reserves space. Mounting at the root layout (rather than `[locale]/layout.tsx`) keeps the WebGL context alive across locale switches too, since the locale layout re-runs when `[locale]` changes. The Canvas is never unmounted during in-app nav. The logo module itself is dynamic-imported and only mounted when the hero anchor exists, saving ~354 KiB on /services /about /work /contact.
 - **Case-study readers are double-cached.** The inner reader functions in `src/lib/case-studies.ts` carry the `'use cache'` directive (required under `cacheComponents: true`); the exported wrappers use `React.cache` for per-render dedup across `generateStaticParams` / `generateMetadata` / page render. Don't remove either layer.
-- **CSP allows `'unsafe-inline'` for styles only.** Framer Motion writes `element.style.transform/opacity` from JS at runtime, which CSP nonces don't cover. Scripts stay strict with nonce. CSS injection has no code-execution surface, and `frame-ancestors 'none'` plus `base-uri 'self'` cover the related attack patterns.
+- **CSP uses `'unsafe-inline'` for both `script-src` and `style-src`, plus a tight URL allowlist.** `style-src` always needed it (Framer Motion writes `element.style.transform/opacity` at runtime, not nonce-coverable). `script-src` was switched off the per-request nonce after Next 16 emitted `"nonce":"$undefined"` for `notFound()` flight payloads. The inline boot script then violated the nonce-only directive and turned the 404 into a wall of CSP errors. Modern browsers (CSP3) ignore `'unsafe-inline'` when a nonce is present, so the "add `'unsafe-inline'` as fallback" workaround does not actually relax modern enforcement. XSS surface is controlled by `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, and a no-DOM-echo funnel; the script-src URL allowlist is small (Calendly, Plausible, Vercel analytics).
 - **External services soft-fail.** Notion / Resend clients build to `null` when their env var is absent, helpers return `null`, and the route handler routes around it. Upstash falls back to a noop limiter that always returns success. This means deploys land green even before integrations are wired.
-- **`<html lang>` is hardcoded to `en`.** The root layout owns the persistent canvases across locale switches, so promoting `lang` per locale would force a Canvas remount and lose the WebGL context. Trade accepted.
+- **The contact funnel uses honeypot + Upstash, no Turnstile.** Cloudflare Turnstile (invisible mode) was removed because its always-mounted background risk-analysis ran on the main thread and produced multi-second freezes during typing/scroll on iPhone. Bot mitigation today is (1) a hidden, tab-skipped `hp_field` that humans never fill, (2) Upstash sliding-window 3-per-hour-per-IP, (3) Zod schema validation. Honeypot rejections return a 200 success-shaped envelope so the bot never learns the rejection mechanism. If spam ramps up, reintroduce Turnstile only behind an explicit signal (e.g. mount only after a first failed honeypot attempt). Never inline.
+- **`<html lang>` lives only in the root layout (Next constraint) and is hardcoded to `en`.** That layout also owns the persistent WebGL canvases. Promoting `lang` per locale would require moving `<html>` into `[locale]/layout.tsx` (which the App Router doesn't allow) or remounting the canvases on locale switch. Trade accepted; per-page `<html lang>` would also fight `next-intl`'s segment routing on slug-mapped routes.
 
 ## Deployment
 
-`main` auto-deploys to Vercel. Phase 14 launch runbook lives in `docs/superpowers/plans/2026-05-01-phase-14-launch-runbook.md` (gitignored, owner-local). The 12 production env vars expected by the code:
+`main` auto-deploys to Vercel. The runtime env schema lives in `src/lib/env.ts` (Zod-validated). Production env vars expected by the code:
 
 ```
-NEXT_PUBLIC_SITE_URL                  required
-NEXT_PUBLIC_TURNSTILE_SITE_KEY        optional (form falls back to dev token)
-RESEND_API_KEY                        optional (email is silently skipped if absent)
-RESEND_FROM_EMAIL                     paired with RESEND_API_KEY
-RESEND_TO_EMAIL                       paired with RESEND_API_KEY
-TURNSTILE_SECRET_KEY                  optional (server-verify rejects without it)
+NEXT_PUBLIC_SITE_URL                  defaulted to https://unboundedtechnologies.com
+PLAUSIBLE_DOMAIN                      defaulted to unboundedtechnologies.com (analytics deferred to v1.x)
+RESEND_API_KEY                        optional (lead notification + applicant confirmation skipped if absent)
+RESEND_FROM_EMAIL                     paired with RESEND_API_KEY (defaulted to noreply@send.unboundedtechnologies.com)
+RESEND_TO_EMAIL                       paired with RESEND_API_KEY (defaulted to contact@unboundedtechnologies.com)
 NOTION_API_KEY                        optional (CRM write skipped if absent)
 NOTION_LEADS_DB_ID                    paired with NOTION_API_KEY
-CALENDLY_URL                          optional (graceful placeholder if absent)
+CALENDLY_URL                          optional (graceful placeholder card if absent)
+GITHUB_TOKEN                          optional (raises GitHub strip API rate limit from 60/hr to 5000/hr)
 UPSTASH_REDIS_REST_URL                optional (noop limiter if absent)
 UPSTASH_REDIS_REST_TOKEN              paired with UPSTASH_REDIS_REST_URL
-GITHUB_TOKEN                          optional (raises GitHub strip rate limit)
+PSI_API_KEY                           CI-only (used by the lighthouse-weekly workflow)
 ```
+
+Cloudflare Turnstile env vars are intentionally absent: the widget was removed in commit `0696686` because it ran continuous background risk-analysis on the main thread and caused multi-second iPhone freezes during typing/scroll. Bot mitigation is now honeypot + Upstash + Zod (see `src/app/api/contact/route.ts`).
 
 ## Browser support
 

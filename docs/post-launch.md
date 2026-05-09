@@ -38,7 +38,7 @@
 
 - **Inbox triage**: track the qualified vs exploratory ratio. If exploratory > 80%, the qualification copy probably reads too welcoming (tighten the project-type / hourly-rate framing). If qualified < 5%, copy probably reads too gated.
 - **CRM hygiene**: every Monday, review Notion entries with Status = `New`. Move to `Replied` / `Booked` / `Closed-no-fit`.
-- **Spam volume monitoring**: if the rate-limit `429`s pile up at one IP repeatedly, or honeypot-rejected submissions spike (visible only in server logs since they return a fake-success), reintroduce a smarter challenge surface. **Do not reintroduce the always-mounted Turnstile widget** — it caused multi-second iPhone main-thread freezes during typing/scroll. If a challenge is needed, render Turnstile only after a first failed honeypot attempt (server returns 400 with a specific signal; client mounts the widget).
+- **Spam volume monitoring**: if the rate-limit `429`s pile up at one IP repeatedly, or honeypot-rejected submissions spike (visible only in server logs since they return a fake-success), reintroduce a smarter challenge surface. **Do not reintroduce the always-mounted Turnstile widget**. It caused multi-second iPhone main-thread freezes during typing/scroll. If a challenge is needed, render Turnstile only after a first failed honeypot attempt (server returns 400 with a specific signal; client mounts the widget).
 
 ### Month 2
 
@@ -60,16 +60,16 @@ These are tracked features that did not make the v1.0 cut. Each can ship as a sm
 
 - **Plausible analytics** (CSP allowlist already in place from Phase 12; see `src/proxy.ts`). To enable: add the script tag in `[locale]/layout.tsx`, sign up at plausible.io with the `unboundedtechnologies.com` domain. ~$9/mo.
 - **Arabic locale** (currently EN + FR). Adds a third entry to `routing.locales`, a third messages file, and locale-specific `pathnames`. Owner-blocked: needs a native AR translator.
-- **OG card variants per case study** — currently every case study uses the same template. Could pull from `case-study.heroImage` if added to frontmatter.
-- **Smarter bot challenge** — replace the honeypot with a server-issued challenge served only after first suspicious submission. Could reuse Cloudflare Turnstile in popup mode (NOT inline).
-- **Real testimonials section** — copy lives in i18n messages but has no surface yet. Drop after Week 1 outreach yields quotable lines.
+- **OG card variants per case study**: currently every case study uses the same template. Could pull from `case-study.heroImage` if added to frontmatter.
+- **Smarter bot challenge**: replace the honeypot with a server-issued challenge served only after first suspicious submission. Could reuse Cloudflare Turnstile in popup mode (NOT inline).
+- **Real testimonials section**: copy lives in i18n messages but has no surface yet. Drop after Week 1 outreach yields quotable lines.
 
 ## On-call / break-glass
 
 | Symptom | First step |
 |---|---|
 | Site returns 5xx | `vercel ls --prod` to find the latest Ready deploy. If recent deploy is broken, click Promote to Production on a previous Ready deploy in the Vercel dashboard. Code-fix follows. |
-| `/api/contact` returns 500 | Check Vercel logs for the offending deploy. Most likely an env-var unset or a Notion/Resend API outage. Both are wrapped in `Promise.allSettled` so a single dependency failure should not 500 — investigate the throw. |
+| `/api/contact` returns 500 | Check Vercel logs for the offending deploy. Most likely an env-var unset or a Notion/Resend API outage. Both are wrapped in `Promise.allSettled` so a single dependency failure should not 500; investigate the throw. |
 | `/api/contact` returns 429 to a real lead | Upstash rate-limit hit (3/h/IP). Tell the lead to email `contact@unboundedtechnologies.com` directly. Do **not** raise the limit unless you see a pattern. |
 | Inbox not receiving lead notifications | Check Resend dashboard for delivery failures. Confirm the apex domain DNS records are still verified. Owner Gmail spam folder is a common cause too. |
 | Bot/spam flood | If submissions look like garbage in Notion, check the volume in Resend's `Sent` log. If the honeypot is being bypassed, ship a smarter challenge (see "deferred to v1.x"). |
@@ -91,7 +91,7 @@ Operational memory (per-session learnings, anti-patterns, gotchas) lives in `~/.
 - Calendly free-tier `backgroundColor` is Pro-only (and the related "use a branded outbound CTA card, not the inline iframe")
 - Lockstep rule when re-tuning the Calendly card crop constants (legacy from when we tried to embed the iframe)
 - Turnstile invisible-mode causes iPhone main-thread freezes; replaced with honeypot
-- LightningCSS strips unprefixed `backdrop-filter` from custom CSS rules — use Tailwind utilities instead
-- React 19 `reactCompiler` synthetic-keydown filter — use Playwright real keyboard events in tests
+- LightningCSS strips unprefixed `backdrop-filter` from custom CSS rules; use Tailwind utilities instead
+- React 19 `reactCompiler` synthetic-keydown filter; use Playwright real keyboard events in tests
 
 Each lesson is a separate file in the memory directory. Read those before reasoning about the same surface again.
