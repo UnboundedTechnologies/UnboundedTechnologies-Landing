@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   description: "Senior cloud and CPaaS engineering for enterprises that can't afford to fail.",
   authors: [{ name: 'Saïd Aïssani' }],
   creator: 'Unbounded Technologies Inc.',
+  appleWebApp: {
+    title: 'Unbounded',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    apple: [{ url: '/app-icon-landing.png', sizes: '1024x1024', type: 'image/png' }],
+  },
 };
 
 // viewport-fit=cover makes the page render edge-to-edge on iOS, including
