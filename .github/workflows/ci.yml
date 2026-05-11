@@ -28,7 +28,11 @@ jobs:
 
       - run: pnpm type-check
 
-      - run: pnpm dlx playwright install --with-deps chromium
+      # Use pnpm exec (not dlx) so the locally pinned @playwright/test version
+      # installs its matching browser revision. `pnpm dlx playwright install`
+      # would fetch `playwright@latest` from npm and install a newer browser
+      # build that the pinned test runner cannot find at run time.
+      - run: pnpm exec playwright install --with-deps chromium
 
       - run: pnpm build
 
