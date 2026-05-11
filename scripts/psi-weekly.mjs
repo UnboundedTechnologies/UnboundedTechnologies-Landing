@@ -8,13 +8,24 @@ import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 // these. If any score drops below, we mark failed=true and the workflow opens
 // a regression issue. A11y/BP/SEO stay flat at 95/90/90 across strategies.
 const THRESHOLDS = {
-  // Real-prod baseline (post-PSI tuning 2026-05-03):
-  //   mobile  perf 97 / a11y 98 / bp 100 / seo 92
-  //   desktop perf 87 / a11y 98 / bp 100 / seo 92
-  // Thresholds are set ~10pts below current scores so they catch real
-  // regressions but don't spam issues for normal small drift.
+  // Observed real-prod scores over four weekly PSI runs (2026-05-03 to
+  // 2026-05-11):
+  //   mobile  perf 95-97 (very stable; one outlier at 86 on 2026-05-04)
+  //   desktop perf 69-87 (median 77; ~20pt spread of pure noise)
+  // Mobile a11y/bp/seo stay flat at 98/100/92 every run.
+  //
+  // Desktop perf is dominated by Total Blocking Time on PSI's shared cloud
+  // Lighthouse runner. With FCP 0.4s, LCP 0.7s, CLS 0, TTI 1.1s on every
+  // run, the only thing moving the desktop score is TBT variance from
+  // runner CPU contention (PSI desktop has no throttling, so contention is
+  // the dominant signal). This is real lab noise, not a real regression.
+  //
+  // Threshold policy: ~10pts below the typical floor of the observed range,
+  // so the workflow only opens an issue on real regressions, not on weekly
+  // PSI runner jitter. Desktop floor is ~75, so threshold 65. Mobile is
+  // tight, so threshold stays at 90.
   mobile: { performance: 90, accessibility: 95, 'best-practices': 90, seo: 90 },
-  desktop: { performance: 80, accessibility: 95, 'best-practices': 90, seo: 90 },
+  desktop: { performance: 65, accessibility: 95, 'best-practices': 90, seo: 90 },
 };
 
 const lines = [];
