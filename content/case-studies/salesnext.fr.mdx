@@ -1,0 +1,29 @@
+---
+slug: salesnext
+locale: fr
+title: "SalesNext, un SaaS de sales engagement conçu pour le navigateur"
+client: "SalesNext (produit maison)"
+years: "2026 - aujourd'hui"
+role: "Cofondateur et ingénieur"
+stack:
+  - FastAPI
+  - PostgreSQL
+  - React
+  - TypeScript
+  - AWS ECS
+  - CloudFormation
+accent: blue
+order: 2
+---
+
+## Problème
+
+Les équipes commerciales qui prospectent sur LinkedIn ont besoin de séquences multi-comptes, d'une boîte de réception partagée et d'une synchronisation CRM. La plupart des outils exécutent cette automatisation depuis des serveurs cloud, loin de la session de navigateur de l'utilisateur.
+
+## Approche
+
+Nous avons construit SalesNext autour d'un choix d'architecture : chaque action s'exécute dans le Chrome de l'utilisateur via une extension Manifest V3, tandis qu'un backend Python et FastAPI orchestre le travail. L'application React et TypeScript est traduite en 11 langues, et la plateforme tourne sur AWS via CloudFormation, avec GitHub Actions, analyse d'images et retour arrière contrôlé par des tests de santé.
+
+## Résultat
+
+SalesNext est en production sur salesnext.io, avec des séquences multi-étapes, une boîte de réception intégrée, des analyses par commercial, une synchronisation automatique des contacts CRM et une classification des réponses par Claude. La plateforme se connecte à HubSpot, Clay, Zapier, n8n et Slack, avec plus de 4 600 tests backend en CI.

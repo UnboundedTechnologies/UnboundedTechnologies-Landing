@@ -42,7 +42,7 @@ export async function generateMetadata({
 //      Each bullet renders as a stat-card row with an accent-tinted number
 //      prefix; the accent cycles blue / purple / cyan across the six rows.
 //   4. By the numbers (4-stat row: 10+ years, 4B+ API calls / month at peak,
-//      4 languages, 3+ active enterprise engagements). Each stat tinted to
+//      4 languages, 3 major clouds). Each stat tinted to
 //      its accent.
 //   5. Quiet capability-statement link at the bottom (placeholder href; the
 //      PDF asset itself ships in Phase 13 per the master plan).

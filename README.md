@@ -10,7 +10,7 @@
 
 > Senior cloud and CPaaS engineering for enterprises that can't afford to fail.
 
-The official landing site for **[Unbounded Technologies Inc.](https://unboundedtechnologies.com)**, a Toronto-based engineering firm operating with multiple concurrent enterprise clients (AWS, Renault Group, Bank of Montreal). Built as a B2B portfolio + qualified-lead funnel with bilingual (EN / FR) content, four full case studies, and a live booking flow.
+The official landing site for **[Unbounded Technologies Inc.](https://unboundedtechnologies.com)**, a Toronto-based engineering firm whose current work includes an enterprise engagement with BMO. Built as a B2B portfolio + qualified-lead funnel with bilingual (EN / FR) content, five full case studies, and a live booking flow.
 
 ## Live site
 
@@ -21,7 +21,7 @@ The official landing site for **[Unbounded Technologies Inc.](https://unboundedt
 
 - **Bilingual** EN / FR with locale-prefixed routes and per-route slug mapping (`/work` ↔ `/travaux`, `/about` ↔ `/a-propos`, `/legal/privacy` ↔ `/legal/confidentialite`).
 - **Three R3F set-pieces** running concurrently: a persistent infinity logo Canvas hoisted to the **root** layout (survives locale switches and all in-app nav), an interactive photoreal globe with drag + zoom + great-circle routes, and an animated impact graph with energy edges and live stat pills.
-- **Four MDX-driven case studies** with frontmatter, quantified outcome callouts, inline architecture diagrams, prev/next navigation, and circular wrap-around.
+- **Five MDX-driven case studies** with frontmatter, quantified outcome callouts, inline architecture diagrams, prev/next navigation, and circular wrap-around.
 - **Qualified-lead funnel** with hidden honeypot bot mitigation, Upstash sliding-window rate limit, Notion CRM, Resend transactional email, and an outbound branded "Book a call" card to Calendly for qualified applicants.
 - **Strict CSP** with a tightly scoped allowlist (script-src uses `'unsafe-inline'` + a small set of trusted origins; nonces were dropped after Next 16's notFound() flight payloads emitted `"nonce":"$undefined"` and broke the 404 page; XSS surface is controlled by `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, and a no-DOM-echo funnel), plus HSTS / X-Frame / X-CTO / Referrer / Permissions / COOP.
 - **macOS Tahoe-style command palette** (cmdk) with ⌘K / Ctrl+K, fuzzy search, recent commands, theme + motion toggles, and case-study deep links.
@@ -105,7 +105,7 @@ src/
     rate-limit.ts              Upstash limiter (noop fallback if env absent)
     resend.ts                  Resend client (soft-fails if env absent)
     utils.ts                   cn() and small shared utilities
-content/case-studies/          MDX files (BMO, AWS Connect, Renault Forex, ETBA ERP)
+content/case-studies/          MDX files (BMO, SalesNext, AWS Connect, Renault Forex, ETBA ERP)
 messages/                      EN + FR i18n strings
 public/                        Banner images, brand logo, earth textures, world topojson, lighthouse.json
 .github/workflows/             ci, lighthouse, lighthouse-weekly, react-doctor

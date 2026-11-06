@@ -11,7 +11,7 @@
   },
   "presence": { "available": "Disponible", "offline": "Hors ligne" },
   "trustedBy": {
-    "eyebrow": "— Clients actuels et anciens"
+    "eyebrow": "— Expérience, notamment"
   },
   "outcomes": {
     "eyebrow": "— Résultats",
@@ -104,11 +104,11 @@
     "subhead": "Saïd Aïssani, PDG d'Unbounded Technologies Inc.",
     "subheadLocation": "Toronto, Ontario.",
     "storyEyebrow": "- L'histoire",
-    "storyPara1": "Je suis Saïd Aïssani. J'ai passé les dix dernières années à concevoir et livrer des systèmes cloud pour des entreprises qui ne peuvent pas se permettre d'échouer. Le travail va des plateformes serverless greenfield à AWS Toronto, à un référentiel Forex chez Renault Group servant plus de quatre milliards d'appels API par mois, jusqu'à une mission de deux ans avec la Banque de Montréal sur l'infrastructure cloud. Parmi les missions antérieures: Melty (plateforme média à 5,6 M EUR) et ETBA Construction, où une modernisation ERP a réduit de 35 pour cent le temps d'approvisionnement.",
-    "storyPara2": "Unbounded Technologies Inc. existe pour que ce travail passe par une seule structure professionnelle. Une société canadienne incorporée, des contrats écrits, une vraie assurance, et un architecte senior en face. Pas de couches d'agence de placement, pas d'ambiguïté de rôle, pas de coûts cachés. L'idée est de rendre l'ingénierie cloud et CPaaS senior accessible aux clients qui l'achètent comme tout autre service d'ingénierie: cadrée, signée, assurée et responsable.",
+    "storyPara1": "Je suis Saïd Aïssani. J'ai passé les dix dernières années à concevoir et livrer des systèmes cloud pour des entreprises qui ne peuvent pas se permettre d'échouer. Le travail va des solutions Amazon Connect et serverless à AWS Toronto, à un référentiel Forex chez Renault Group conçu pour quatre milliards d'appels API par mois, jusqu'au backend d'une application nationale pour les succursales de BMO. J'ai aussi cofondé SalesNext, un SaaS de sales engagement en production. Parmi les missions antérieures: Melty (plateforme média à 5,6 M EUR) et ETBA Construction, où une modernisation ERP a réduit de 35 pour cent le temps d'approvisionnement.",
+    "storyPara2": "Unbounded Technologies Inc. existe pour que ce travail passe par une seule structure professionnelle. Une société canadienne incorporée, des contrats écrits, une vraie assurance, et un architecte senior en face. Pas d'ambiguïté de rôle, pas de coûts cachés. L'idée est de rendre l'ingénierie cloud et CPaaS senior accessible aux clients qui l'achètent comme tout autre service d'ingénierie: cadrée, signée, assurée et responsable.",
     "operatingEyebrow": "- Modèle opérationnel",
     "op1": "Unbounded Technologies Inc. est une société d'ingénierie canadienne incorporée (Ontario).",
-    "op2": "Nous opérons avec plusieurs clients grand compte simultanés, dont AWS, Renault Group et la Banque de Montréal.",
+    "op2": "Le travail actuel comprend une mission entreprise avec BMO. L'expérience antérieure du fondateur comprend AWS et Renault Group.",
     "op3": "Les missions sont régies par un Master Service Agreement et un Statement of Work par projet.",
     "op4": "Nous portons une assurance Erreurs et Omissions de 2 M$ et une Responsabilité civile générale de 5 M$.",
     "op5": "Nous fournissons notre propre équipement, nos outils et nos licences logicielles.",
@@ -120,8 +120,8 @@
     "stat2Label": "appels API / mois (pic)",
     "stat3Number": "4",
     "stat3Label": "langues de travail",
-    "stat4Number": "3+",
-    "stat4Label": "missions entreprise actives",
+    "stat4Number": "3",
+    "stat4Label": "grands clouds: AWS, GCP, Azure",
     "capabilityLink": "Télécharger le dossier de capacités (PDF) ->"
   },
   "privacyPage": {
