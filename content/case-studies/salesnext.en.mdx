@@ -1,0 +1,29 @@
+---
+slug: salesnext
+locale: en
+title: "SalesNext, a sales engagement SaaS built to run in the browser"
+client: "SalesNext (own product)"
+years: "2026 - present"
+role: "Co-Founder & Engineer"
+stack:
+  - FastAPI
+  - PostgreSQL
+  - React
+  - TypeScript
+  - AWS ECS
+  - CloudFormation
+accent: blue
+order: 2
+---
+
+## Problem
+
+Sales teams doing outbound on LinkedIn need multi-account sequences, a shared inbox and CRM sync. Most tools run that automation from cloud servers, away from the user's own browser session.
+
+## Approach
+
+We built SalesNext around one architectural choice: every action runs in the user's own Chrome through a Manifest V3 extension, while a Python and FastAPI backend orchestrates the work. The React and TypeScript app is localized in 11 languages, and the platform runs on AWS through CloudFormation, with GitHub Actions, image scanning and health-gated rollback.
+
+## Outcome
+
+SalesNext is live at salesnext.io, with multi-step sequences, an integrated inbox, rep-level analytics, automatic CRM contact sync, and Claude-based classification of inbound replies. It connects to HubSpot, Clay, Zapier, n8n and Slack, with more than 4,600 backend tests in CI.

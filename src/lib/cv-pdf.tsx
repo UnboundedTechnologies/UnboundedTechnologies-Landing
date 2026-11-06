@@ -394,8 +394,14 @@ function paragraphs(prose: string): string[] {
     .filter(Boolean);
 }
 
-// Order matches the homepage outcome ribbon: BMO -> AWS Connect -> Renault Forex -> ETBA ERP.
-const CASE_STUDY_ORDER = ['bmo-platform', 'aws-connect-ivr', 'renault-forex', 'etba-erp'];
+// Order matches the case-study order: BMO -> SalesNext -> AWS Connect -> Renault Forex -> ETBA ERP.
+const CASE_STUDY_ORDER = [
+  'bmo-platform',
+  'salesnext',
+  'aws-connect-ivr',
+  'renault-forex',
+  'etba-erp',
+];
 
 function orderedCaseStudies(all: CaseStudy[]): CaseStudy[] {
   const bySlug = new Map(all.map((s) => [s.slug, s]));
@@ -537,7 +543,7 @@ function CvDocument({ caseStudies, generatedAt }: { caseStudies: CaseStudy[]; ge
         </Text>
         <View style={styles.titleAccentRule} />
         <Text style={styles.titleMetaLine}>Said Aissani</Text>
-        <Text style={styles.titleMetaLine}>Senior Cloud Architect</Text>
+        <Text style={styles.titleMetaLine}>Enterprise Architect</Text>
         <Text style={styles.titleMetaLine}>Toronto, Canada</Text>
         <View style={{ height: 24 }} />
         <Text style={styles.titleMetaLine}>Generated {generatedLabel(generatedAt)}</Text>
@@ -594,7 +600,7 @@ function CvDocument({ caseStudies, generatedAt }: { caseStudies: CaseStudy[]; ge
         <PageFooter pageLabel="By the numbers" />
       </Page>
 
-      {/* Pages 5-8: case studies */}
+      {/* Pages 5-9: case studies */}
       {ordered.map((study, idx) => (
         <CaseStudyPage key={study.slug} study={study} index={idx} />
       ))}
