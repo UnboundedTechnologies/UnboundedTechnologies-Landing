@@ -28,6 +28,7 @@ const PROJECT_TYPE_LABEL: Record<Lead['projectTypes'][number], string> = {
   'cloud-architecture': 'Cloud architecture',
   'ccaas-connect': 'CCaaS / Connect',
   serverless: 'Serverless',
+  'ai-engineering': 'AI engineering',
   other: 'Other',
 };
 

@@ -11,8 +11,8 @@ import {
   type SolidAccent,
 } from '@/lib/accents';
 
-// Three service-pillar cards: Cloud Architecture (blue glow), Contact Center
-// Modernization (purple glow), Serverless & Event-Driven (cyan glow). Each
+// Three service-pillar cards: Enterprise & Cloud Architecture (blue glow), Contact
+// Center AI (purple glow), Serverless, APIs & AI Engineering (cyan glow). Each
 // card has a corner radial-gradient overlay in the brand color, an eyebrow
 // number/label, a heading, a body paragraph, and a row of tag chips.
 //
@@ -34,21 +34,21 @@ const PILLARS: ReadonlyArray<Pillar> = [
     numKey: 'p1Num',
     titleKey: 'p1Title',
     bodyKey: 'p1Body',
-    tags: ['AWS', 'Terraform', 'GCP', 'Azure'],
+    tags: ['AWS', 'TOGAF', 'CDK', 'Terraform'],
   },
   {
     accent: 'purple',
     numKey: 'p2Num',
     titleKey: 'p2Title',
     bodyKey: 'p2Body',
-    tags: ['Amazon Connect', 'End-User Messaging', 'Pinpoint'],
+    tags: ['Amazon Connect', 'Amazon Lex', 'Bedrock'],
   },
   {
     accent: 'cyan',
     numKey: 'p3Num',
     titleKey: 'p3Title',
     bodyKey: 'p3Body',
-    tags: ['Lambda', 'DynamoDB', 'API GW'],
+    tags: ['Lambda', 'Cognito', 'RAG', 'AI agents'],
   },
 ];
 

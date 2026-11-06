@@ -5,7 +5,7 @@ import { Link } from '@/i18n/routing';
 export function Footer() {
   return (
     <footer className="relative border-t border-border">
-      <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-8 text-sm text-text-muted">
+      <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-5 gap-8 text-sm text-text-muted">
         <div>
           <div className="w-fit">
             <Image
@@ -54,6 +54,33 @@ export function Footer() {
         </div>
         <div>
           <div className="font-mono uppercase text-xs tracking-widest text-text-faint mb-3">
+            Products
+          </div>
+          <ul className="space-y-2">
+            <li>
+              <a
+                href="https://salesnext.io"
+                className="hover:text-text"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                SalesNext
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://unboundedtechnologies.github.io/AstralUI/playground.html"
+                className="hover:text-text"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                AstralUI
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div className="font-mono uppercase text-xs tracking-widest text-text-faint mb-3">
             Legal
           </div>
           <ul className="space-y-2">
@@ -82,6 +109,16 @@ export function Footer() {
                 target="_blank"
               >
                 LinkedIn
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/company/unboundedtechnologies"
+                className="hover:text-text"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                LinkedIn company page
               </a>
             </li>
             <li>

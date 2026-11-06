@@ -10,20 +10,33 @@ stack:
   - API Gateway
   - RDS
   - EventBridge
+  - Cognito
   - CloudFormation
   - AWS CDK
 accent: mixed
 order: 1
+stats:
+  - number: "99.997%"
+    unit: "transaction success"
+    context: "8-hour stress runs at 70%, 90% and 100% load"
+  - number: "All branches"
+    unit: "national deployment"
+    context: "From a 600-user pilot to all BMO branches in Canada"
+  - number: "~95%"
+    unit: "test coverage"
+    context: "85% minimum gate on backend and frontend"
 ---
 
 ## Problem
 
-BMO's Personal and Business Banking group needed a branch application that gives clients the best term pricing on banking products. This is an active enterprise engagement under non-disclosure, so public details are kept minimal and specific figures are not published.
+BMO's Personal and Business Banking group needed a branch application that gives clients the best term pricing on products such as RRSP, RIF and TFSA, based on term length and other factors. It had to meet banking standards for security, compliance and release control.
 
 ## Approach
 
-As the sole backend engineer, I designed and built the backend from scratch on multi-account AWS, using infrastructure as code. Jest coverage gates in the release pipelines, Playwright automation and AI engineering tooling (RAG, agents, multi-model pull request reviews, smoke tests and infrastructure verification) support every release.
+As the sole backend engineer, I designed and built the backend from scratch on multi-account AWS with Lambda, API Gateway, RDS, EventBridge and S3, using BMO's AWS CDK framework and CloudFormation. I also delivered 33% of the UI tickets. Service-to-service calls to upstream APIs use Cognito tokens instead of API keys, for security and compliance.
+
+Release pipelines will not run below an 85% Jest coverage gate on backend and frontend, and the product holds around 95%. Playwright automation supports QA, and AI engineering tooling covers RAG, a Claude Code and ChatGPT pull request review agent, deployment automation, API smoke tests and CloudFormation verification.
 
 ## Outcome
 
-The application moved from pilot to national deployment across BMO branches in Canada. I also became a reference for Senior Technical Officers on other projects' first production deployments, covering code reviews, compliance, readiness analysis, deployment and post-release API verification. The engagement is ongoing.
+The application moved from a 600-user pilot to national deployment across all BMO branches in Canada, and is listed among the main apps on BMO's employee portal. Stress and penetration testing came before release: 8-hour runs at 70%, 90% and 100% load recorded only 4 failed transactions out of 150,000+ (99.997% success). I also became a reference for Senior Technical Officers on other projects' first production deployments, covering code reviews, compliance, readiness analysis, deployment and post-release API verification. The engagement is ongoing.

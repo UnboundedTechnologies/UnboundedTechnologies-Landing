@@ -390,7 +390,12 @@ function splitBody(body: string): [string, string, string] {
 function paragraphs(prose: string): string[] {
   return prose
     .split(/\r?\n\s*\r?\n/)
-    .map((p) => p.replace(/\s+/g, ' ').trim())
+    .map((p) =>
+      p
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    )
     .filter(Boolean);
 }
 
@@ -530,7 +535,7 @@ function CvDocument({ caseStudies, generatedAt }: { caseStudies: CaseStudy[]; ge
       creator="Unbounded Technologies Inc."
       producer="Unbounded Technologies Inc."
       subject="Capability Statement"
-      keywords="cloud architecture, AWS, CPaaS, Toronto, Canada, Unbounded Technologies Inc., capability statement"
+      keywords="enterprise architecture, AWS, AI engineering, Amazon Connect, Toronto, Canada, Unbounded Technologies Inc., capability statement"
     >
       {/* Page 1: title page */}
       <Page size="LETTER" style={styles.titlePage}>
@@ -539,7 +544,8 @@ function CvDocument({ caseStudies, generatedAt }: { caseStudies: CaseStudy[]; ge
         <Image src={{ data: BANNER_BUFFER, format: 'png' }} style={styles.bannerImage} />
         <Text style={[styles.eyebrowAccent, { color: COLOR.blue }]}>Capability Statement</Text>
         <Text style={styles.titleSubtitle}>
-          Senior cloud and CPaaS engineering for enterprises that can&apos;t afford to fail.
+          Senior AWS, AI and contact center engineering for enterprises that can&apos;t afford to
+          fail.
         </Text>
         <View style={styles.titleAccentRule} />
         <Text style={styles.titleMetaLine}>Said Aissani</Text>

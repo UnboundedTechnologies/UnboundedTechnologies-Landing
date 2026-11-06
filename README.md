@@ -8,7 +8,7 @@
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind-v4-06b6d4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Hosted on Vercel](https://img.shields.io/badge/hosted%20on-Vercel-000000?logo=vercel)](https://vercel.com)
 
-> Senior cloud and CPaaS engineering for enterprises that can't afford to fail.
+> Senior AWS, AI and contact center engineering for enterprises that can't afford to fail.
 
 The official landing site for **[Unbounded Technologies Inc.](https://unboundedtechnologies.com)**, a Toronto-based engineering firm whose current work includes an enterprise engagement with BMO. Built as a B2B portfolio + qualified-lead funnel with bilingual (EN / FR) content, five full case studies, and a live booking flow.
 

@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-export const projectTypes = ['cloud-architecture', 'ccaas-connect', 'serverless', 'other'] as const;
+export const projectTypes = [
+  'cloud-architecture',
+  'ccaas-connect',
+  'serverless',
+  'ai-engineering',
+  'other',
+] as const;
 export const timelines = ['asap', '1-3mo', '3-6mo', '1y+', 'exploring'] as const;
 
 // Hourly-rate slider bounds in CAD. Steps land on 25-dollar increments so

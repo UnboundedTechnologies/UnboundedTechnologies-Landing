@@ -56,7 +56,7 @@ export const NODES: ReadonlyArray<Node> = [
   {
     id: 'forex',
     label: 'Forex Referential',
-    sub: 'Java · Geocoding',
+    sub: 'Java · Spring Boot',
     href: '/work/renault-forex',
     color: 'purple',
     category: 'capability',
