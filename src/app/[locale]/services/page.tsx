@@ -33,7 +33,7 @@ export async function generateMetadata({
 
 // `/services` Engagement Models page (Phase 8.1).
 //
-// Five sections, top to bottom:
+// Six sections, top to bottom (fixed-price offers follow the engagement models):
 //   1. Hero (Aurora orbs, eyebrow, two-line headline with aurora-text accent,
 //      subhead).
 //   2. Three engagement-model cards (Fixed-Fee SOW / Retainer / Embedded),
@@ -49,6 +49,14 @@ export async function generateMetadata({
 // Per-card brand metadata (text class, glow color, hover border, hover shadow)
 // comes from `src/lib/accents.ts` so this surface stays in lockstep with the
 // homepage `services-pillars` component.
+
+const OFFERS = [
+  { key: 'offer1', accent: 'blue' },
+  { key: 'offer2', accent: 'purple' },
+  { key: 'offer3', accent: 'cyan' },
+  { key: 'offer4', accent: 'blue' },
+  { key: 'offer5', accent: 'purple' },
+] as const;
 
 type Engagement = {
   accent: SolidAccent;
@@ -176,6 +184,45 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                 </article>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Fixed-price offers and availability */}
+      <section aria-labelledby="offers-heading" className="relative overflow-hidden py-12 md:py-20">
+        <SectionAtmosphere accent="purple" position="top-left" />
+        <div className="relative mx-auto max-w-7xl px-6">
+          <Eyebrow>{t('offersEyebrow')}</Eyebrow>
+          <h2
+            id="offers-heading"
+            className="mt-4 text-3xl md:text-4xl font-semibold tracking-[-0.03em] max-w-3xl"
+          >
+            {t('offersHeadline')}
+          </h2>
+          <p className="mt-4 text-base text-text-muted max-w-2xl leading-relaxed">
+            {t('offersIntro')}
+          </p>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {OFFERS.map((o) => (
+              <article
+                key={o.key}
+                className="relative backdrop-blur-xl bg-bg-elevated/70 border border-white/[0.08] rounded-xl p-6 flex flex-col"
+              >
+                <h3 className="text-lg font-semibold tracking-tight">{t(`${o.key}Title`)}</h3>
+                <div className={cn('mt-3 font-mono text-sm', ACCENT_TEXT_CLASS[o.accent])}>
+                  {t(`${o.key}Price`)}
+                </div>
+                <p className="mt-3 text-sm text-text-muted leading-relaxed">{t(`${o.key}Body`)}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 border border-white/[0.08] rounded-xl p-6 max-w-3xl">
+            <div className="font-mono text-xs uppercase tracking-[0.18em] text-text-faint">
+              {t('availabilityTitle')}
+            </div>
+            <p className="mt-3 text-sm md:text-base text-text-muted leading-relaxed">
+              {t('availabilityBody')}
+            </p>
           </div>
         </div>
       </section>
