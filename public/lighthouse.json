@@ -1,8 +1,8 @@
 {
-  "performance": 97,
+  "performance": 99,
   "accessibility": 98,
   "bestPractices": 100,
   "seo": 92,
-  "fetchedAt": "2026-11-02T19:21:01.243Z",
+  "fetchedAt": "2026-11-09T19:40:01.116Z",
   "_note": "Updated weekly by .github/workflows/lighthouse-weekly.yml from PageSpeed Insights mobile run."
 }
